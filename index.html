@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail de Cours - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;
+            --mundi-orange: #F37021;
+            --mundi-grey: #f0f2f5;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 51, 102, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--white);
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            border-bottom: 5px solid var(--mundi-orange);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo img { height: 60px; }
+        
+        .course-info { text-align: right; }
+        .course-title { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-weight: 700; font-size: 1.4em; text-transform: uppercase; margin: 0; }
+        .prof-name { color: #666; margin: 5px 0 0 0; font-size: 0.9em; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--mundi-blue) 0%, #001a33 100%);
+            color: white;
+            margin-bottom: 40px;
+        }
+        .hero h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.5em; }
+        .hero p { opacity: 0.8; font-size: 1.2em; margin-top: 10px; }
+
+        /* --- GRID CONTAINER --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-top: 6px solid transparent; /* Pour l'effet hover */
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 51, 102, 0.2);
+            border-top-color: var(--mundi-orange);
+        }
+
+        .card-header {
+            padding: 25px 25px 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .session-number {
+            background: var(--mundi-grey);
+            color: var(--mundi-blue);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .card-icon { font-size: 2.5em; }
+
+        .card-body { padding: 10px 25px 25px 25px; flex-grow: 1; }
+        
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--mundi-blue);
+            margin: 10px 0;
+        }
+
+        .card-desc {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .card-footer {
+            padding: 15px 25px;
+            background: #f9f9f9;
+            border-top: 1px solid #eee;
+            color: var(--mundi-orange);
+            font-weight: 700;
+            font-size: 0.9em;
+            text-align: right;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- SECTION TITLE --- */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .section-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--mundi-blue);
+            margin: 0;
+            padding-right: 20px;
+        }
+        .line { flex-grow: 1; height: 2px; background: #ddd; }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--mundi-blue);
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            padding: 30px;
+            margin-top: auto;
+            font-size: 0.9em;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <!-- Logo Mundiapolis -->
+            <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis Logo">
+        </div>
+        <div class="course-info">
+            <p class="course-title">Culture Digitale & IA</p>
+            <p class="prof-name">Prof. Yassine Ben-Aboud</p>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1>Tableau de Bord</h1>
+        <p>Accès direct aux supports de cours et travaux pratiques</p>
+    </div>
+
+    <div class="container">
+        
+        <!-- BLOC 1 : FONDAMENTAUX -->
+        <div class="section-header">
+            <h2>Module 1 : Les Fondamentaux</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="grid">
+            <!-- SESSION 1 -->
+            <a href="Session1.html" class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 1</span>
+                    <span class="card-icon">🤖</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Intro & Prompting</div>
+                    <div class="card-desc">Comprendre l'IA générative, l'économie du digital et maîtriser la méthode CRTF.</div>
+                </div>
+                <div class="card-footer">
+                    <span>Ouvrir</span> <span>→</span>
+                </div>
+            </a>
+
+            <!-- SESSION 2 -->
+            <a href="Session2.html" class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 2</span>
+                    <span class="card-icon">📝</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Rédaction Augmentée</div>
+                    <div class="card-desc">Word Expert + IA. Styles, structure automatique et rédaction de rapports professionnels.</div>
+                </div>
+                <div class="card-footer">
+                    <span>Ouvrir</span> <span>→</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- BLOC 2 : ANALYSE DE DONNÉES -->
+        <div class="section-header">
+            <h2>Module 2 : Data & Analyse</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="grid">
+            <!-- SESSION 3 -->
+            <a href="Session3.html" class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 3</span>
+                    <span class="card-icon">🧹</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Excel : Hygiène de Données</div>
+                    <div class="card-desc">Nettoyage de bases de données, formats et premières formules assistées par IA.</div>
+                </div>
+                <div class="card-footer">
+                    <span>Ouvrir</span> <span>→</span>
+                </div>
+            </a>
+
+            <!-- SESSION 4 -->
+            <a href="Session4.html" class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 4</span>
+                    <span class="card-icon">📈</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Excel : Analyse Avancée</div>
+                    <div class="card-desc">Tableaux Croisés Dynamiques (TCD), RechercheV et analyse de tendances via IA.</div>
+                </div>
+                <div class="card-footer">
+                    <span>Ouvrir</span> <span>→</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- BLOC 3 : COMMUNICATION & RECHERCHE -->
+        <div class="section-header">
+            <h2>Module 3 : Communication & Synthèse</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="grid">
+            <!-- SESSION 5 -->
+            <a href="Session5.html" class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 5</span>
+                    <span class="card-icon">🎤</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Storytelling & PPT</div>
+                    <div class="card-desc">Créer des présentations percutantes. Génération de plans et de visuels par IA.</div>
+                </div>
+                <div class="card-footer">
+                    <span>Ouvrir</span> <span>→</span>
+                </div>
+            </a>
+
+            <!-- SESSION 6 -->
+            <a href="Session6.html" class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 6</span>
+                    <span class="card-icon">🔍</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Recherche & Fact-Checking</div>
+                    <div class="card-desc">Utiliser Perplexity et Bing Chat pour valider des sources économiques fiables.</div>
+                </div>
+                <div class="card-footer">
+                    <span>Ouvrir</span> <span>→</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- BLOC 4 : PROJET & ÉTHIQUE -->
+        <div class="section-header">
+            <h2>Module 4 : Collaboration & Final</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="grid">
+            <!-- SESSION 7 -->
+            <a href="Session7.html" class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 7</span>
+                    <span class="card-icon">☁️</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Collaboration Cloud</div>
+                    <div class="card-desc">Travailler en équipe (Google Sheets/Docs) et gérer des projets avec l'IA.</div>
+                </div>
+                <div class="card-footer">
+                    <span>Ouvrir</span> <span>→</span>
+                </div>
+            </a>
+
+            <!-- SESSION 8 -->
+            <a href="Session8.html" class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 8</span>
+                    <span class="card-icon">⚖️</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Éthique & Projet Final</div>
+                    <div class="card-desc">Biais algorithmiques, confidentialité et présentation du projet final de semestre.</div>
+                </div>
+                <div class="card-footer">
+                    <span>Ouvrir</span> <span>→</span>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Université Mundiapolis &copy; 2024-2025<br>École de Commerce et de Gestion</p>
+    </footer>
+
+</body>
+</html>
