@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culture Digitale & IA - Cours Complet - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE GRAPHIQUE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;       /* Bleu Roi Foncé */
+            --mundi-blue-light: #004d99; /* Bleu plus clair pour les accents */
+            --mundi-orange: #F37021;     /* Orange Vif */
+            --mundi-grey: #f4f6f8;       /* Fond gris très clair */
+            --text-main: #333333;
+            --white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER --- */
+        header {
+            height: 70px;
+            background: var(--white);
+            border-bottom: 4px solid var(--mundi-orange);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .header-logo img { height: 45px; }
+        .header-title { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-weight: 700; font-size: 1.1em; text-transform: uppercase; }
+
+        /* --- SLIDE CONTAINER --- */
+        #presentation-area {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            background: radial-gradient(circle at center, #ffffff 0%, #eef2f5 100%);
+        }
+
+        .slide {
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            max-width: 1400px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 51, 102, 0.15);
+            padding: 60px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateX(100px) scale(0.95);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            visibility: visible;
+            z-index: 5;
+        }
+
+        .slide.prev {
+            transform: translateX(-100px) scale(0.95);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- TYPOGRAPHIE SLIDES --- */
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--mundi-blue);
+            font-size: 2.8em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 6px;
+            background: var(--mundi-orange);
+            margin-top: 15px;
+            border-radius: 3px;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #666;
+            font-weight: 300;
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 40px;
+        }
+
+        p, li {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        strong { color: var(--mundi-blue); }
+        .highlight { background-color: rgba(243, 112, 33, 0.2); padding: 0 5px; border-radius: 4px; }
+        .big-text { font-size: 1.5em; font-weight: 600; color: var(--mundi-blue); text-align: center; margin: 30px 0; }
+
+        /* --- LAYOUTS --- */
+        .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; height: 100%; }
+        .center-content { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; }
+        
+        /* --- COMPONENTS --- */
+        .card {
+            background: #f8f9fa;
+            border-left: 5px solid var(--mundi-blue);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .card.orange { border-left-color: var(--mundi-orange); }
+
+        .concept-box {
+            background: var(--mundi-blue);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 10px;
+            display: inline-block;
+        }
+
+        /* --- SIMULATIONS --- */
+        .chat-sim {
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            margin: 20px auto;
+            font-family: 'Arial', sans-serif;
+        }
+        .chat-header { background: #343541; color: white; padding: 10px 20px; font-size: 0.9em; }
+        .chat-body { padding: 20px; background: #fff; min-height: 150px; }
+        .msg { margin-bottom: 15px; padding: 10px 15px; border-radius: 8px; font-size: 0.95em; line-height: 1.4; }
+        .msg.user { background: #f0f0f0; margin-left: 20%; }
+        .msg.ai { background: rgba(243, 112, 33, 0.1); border-left: 3px solid var(--mundi-orange); margin-right: 20%; }
+        .chat-input { border-top: 1px solid #ddd; padding: 10px; display: flex; gap: 10px; background: white; }
+        .fake-input { flex-grow: 1; border: 1px solid #ccc; border-radius: 4px; height: 30px; background: #fff; }
+        .fake-btn { width: 30px; height: 30px; background: var(--mundi-orange); border-radius: 4px; }
+
+        /* --- FOOTER --- */
+        footer {
+            height: 60px;
+            background: var(--mundi-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            gap: 20px;
+            z-index: 10;
+        }
+        
+        button {
+            background: var(--mundi-orange);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.05); }
+        button:disabled { background: #555; cursor: not-allowed; opacity: 0.7; transform: none; }
+        
+        .progress-container { width: 200px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 5px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--mundi-orange); width: 0%; transition: width 0.3s; }
+        .slide-num { font-family: monospace; }
+
+        /* --- ANIMATIONS --- */
+        .fade-in { animation: fadeIn 1s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-logo">
+        <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis Logo">
+    </div>
+    <div class="header-title">École de Commerce & de Gestion</div>
+</header>
+
+<div id="presentation-area">
+    
+    <!-- SLIDE 1 : Titre -->
+    <section class="slide active center-content">
+        <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" style="width: 250px; margin-bottom: 30px;" alt="Logo">
+        <h1 style="text-align: center; border:none; margin: 0;">Culture Digitale & Intelligence Artificielle</h1>
+        <h2 style="margin-top: 10px; color: var(--mundi-orange);">Cours 1 : Les Fondamentaux</h2>
+        <p style="margin-top: 50px; font-style: italic;">Professeur Yassine Ben-Aboud</p>
+        <div style="margin-top: 20px; padding: 10px 20px; background: #eef; border-radius: 20px; color: #555;">Appuyez sur "Suivant" ou la Flèche Droite pour commencer</div>
+    </section>
+
+    <!-- SLIDE 2 : Ice Breaker -->
+    <section class="slide">
+        <h1>Bienvenue à tous !</h1>
+        <h2>Avant de commencer...</h2>
+        <div class="cols-2">
+            <div>
+                <p>Oubliez vos préjugés.</p>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="margin-bottom: 20px;">❌ "Je suis nul en informatique."</li>
+                    <li style="margin-bottom: 20px;">❌ "L'IA c'est pour les ingénieurs."</li>
+                    <li style="margin-bottom: 20px;">❌ "C'est trop compliqué."</li>
+                </ul>
+                <p class="big-text">Ce cours est fait pour des <span style="color:var(--mundi-orange);">Économistes</span>, pas des développeurs.</p>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 5em;">🚀</div>
+                <p>Objectif : Passer de "Consommateur" à "Pilote".</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 1 : CULTURE DIGITALE -->
+    <section class="slide center-content" style="background: var(--mundi-blue); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">Partie 1 : La Culture Digitale</h1>
+        <p style="color: #ddd;">C'est quoi "Le Digital" au juste ?</p>
+    </section>
+
+    <!-- SLIDE 4 : Definition -->
+    <section class="slide">
+        <h1>Définition simple</h1>
+        <h2>Le "Digital" ou "Numérique"</h2>
+        <p>C'est la transformation de notre monde réel en une suite de <strong>0</strong> et de <strong>1</strong>.</p>
+        <div class="card orange">
+            <h3>Pourquoi ça change tout pour l'économie ?</h3>
+            <p>Parce que cela change les règles de la <strong>Rareté</strong>.</p>
+        </div>
+        <p>Pour comprendre l'économie numérique, il faut comprendre la différence entre un Atome et un Bit.</p>
+    </section>
+
+    <!-- SLIDE 5 : Atomes vs Bits -->
+    <section class="slide">
+        <h1>Atomes vs Bits</h1>
+        <div class="cols-2">
+            <div class="card">
+                <div style="font-size: 3em; text-align: center;">🍎</div>
+                <h3>Monde des Atomes (Physique)</h3>
+                <p><strong>Exemple :</strong> Une Pomme.</p>
+                <ul>
+                    <li>Si je vous la donne, je ne l'ai plus.</li>
+                    <li>Elle pourrit avec le temps.</li>
+                    <li>Pour en produire 1000, il faut 1000 pommiers (Coûteux).</li>
+                </ul>
+                <p><strong>Économie de la Rareté.</strong></p>
+            </div>
+            <div class="card orange">
+                <div style="font-size: 3em; text-align: center;">📄</div>
+                <h3>Monde des Bits (Digital)</h3>
+                <p><strong>Exemple :</strong> Un fichier PDF.</p>
+                <ul>
+                    <li>Si je vous l'envoie, nous l'avons tous les deux.</li>
+                    <li>Il est éternel.</li>
+                    <li>Pour en produire 1000 copies, ça coûte 0 DH.</li>
+                </ul>
+                <p><strong>Économie de l'Abondance.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6 : Coût Marginal Zéro -->
+    <section class="slide">
+        <h1>La Révolution du Coût Zéro</h1>
+        <p>En économie classique, produire une unité supplémentaire coûte de l'argent.</p>
+        <div class="concept-box" style="background: var(--mundi-orange);">Coût Marginal ≈ 0</div>
+        <p>Dans le digital, dupliquer l'information est gratuit.</p>
+        <p><strong>Conséquence :</strong> La valeur ne réside plus dans le "Stock" ou la "Production", mais dans :</p>
+        <ol>
+            <li>L'analyse de l'information (Data).</li>
+            <li>La création d'idées (Innovation).</li>
+        </ol>
+    </section>
+
+    <!-- SLIDE 7 : La Data -->
+    <section class="slide">
+        <h1>La Matière Première : La Data</h1>
+        <h2>On dit souvent "La Data est le nouveau Pétrole". C'est faux.</h2>
+        <div class="cols-2">
+            <div>
+                <h3>Le Pétrole 🛢️</h3>
+                <ul>
+                    <li>S'épuise quand on l'utilise.</li>
+                    <li>Polluant.</li>
+                    <li>Difficile à transporter.</li>
+                </ul>
+            </div>
+            <div>
+                <h3>La Data 📊</h3>
+                <ul>
+                    <li><strong>Ne s'épuise jamais</strong> (on peut la réutiliser à l'infini).</li>
+                    <li>Gagne de la valeur quand on la croise avec d'autres données.</li>
+                    <li>Se transporte à la vitesse de la lumière.</li>
+                </ul>
+            </div>
+        </div>
+        <p class="highlight" style="text-align: center; margin-top: 20px;">Sans Data, il n'y a pas d'Intelligence Artificielle.</p>
+    </section>
+
+    <!-- SECTION 2 : L'INTELLIGENCE ARTIFICIELLE -->
+    <section class="slide center-content" style="background: var(--mundi-blue); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">Partie 2 : L'Intelligence Artificielle</h1>
+        <p style="color: #ddd;">Démystifions la "Magie".</p>
+    </section>
+
+    <!-- SLIDE 9 : Definition IA -->
+    <section class="slide">
+        <h1>Qu'est-ce que l'IA ?</h1>
+        <p>Ce n'est pas un robot conscient. Ce n'est pas de la magie.</p>
+        <div class="card">
+            <h3>Définition</h3>
+            <p>L'IA est une branche de l'informatique qui vise à faire faire par des machines des tâches qui demandent normalement de l'intelligence humaine (reconnaître une image, comprendre un texte, faire une prédiction).</p>
+        </div>
+        <p>Il y a deux types d'IA...</p>
+    </section>
+
+    <!-- SLIDE 10 : 2 Types d'IA -->
+    <section class="slide">
+        <h1>Les 2 Familles d'IA</h1>
+        <div class="cols-2">
+            <div class="card" style="opacity: 0.7;">
+                <h3>1. IA Discriminative (Analytique)</h3>
+                <p><strong>Ce qu'elle fait :</strong> Elle classe, elle trie.</p>
+                <ul>
+                    <li>"Est-ce un chat ou un chien ?"</li>
+                    <li>"Ce client va-t-il faire défaut sur son crédit ?"</li>
+                    <li>C'est l'IA des années 2010-2022.</li>
+                </ul>
+            </div>
+            <div class="card orange">
+                <h3>2. IA Générative (Créative)</h3>
+                <p><strong>Ce qu'elle fait :</strong> Elle CRÉE du nouveau contenu.</p>
+                <ul>
+                    <li>"Écris-moi un poème."</li>
+                    <li>"Dessine-moi un logo."</li>
+                    <li>"Génère un rapport financier."</li>
+                    <li><strong>C'est ChatGPT, Claude, Midjourney.</strong></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 11 : Machine Learning -->
+    <!-- SLIDE A : L'Approche Classique -->
+    <section class="slide">
+        <h1>Étape 1 : La Programmation Classique</h1>
+        <h2>L'ère des Règles Explicites (Go/No-Go)</h2>
+        <p>Pendant 50 ans, l'informatique, c'était comme écrire une recette de cuisine stricte.</p>
+        
+        <div class="cols-2">
+            <div class="card">
+                <h3>La Logique "SI... ALORS"</h3>
+                <p>L'humain doit tout prévoir à l'avance.</p>
+                <div style="background: #eee; padding: 15px; border-radius: 5px; font-family: monospace; border-left: 4px solid var(--mundi-blue);">
+                    <span style="color:blue">SI</span> (forme == ronde) <span style="color:blue">ET</span> (couleur == rouge)<br>
+                    <span style="color:blue">ALORS</span> (C'est une Pomme 🍎)<br>
+                    <span style="color:blue">SINON</span> (Ce n'est pas une Pomme)
+                </div>
+            </div>
+            <div class="center-content">
+                <div style="font-size: 5em;">🍎</div>
+                <p style="color:green; font-weight:bold;">Ça marche !</p>
+                <p>(Tant que la pomme est rouge et ronde)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE B : Le Problème (La Limite) -->
+    <section class="slide">
+        <h1>Le Problème de la "Règle"</h1>
+        <h2>Pourquoi l'approche classique échoue dans le monde réel ?</h2>
+        <p>Le monde n'est pas binaire. Il est nuancé.</p>
+
+        <div class="cols-2">
+            <div class="card" style="border-left-color: red;">
+                <h3>Le Bug du Réel</h3>
+                <p>Que se passe-t-il si je présente cette image au programme précédent ?</p>
+                <div style="background: #eee; padding: 15px; border-radius: 5px; font-family: monospace; border-left: 4px solid red; color: #999;">
+                    <span style="color:blue">SI</span> (forme == ronde) -> <span style="color:green">OK</span><br>
+                    <span style="color:blue">ET</span> (couleur == rouge) -> <span style="color:red">NON (C'est Vert)</span><br>
+                    <span style="color:blue">RESULTAT</span> = PAS UNE POMME ❌
+                </div>
+            </div>
+            <div class="center-content">
+                <div style="font-size: 5em;">🍏</div>
+                <p style="color:red; font-weight:bold;">ÉCHEC</p>
+                <p>C'est pourtant une pomme (Granny Smith).</p>
+                <p class="highlight">Il est impossible d'écrire une règle pour chaque exception (pomme verte, pomme croquée, pomme pourrie...).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE C : Machine Learning (La Solution) -->
+    <section class="slide">
+        <h1>Étape 2 : Le Machine Learning</h1>
+        <h2>On arrête de coder des règles. On fournit des Données.</h2>
+        <p>Au lieu d'expliquer à la machine <em>comment</em> reconnaître une pomme, on lui <em>montre</em> des pommes.</p>
+
+        <div style="display: flex; gap: 20px; align-items: center; margin-top: 30px;">
+            <!-- INPUT DATA -->
+            <div style="flex: 1; text-align: center;">
+                <h3>DATA (Input)</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; font-size: 2em; background: #f0f0f0; padding: 10px; border-radius: 10px;">
+                    <span>🍎</span><span>🍏</span><span>🍎</span>
+                    <span>🍌</span><span>🍏</span><span>🍌</span>
+                </div>
+                <p>10.000 photos étiquetées<br>"Pomme" ou "Banane"</p>
+            </div>
+
+            <!-- THE BLACK BOX -->
+            <div style="flex: 1; text-align: center;">
+                <div style="font-size: 3em;">⚙️ ➔ 🧠</div>
+                <p style="color: var(--mundi-orange); font-weight: bold;">ENTRAÎNEMENT</p>
+                <p style="font-size: 0.9em;">La machine cherche seule les points communs (statistiques).</p>
+            </div>
+
+            <!-- THE MODEL -->
+            <div style="flex: 1; text-align: center;">
+                <h3>MODÈLE (Règle)</h3>
+                <div style="background: var(--mundi-blue); color: white; padding: 15px; border-radius: 10px;">
+                    Règle Mathématique Complexe (Invisible)
+                </div>
+                <p>La machine a "compris" ce qu'est une pomme.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE D : Deep Learning (L'Intuition) -->
+    <section class="slide">
+        <h1>Étape 3 : Le Deep Learning</h1>
+        <h2>Les Réseaux de Neurones (Imiter le Cerveau)</h2>
+        <p>Pour des choses complexes (Visages, Langage), on utilise des couches de neurones artificiels.</p>
+        
+        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 30px;">
+            <!-- IMAGE -->
+            <div style="text-align: center;">
+                <div style="font-size: 4em;">🖼️</div>
+                <p>Image</p>
+            </div>
+            
+            <div style="font-size: 2em;">➔</div>
+
+            <!-- LAYERS -->
+            <div style="display: flex; gap: 10px;">
+                <div style="display: flex; flex-direction: column; gap: 5px; border: 2px solid #ccc; padding: 5px; border-radius: 5px;">
+                    <span style="font-size: 0.8em;">Couche 1</span>
+                    <div style="width: 20px; height: 20px; background: #ddd; border-radius: 50%;"></div>
+                    <div style="width: 20px; height: 20px; background: #ddd; border-radius: 50%;"></div>
+                    <div style="width: 20px; height: 20px; background: #ddd; border-radius: 50%;"></div>
+                    <p style="font-size: 0.7em;">Voit les bords</p>
+                </div>
+                
+                <div style="font-size: 2em;">➔</div>
+
+                <div style="display: flex; flex-direction: column; gap: 5px; border: 2px solid var(--mundi-orange); padding: 5px; border-radius: 5px;">
+                    <span style="font-size: 0.8em;">Couche 2</span>
+                    <div style="width: 20px; height: 20px; background: var(--mundi-orange); border-radius: 50%;"></div>
+                    <div style="width: 20px; height: 20px; background: var(--mundi-orange); border-radius: 50%;"></div>
+                    <p style="font-size: 0.7em;">Voit les formes</p>
+                </div>
+
+                <div style="font-size: 2em;">➔</div>
+
+                <div style="display: flex; flex-direction: column; gap: 5px; border: 2px solid var(--mundi-blue); padding: 5px; border-radius: 5px;">
+                    <span style="font-size: 0.8em;">Couche 3</span>
+                    <div style="width: 20px; height: 20px; background: var(--mundi-blue); border-radius: 50%;"></div>
+                    <p style="font-size: 0.7em;">Voit "Le concept"</p>
+                </div>
+            </div>
+
+            <div style="font-size: 2em;">➔</div>
+
+            <!-- OUTPUT -->
+            <div style="text-align: center;">
+                <div class="concept-box" style="margin:0;">C'est une Pomme</div>
+                <p>Probabilité : 98%</p>
+            </div>
+        </div>
+        <p style="margin-top: 20px; text-align: center; font-style: italic;">C'est ainsi que Facebook reconnaît vos amis sur les photos.</p>
+    </section>
+
+    <!-- SLIDE E : Generative AI (Aujourd'hui) -->
+    <section class="slide">
+        <h1>Étape 4 : L'IA Générative (Aujourd'hui)</h1>
+        <h2>De la "Reconnaissance" à la "Création"</h2>
+        <div class="cols-2">
+            <div class="card" style="opacity: 0.6;">
+                <h3>IA "Classique" (Analytique)</h3>
+                <p><strong>Question :</strong> "Est-ce une pomme ?"</p>
+                <p><strong>Réponse :</strong> "Oui (98%)"</p>
+                <p><em>L'IA regarde le passé/présent.</em></p>
+            </div>
+            <div class="card orange">
+                <h3>IA "Générative" (ChatGPT/DALL-E)</h3>
+                <p><strong>Question :</strong> "Dessine-moi une pomme bleue qui fume le cigare."</p>
+                <p><strong>Réponse :</strong> [Crée une image qui n'existait pas]</p>
+                <p><em>L'IA crée du nouveau futur.</em></p>
+            </div>
+        </div>
+        <p class="highlight" style="text-align: center; margin-top: 20px;">C'est cette technologie (LLM) que nous allons utiliser dans ce cours pour écrire et analyser.</p>
+    </section>
+
+    <!-- SLIDE 12 : Intro ChatGPT -->
+    <section class="slide center-content">
+        <h1 style="font-size: 4em;">ChatGPT</h1>
+        <p class="big-text">Chat Generative Pre-trained Transformer</p>
+        <p>Ouvrons le capot pour voir comment ça marche.</p>
+    </section>
+
+    <!-- SLIDE 13 : Le Perroquet -->
+    <section class="slide">
+        <h1>Intuition Fondamentale</h1>
+        <h2>Le "Perroquet Probabiliste"</h2>
+        <p>ChatGPT ne "sait" rien. Il ne comprend pas le sens des mots comme vous.</p>
+        <p>C'est une <strong>machine à prédire le mot suivant</strong>.</p>
+        <div class="card orange" style="text-align: center;">
+            <p>Il a lu tout Internet (Wikipédia, Livres, Articles...).</p>
+            <p>Il a appris quelles sont les suites de mots les plus probables.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 14 : Démo Interactive -->
+    <section class="slide">
+        <h1>Démonstration : La Prédiction</h1>
+        <p>Imaginez que vous êtes l'IA. Complétez cette phrase :</p>
+        
+        <div style="font-size: 2em; text-align: center; margin: 40px 0;">
+            "La capitale de la France est..."
+        </div>
+
+        <div class="cols-2">
+            <button onclick="alert('Probabilité : 99%')">PARIS</button>
+            <button style="background: #999;" onclick="alert('Probabilité : 0.01%')">LONDRES</button>
+        </div>
+        <p style="margin-top: 30px;">L'IA choisit "Paris" non pas parce qu'elle a visité la France, mais parce que statistiquement, après "Capitale de la France", le mot "Paris" apparaît 99% du temps.</p>
+    </section>
+
+    <!-- SLIDE 15 : Le LLM -->
+    <section class="slide">
+        <h1>LLM : Large Language Model</h1>
+        <p>C'est le nom technique de la technologie derrière ChatGPT.</p>
+        <ul>
+            <li><strong>Large :</strong> Entraîné sur des milliards de textes.</li>
+            <li><strong>Language :</strong> Comprend et génère du langage humain.</li>
+            <li><strong>Model :</strong> Représentation mathématique des probabilités.</li>
+        </ul>
+        <p class="highlight">Imaginez le correcteur automatique de votre téléphone (T9), mais sous stéroïdes.</p>
+    </section>
+
+    <!-- SLIDE 16 : Hallucinations -->
+    <section class="slide">
+        <h1>⚠️ Le Danger : Les Hallucinations</h1>
+        <p>Puisque l'IA cherche juste à compléter la phrase de manière "probabiliste", que se passe-t-il si elle ne connaît pas la réponse ?</p>
+        <div class="card" style="border-left-color: red;">
+            <h3>Elle invente !</h3>
+            <p>On appelle ça une "Hallucination".</p>
+            <p>Elle va inventer un fait, une date ou une source bibliographique avec une assurance totale, juste pour que la phrase soit cohérente grammaticalement.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 17 : L'analogie du Stagiaire -->
+    <section class="slide">
+        <h1>L'Analogie du Stagiaire</h1>
+        <p>Considérez ChatGPT comme un <strong>stagiaire très intelligent, infatigable, mais mythomane.</strong></p>
+        <div class="cols-2">
+            <div>
+                <h3 style="color:green;">Ses Forces</h3>
+                <ul>
+                    <li>Lit 1000 pages en 1 seconde.</li>
+                    <li>Écrit parfaitement.</li>
+                    <li>Connaît tous les sujets.</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color:red;">Ses Faiblesses</h3>
+                <ul>
+                    <li>Aucun esprit critique.</li>
+                    <li>Veut vous faire plaisir.</li>
+                    <li>Peut mentir sans sourciller.</li>
+                </ul>
+            </div>
+        </div>
+        <p class="big-text">Votre rôle : Le Manager qui vérifie.</p>
+    </section>
+
+    <!-- SECTION 3 : LE PROMPT -->
+    <section class="slide center-content" style="background: var(--mundi-orange); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">Partie 3 : L'Art du Prompt</h1>
+        <p style="color: white;">Savoir parler à la machine.</p>
+    </section>
+
+    <!-- SLIDE 19 : Definition Prompt -->
+    <section class="slide">
+        <h1>Qu'est-ce qu'un Prompt ?</h1>
+        <p>Le Prompt, c'est le texte que vous écrivez dans la barre de chat.</p>
+        <p>C'est votre commande, votre instruction.</p>
+        <div class="chat-sim">
+            <div class="chat-header">ChatGPT</div>
+            <div class="chat-body">
+                <div class="msg user">Ceci est un prompt.</div>
+                <div class="msg ai">Et ceci est la réponse générée par l'IA.</div>
+            </div>
+        </div>
+        <p class="highlight">La qualité de la Réponse (Output) dépend à 100% de la qualité du Prompt (Input).</p>
+    </section>
+
+    <!-- SLIDE 20 : Analogie Pizza -->
+    <section class="slide">
+        <h1>L'Analogie de la Pizza 🍕</h1>
+        <h2>Comment commander correctement ?</h2>
+        <div class="cols-2">
+            <div class="card" style="opacity: 0.6;">
+                <h3>Mauvaise Commande</h3>
+                <p>"Je veux une pizza."</p>
+                <p><strong>Résultat :</strong> Le cuisinier va vous donner n'importe quoi (peut-être aux anchois 🤢). Vous serez déçu.</p>
+            </div>
+            <div class="card orange">
+                <h3>Bonne Commande</h3>
+                <p>"Je veux une pizza moyenne, pâte fine, base tomate, avec mozzarella et champignons, coupée en 6."</p>
+                <p><strong>Résultat :</strong> Exactement ce que vous vouliez.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 21 : Exemple Economie -->
+    <section class="slide">
+        <h1>Même chose en Économie</h1>
+        <div class="card" style="opacity: 0.6;">
+            <h3>Prompt Faible (Débutant)</h3>
+            <p>"Parle-moi de l'inflation."</p>
+            <p><em>Réponse : Définition Wikipédia générique et ennuyeuse.</em></p>
+        </div>
+        <div class="card orange">
+            <h3>Prompt Fort (Expert)</h3>
+            <p>"Agis comme un professeur d'économie. Explique le mécanisme de l'inflation par les coûts à un étudiant de 1ère année, en utilisant l'exemple du prix du pétrole au Maroc."</p>
+            <p><em>Réponse : Un cours pédagogique, contextualisé et pertinent.</em></p>
+        </div>
+    </section>
+
+    <!-- SLIDE 22 : La méthode CRTF -->
+    <section class="slide">
+        <h1>La Méthode Magique : C.R.T.F.</h1>
+        <p>Pour écrire des prompts parfaits, mémorisez cet acronyme :</p>
+        <div class="cols-2" style="grid-template-columns: 1fr 1fr;">
+            <div class="concept-box" style="background:#003366;">C - Contexte</div>
+            <p>Qui êtes-vous ? Quelle est la situation ?</p>
+            
+            <div class="concept-box" style="background:#F37021;">R - Rôle</div>
+            <p>Qui l'IA doit-elle imiter ? (Expert, Coach, Critique...)</p>
+            
+            <div class="concept-box" style="background:#003366;">T - Tâche</div>
+            <p>Que doit-elle faire précisément ? (Résumer, Rédiger, Analyser...)</p>
+            
+            <div class="concept-box" style="background:#F37021;">F - Format</div>
+            <p>Quelle forme doit prendre la réponse ? (Tableau, Liste, Email...)</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 23 : Demo CRTF -->
+    <section class="slide">
+        <h1>Construction d'un Prompt CRTF</h1>
+        <p>Regardons comment on assemble les briques :</p>
+        <ul style="font-size: 1em;">
+            <li><strong>C (Contexte) :</strong> "Je prépare un exposé sur la crise de 1929."</li>
+            <li><strong>R (Rôle) :</strong> "Tu es un historien de l'économie spécialisé dans les crises."</li>
+            <li><strong>T (Tâche) :</strong> "Explique les 3 causes principales du Krach boursier."</li>
+            <li><strong>F (Format) :</strong> "Fais une liste à puces simple."</li>
+        </ul>
+        <div class="card orange">
+            <strong>Prompt Final :</strong> "Je prépare un exposé sur la crise de 1929. En tant qu'historien de l'économie, explique-moi les 3 causes principales du Krach sous forme de liste à puces simple."
+        </div>
+    </section>
+
+    <!-- ================= CONTEXTE ================= -->
+
+    <!-- SLIDE : Le Contexte (Théorie) -->
+    <section class="slide">
+        <h1>1. Le Contexte (C)</h1>
+        <h2>"Où, Quand, Pour Qui, Pourquoi ?"</h2>
+        <p>L'IA ne lit pas dans vos pensées. Si vous ne donnez pas le décor, elle va deviner (souvent mal).</p>
+        <div class="cols-2">
+            <div>
+                <h3>Sans Contexte (Flou)</h3>
+                <p>L'IA reste générique. Elle donne une réponse "moyenne" qui convient à tout le monde (donc à personne).</p>
+            </div>
+            <div>
+                <h3>Avec Contexte (Précis)</h3>
+                <p>Précisez :</p>
+                <ul>
+                    <li>L'objectif ("Je veux obtenir un stage").</li>
+                    <li>La cible ("Je parle à un Banquier").</li>
+                    <li>Le ton ("Formel", "Amical", "Urgent").</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE : Le Contexte (DÉMO) -->
+    <section class="slide">
+        <h1>Démonstration : L'effet du Contexte</h1>
+        <div class="cols-2">
+            <!-- MAUVAIS -->
+            <div class="card" style="opacity: 0.7;">
+                <h3>❌ Prompt "Sans Contexte"</h3>
+                <div class="chat-sim" style="margin: 10px 0;">
+                    <div class="chat-body" style="min-height: 100px;">
+                        <div class="msg user">"Rédige un email."</div>
+                        <div class="msg ai">"Sujet : [Sujet]<br>Bonjour, J'espère que vous allez bien. Je vous écris pour..."</div>
+                    </div>
+                </div>
+                <p style="color:red; font-size: 0.9em;">Résultat : Inutilisable. C'est un texte à trous.</p>
+            </div>
+
+            <!-- BON -->
+            <div class="card orange">
+                <h3>✅ Prompt "Contextualisé"</h3>
+                <div class="chat-sim" style="margin: 10px 0;">
+                    <div class="chat-body" style="min-height: 100px;">
+                        <div class="msg user">"Rédige un email de motivation pour un stage d'été chez BMCE Bank. Je suis étudiant en 1ère année à Mundiapolis, passionné par la finance de marché. Ton très respectueux."</div>
+                        <div class="msg ai">"Objet : Candidature spontanée - Stage assistant Trader...<br>Monsieur le Directeur..."</div>
+                    </div>
+                </div>
+                <p style="color: green; font-size: 0.9em;">Résultat : Prêt à l'envoi (à 90%).</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ================= RÔLE ================= -->
+
+    <!-- SLIDE : Le Rôle (Théorie) -->
+    <section class="slide">
+        <h1>2. Le Rôle (R)</h1>
+        <h2>"Qui est l'IA aujourd'hui ?"</h2>
+        <p>C'est la technique la plus puissante pour ajuster le <strong>niveau de langage</strong>.</p>
+        <div class="card">
+            <h3>Les "Personas" utiles pour un économiste :</h3>
+            <ul style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <li>🎭 <strong>Le Vulgarisateur :</strong> "Explique comme à un enfant de 10 ans."</li>
+                <li>🎓 <strong>L'Académique :</strong> "Agis comme un Professeur d'Université."</li>
+                <li>💼 <strong>Le Consultant :</strong> "Agis comme un expert McKinsey."</li>
+                <li>⚖️ <strong>Le Critique :</strong> "Agis comme un opposant politique."</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- SLIDE : Le Rôle (DÉMO) -->
+    <section class="slide">
+        <h1>Démonstration : L'effet du Rôle</h1>
+        <p>Sujet : <strong>L'Inflation</strong></p>
+        <div class="cols-2">
+            <!-- ENFANT -->
+            <div class="card" style="background: #eef;">
+                <h3>👶 Rôle : "Enfant de 5 ans"</h3>
+                <p><em>"L'inflation, c'est comme quand le prix des bonbons augmente. Avant avec 1 Dirham tu avais 2 bonbons, maintenant tu n'en as qu'un seul. Ton argent est moins fort."</em></p>
+                <div class="concept-box" style="font-size: 0.8em; margin:0; background: #555;">Idéal pour comprendre l'intuition</div>
+            </div>
+
+            <!-- EXPERT -->
+            <div class="card orange">
+                <h3>🧐 Rôle : "Expert Banquier Central"</h3>
+                <p><em>"L'inflation représente la perte du pouvoir d'achat de la monnaie qui se traduit par une augmentation générale et durable des prix. Elle est souvent pilotée par le taux directeur..."</em></p>
+                <div class="concept-box" style="font-size: 0.8em; margin:0; background: var(--mundi-orange);">Idéal pour rédiger un devoir</div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ================= TÂCHE ================= -->
+
+    <!-- SLIDE : La Tâche (Théorie) -->
+    <section class="slide">
+        <h1>3. La Tâche (T)</h1>
+        <h2>"L'Action précise : Le Verbe"</h2>
+        <p>Ne soyez pas passif ("Parle-moi de..."). Soyez actif ! Utilisez des verbes d'action forts.</p>
+        
+        <div class="cols-2">
+            <div>
+                <h3>Verbes Faibles (À éviter)</h3>
+                <ul>
+                    <li>"Parle de..."</li>
+                    <li>"Dis-moi des trucs sur..."</li>
+                    <li>"C'est quoi..."</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Verbes Forts (À utiliser)</h3>
+                <ul>
+                    <li><strong>Synthétiser</strong> (Pour résumer un long texte).</li>
+                    <li><strong>Analyser</strong> (Pour trouver des causes/conséquences).</li>
+                    <li><strong>Critiquer</strong> (Pour trouver les failles).</li>
+                    <li><strong>Traduire</strong> (Anglais vers Français académique).</li>
+                    <li><strong>Brainstormer</strong> (Trouver 10 idées de titres).</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE : La Tâche (DÉMO) -->
+    <section class="slide">
+        <h1>Démonstration : L'effet de la Tâche</h1>
+        <div class="cols-2">
+            <!-- FLOU -->
+            <div class="card" style="opacity: 0.7;">
+                <h3>❌ Tâche Floue</h3>
+                <p class="highlight">Prompt : "Parle-moi du chômage."</p>
+                <hr>
+                <p><strong>Résultat IA :</strong> Un long texte Wikipédia qui définit le chômage, ses types, son histoire... C'est trop long et pas forcément pertinent.</p>
+            </div>
+
+            <!-- ACTION -->
+            <div class="card orange">
+                <h3>✅ Tâche Active (Action)</h3>
+                <p class="highlight">Prompt : "<strong>Analyse</strong> les causes du chômage des jeunes au Maroc et <strong>propose</strong> 3 solutions innovantes."</p>
+                <hr>
+                <p><strong>Résultat IA :</strong></p>
+                <ol>
+                    <li>Cause 1 : Inadéquation Formation/Emploi.</li>
+                    <li>Solution 1 : Création de micro-crédits pour startups...</li>
+                </ol>
+                <p style="color: green;">C'est structuré et orienté vers la solution.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ================= FORMAT ================= -->
+
+    <!-- SLIDE : Le Format (Théorie) -->
+    <section class="slide">
+        <h1>4. Le Format (F)</h1>
+        <h2>"À quoi doit ressembler le résultat ?"</h2>
+        <p>Ne laissez pas l'IA choisir la mise en page. Imposez votre livrable.</p>
+        <p>Vous pouvez demander presque n'importe quoi :</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 30px;">
+            <div class="concept-box" style="font-size: 1em; text-align: center; background: #003366;">Tableau Excel<br>(CSV)</div>
+            <div class="concept-box" style="font-size: 1em; text-align: center; background: #003366;">Liste à puces<br>(Bullet points)</div>
+            <div class="concept-box" style="font-size: 1em; text-align: center; background: #003366;">Code<br>(HTML/Python)</div>
+            <div class="concept-box" style="font-size: 1em; text-align: center; background: var(--mundi-orange);">Email Pro</div>
+            <div class="concept-box" style="font-size: 1em; text-align: center; background: var(--mundi-orange);">Tweet / Post LinkedIn</div>
+            <div class="concept-box" style="font-size: 1em; text-align: center; background: var(--mundi-orange);">Dialogue / Interview</div>
+        </div>
+    </section>
+
+    <!-- SLIDE : Le Format (DÉMO) -->
+    <section class="slide">
+        <h1>Démonstration : L'effet du Format</h1>
+        <p>Prompt : "Compare le PIB du Maroc et de l'Algérie."</p>
+        
+        <div class="cols-2">
+            <!-- TEXTE -->
+            <div class="card">
+                <h3>Sans Format (Texte brut)</h3>
+                <p style="font-size: 0.8em; font-family: 'Times New Roman';">
+                    "Le PIB du Maroc est d'environ 130 milliards, tandis que celui de l'Algérie est d'environ 190 milliards. Le Maroc a une économie plus diversifiée alors que l'Algérie repose sur le gaz..."
+                </p>
+                <p style="color: red;">Difficile à lire rapidement.</p>
+            </div>
+
+            <!-- TABLEAU -->
+            <div class="card orange">
+                <h3>Avec Format ("Sous forme de Tableau")</h3>
+                <table border="1" style="width:100%; border-collapse: collapse; font-size: 0.8em;">
+                    <tr style="background: #ddd;"><th>Indicateur</th><th>Maroc 🇲🇦</th><th>Algérie 🇩🇿</th></tr>
+                    <tr><td>PIB (Est.)</td><td>~130 Mds $</td><td>~190 Mds $</td></tr>
+                    <tr><td>Moteur Éco.</td><td>Agriculture, Auto, Tourisme</td><td>Hydrocarbures (Gaz/Pétrole)</td></tr>
+                </table>
+                <p style="color: green;">Clair, net, copiable dans Excel.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 1 : L'Annonce du Challenge -->
+    <section class="slide center-content" style="background: linear-gradient(135deg, var(--mundi-orange) 0%, #d35400 100%); color: white;">
+        <h1 style="color: white; border:none; font-size: 4em;">⚔️ PROMPT BATTLE ⚔️</h1>
+        <p style="font-size: 1.5em;">À vous de jouer.</p>
+        <div style="background: rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 15px; margin-top: 20px;">
+            <p>Objectif : Obtenir la meilleure analyse économique possible.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 2 : Le Scénario -->
+    <section class="slide">
+        <h1>Le Scénario (Mise en situation)</h1>
+        <p>Vous êtes <strong>Consultant Junior</strong>.</p>
+        <div class="card" style="border-left: 5px solid var(--mundi-blue);">
+            <h3>La Mission 🌍</h3>
+            <p>Votre client est un investisseur étranger qui hésite à investir dans l'hôtellerie au Maroc.</p>
+            <p>Il vous demande une note de synthèse sur :</p>
+            <p class="big-text" style="margin: 10px 0;">"L'impact économique de la Coupe du Monde 2030 au Maroc"</p>
+        </div>
+        <p>Vous avez <strong>15 minutes</strong> pour générer la réponse la plus <strong>professionnelle, structurée et convaincante</strong> grâce à l'IA.</p>
+    </section>
+
+    <!-- SLIDE TP 3 : Les Niveaux de difficulté -->
+    <section class="slide">
+        <h1>Niveaux de Difficulté</h1>
+        <p>Ne soyez pas un "Niveau 1". Visez le "Niveau 3".</p>
+        
+        <div class="cols-2">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- LVL 1 -->
+                <div class="card" style="opacity: 0.5; margin:0;">
+                    <h3 style="margin:0;">🐣 Niveau 1 (Touriste)</h3>
+                    <p style="font-size: 0.9em; font-style: italic;">"Quels sont les avantages de la coupe du monde 2030 ?"</p>
+                    <p style="color:red; font-size: 0.8em;">-> Réponse Wikipédia générique.</p>
+                </div>
+                
+                <!-- LVL 2 -->
+                <div class="card" style="margin:0; border-left-color: var(--mundi-orange);">
+                    <h3 style="margin:0;">🐯 Niveau 2 (Étudiant)</h3>
+                    <p style="font-size: 0.9em; font-style: italic;">"Agis comme un économiste. Liste les bénéfices et les risques de la CDM 2030 pour le PIB du Maroc."</p>
+                    <p style="color:var(--mundi-orange); font-size: 0.8em;">-> Bon début, mais manque de format.</p>
+                </div>
+            </div>
+
+            <!-- LVL 3 -->
+            <div class="card" style="background: #e3f2fd; border-left-color: var(--mundi-blue); height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <h3 style="margin:0;">🦁 Niveau 3 (Expert Mundiapolis)</h3>
+                <p style="font-weight: bold;">Utilisez la méthode CRTF complète + Itération.</p>
+                <ul style="font-size: 0.9em;">
+                    <li><strong>Contexte :</strong> Investisseur Hôtelier.</li>
+                    <li><strong>Rôle :</strong> Consultant Stratégique Senior.</li>
+                    <li><strong>Tâche :</strong> Analyser (Chiffres, Infrastructures, Tourisme).</li>
+                    <li><strong>Format :</strong> Note de synthèse structurée (Intro, 3 Points clés, Recommandation finale).</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 4 : Action ! -->
+    <section class="slide center-content">
+        <h1>⏳ À vos claviers ! (15 min)</h1>
+        <p>Ouvrez ChatGPT / Copilot / Claude.</p>
+        
+        <div class="card orange" style="text-align: left; width: 80%;">
+            <h3>Votre Checklist avant de valider :</h3>
+            <ul style="list-style: none;">
+                <li>✅ Avez-vous donné un Rôle ? (Expert, Consultant...)</li>
+                <li>✅ Avez-vous précisé la Cible ? (Investisseur)</li>
+                <li>✅ Avez-vous demandé un Format précis ? (Tableau, Liste, Note...)</li>
+                <li>✅ <strong>Bonus :</strong> Avez-vous demandé à l'IA de critiquer sa propre réponse ("Critique ce plan, est-il réaliste ?")</li>
+                <li>Envoyez vos résultats à </li>
+            </ul>
+        </div>
+        
+        <p style="margin-top: 30px; color: #555;">Nous comparerons les 3 meilleurs résultats ensemble.</p>
+    </section>
+
+    <!-- SECTION 4 : PRATIQUE ET FUTUR -->
+    <section class="slide center-content" style="background: var(--mundi-blue); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">Partie 4 : Pratique & Éthique</h1>
+        <p style="color: #ddd;">Utiliser l'IA de manière responsable.</p>
+    </section>
+
+    <!-- SLIDE 29 : Les 3 Règles d'Or -->
+    
+
+    <!-- SLIDE ETHIQUE 2 : Règle 1 (Copier-Coller) -->
+    <section class="slide">
+        <h1>Règle N°1 : Le "Copier-Coller" Interdit</h1>
+        <h2>Ne soyez pas un Robot. Soyez un "Cyborg".</h2>
+        <div class="cols-2">
+            <div class="card" style="border-left-color: red; opacity: 0.8;">
+                <h3 style="color: #c0392b;">⛔ L'Étudiant "Robot"</h3>
+                <p>Il prend le texte de ChatGPT et le colle directement dans son devoir.</p>
+                <ul style="font-size: 0.9em; color: #555;">
+                    <li>❌ <strong>Le style est plat</strong> ("En conclusion, il est crucial de...").</li>
+                    <li>❌ <strong>Détectable</strong> par les professeurs.</li>
+                    <li>❌ <strong>Aucun apprentissage</strong>.</li>
+                </ul>
+                <div class="concept-box" style="background: #c0392b; font-size: 1em;">PLAGIAT / TRICHE</div>
+            </div>
+            <div class="card orange">
+                <h3 style="color: var(--mundi-orange);">✅ L'Étudiant "Cyborg" (Augmenté)</h3>
+                <p>Il utilise l'IA pour générer un <strong>Plan</strong>, des <strong>Idées</strong>, ou une <strong>Correction</strong>.</p>
+                <ul style="font-size: 0.9em;">
+                    <li>✔️ Il réécrit les phrases avec ses mots.</li>
+                    <li>✔️ Il ajoute son opinion personnelle.</li>
+                    <li>✔️ Il garde le contrôle final.</li>
+                </ul>
+                <div class="concept-box" style="background: var(--mundi-orange); font-size: 1em;">PRODUCTIVITÉ</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE ETHIQUE 3 : Règle 2 (Fact-Checking) -->
+    <section class="slide">
+        <h1>Règle N°2 : La Vérification (Fact-Checking)</h1>
+        <h2>L'IA n'a pas de réputation à perdre. VOUS, SI.</h2>
+        <p>En économie, un chiffre faux discrédite toute votre analyse.</p>
+        
+        <div style="background: #fff3e0; padding: 20px; border-radius: 10px; border: 2px dashed var(--mundi-orange); margin-bottom: 20px;">
+            <strong>Scénario :</strong> Vous demandez : <em>"Quel est le taux de chômage au Maroc en 2023 ?"</em>
+        </div>
+
+        <div class="cols-2">
+            <div>
+                <h3>🤖 Ce que dit l'IA (Risque)</h3>
+                <p><em>"Le taux est de 9.2% selon les dernières estimations..."</em></p>
+                <p style="color: red; font-weight: bold;">ATTENTION !</p>
+                <p>L'IA a peut-être inventé ce chiffre ou pris une donnée de 2019 par erreur.</p>
+            </div>
+            <div>
+                <h3>🕵️ Ce que VOUS devez faire</h3>
+                <p>Vous prenez ce chiffre comme une <strong>hypothèse</strong>.</p>
+                <p>Vous ouvrez un nouvel onglet : <strong>Site du HCP (Haut Commissariat au Plan)</strong> ou <strong>Bank Al-Maghrib</strong>.</p>
+                <p class="highlight">"Je confirme que le chiffre officiel est bien X%."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE ETHIQUE 4 : Règle 3 (Confidentialité) -->
+    <section class="slide">
+        <h1>Règle N°3 : La Confidentialité</h1>
+        <h2>"Ce qui se passe dans ChatGPT... reste chez OpenAI."</h2>
+        <p>Quand vous utilisez la version gratuite, vos conversations sont utilisées pour entraîner le modèle.</p>
+
+        <div class="cols-2">
+            <div class="card">
+                <h3 style="color: green;">🟢 Ce que vous pouvez partager</h3>
+                <ul>
+                    <li>Des concepts généraux ("Explique l'inflation").</li>
+                    <li>Des données publiques ("Le PIB de la France").</li>
+                    <li>Des textes anonymisés ("Corrige cet email générique").</li>
+                </ul>
+            </div>
+            <div class="card" style="border-left-color: red;">
+                <h3 style="color: red;">🔴 Ce qui est INTERDIT</h3>
+                <ul>
+                    <li><strong>Données Personnelles :</strong> "Voici le CV de Mr Alami avec son téléphone..."</li>
+                    <li><strong>Secrets d'Entreprise :</strong> "Voici le bilan financier confidentiel de Maroc Telecom avant publication..."</li>
+                    <li><strong>Mots de passe :</strong> Jamais !</li>
+                </ul>
+            </div>
+        </div>
+        <p style="text-align: center; font-style: italic; margin-top: 20px;">Règle simple : Si vous ne le mettriez pas sur Facebook public, ne le mettez pas dans ChatGPT.</p>
+    </section>
+
+    <!-- SLIDE 30 : Détection IA -->
+    <section class="slide">
+        <h1>Peut-on détecter l'IA ?</h1>
+        <p>Oui et Non.</p>
+        <p>Les outils de détection existent mais ne sont pas parfaits.</p>
+        <p>Cependant, un professeur reconnaît l'IA grâce à :</p>
+        <ul>
+            <li>Un vocabulaire trop lisse ("En conclusion, il est important de noter...").</li>
+            <li>Des structures de phrases répétitives.</li>
+            <li>Des erreurs factuelles subtiles.</li>
+            <li>L'absence de "voix" personnelle.</li>
+        </ul>
+    </section>
+
+    <!-- SLIDE 31 : L'IA au travail -->
+    <!-- SLIDE : L'Avenir du Métier (Philosophie) -->
+    <section class="slide">
+        <h1>L'Avenir de votre Métier</h1>
+        <p>L'IA va-t-elle remplacer les économistes ?</p>
+        <div class="center-content">
+            <h2 style="color: var(--mundi-blue); font-weight: bold; font-size: 3em;">NON.</h2>
+            <p>Mais...</p>
+            <div class="card orange" style="font-size: 1.3em; text-align: center;">
+                "Un économiste qui maîtrise l'IA remplacera<br>un économiste qui ne l'utilise pas."
+            </div>
+            <p style="margin-top: 30px;">Vous passerez moins de temps à <em>chercher</em> l'info et à <em>taper</em> des tableaux,<br>et plus de temps à <strong>analyser</strong> et à <strong>décider</strong>.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE : Le Panorama des Outils (Lequel choisir ?) -->
+    <section class="slide">
+        <h1>Quel outil installer ce soir ?</h1>
+        <h2>Le "Big Four" des IA Génératives</h2>
+        <p>Il n'y a pas que ChatGPT. Chaque outil a sa spécialité pour un étudiant :</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <!-- ChatGPT -->
+            <div class="card" style="margin:0;">
+                <h3 style="color: #10a37f;">🟢 ChatGPT (OpenAI)</h3>
+                <p><strong>Le Polyvalent.</strong></p>
+                <p style="font-size: 0.9em;">Le meilleur pour le raisonnement logique et la culture générale. La version gratuite (3.5/4o-mini) est très rapide.</p>
+            </div>
+
+            <!-- Copilot -->
+            <div class="card" style="margin:0; border-left-color: #0078d4;">
+                <h3 style="color: #0078d4;">🔵 Microsoft Copilot</h3>
+                <p><strong>L'Intégré.</strong></p>
+                <p style="font-size: 0.9em;">C'est ChatGPT mais connecté au Web (sources à jour) et intégré à Word/Excel. <span class="highlight">Recommandé pour ce cours.</span></p>
+            </div>
+
+            <!-- Claude -->
+            <div class="card" style="margin:0; border-left-color: #d97757;">
+                <h3 style="color: #d97757;">🟠 Claude (Anthropic)</h3>
+                <p><strong>La Plume.</strong></p>
+                <p style="font-size: 0.9em;">Le meilleur pour la rédaction. Il a un style très humain, moins "robotique" que les autres.</p>
+            </div>
+
+            <!-- Perplexity -->
+            <div class="card" style="margin:0; border-left-color: #222;">
+                <h3 style="color: #222;">⚫ Perplexity.ai</h3>
+                <p><strong>Le Chercheur.</strong></p>
+                <p style="font-size: 0.9em;">Remplace Google. Il cite toutes ses sources académiques. Idéal pour le Fact-Checking.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE : Le Cycle de Vie de l'Economiste Augmenté -->
+    <section class="slide">
+        <h1>Votre Nouveau Quotidien</h1>
+        <h2>L'IA comme "Assistant de Recherche Junior"</h2>
+        <p>Voici comment nous allons travailler durant ce semestre :</p>
+
+        <div style="display: flex; gap: 15px; align-items: stretch; margin-top: 30px;">
+            
+            <div class="sim-box" style="flex:1; background: #e3f2fd; border: 1px solid var(--mundi-blue); padding: 15px; border-radius: 8px;">
+                <h3 style="color: var(--mundi-blue); text-align: center;">1. Exploration</h3>
+                <p style="font-size: 0.9em; text-align: center;">"Brainstorme des idées de sujets sur l'inflation..."</p>
+                <div style="text-align:center; font-size: 2em;">💡</div>
+            </div>
+
+            <div style="display:flex; align-items:center;">➔</div>
+
+            <div class="sim-box" style="flex:1; background: #fff3e0; border: 1px solid var(--mundi-orange); padding: 15px; border-radius: 8px;">
+                <h3 style="color: var(--mundi-orange); text-align: center;">2. Production</h3>
+                <p style="font-size: 0.9em; text-align: center;">"Génère la structure du rapport et le code Excel..."</p>
+                <div style="text-align:center; font-size: 2em;">⚙️</div>
+            </div>
+
+            <div style="display:flex; align-items:center;">➔</div>
+
+            <div class="sim-box" style="flex:1; background: #e8f5e9; border: 1px solid green; padding: 15px; border-radius: 8px;">
+                <h3 style="color: green; text-align: center;">3. Validation</h3>
+                <p style="font-size: 0.9em; text-align: center;">"Vérifie les sources et affine le style."</p>
+                <div style="text-align:center; font-size: 2em;">✅</div>
+                <p style="text-align:center; font-weight: bold; font-size: 0.8em; color: green;">ZONE HUMAINE</p>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+    <!-- SLIDE 32 : Recap -->
+    <section class="slide">
+        <h1>Récapitulatif Séance 1</h1>
+        <ol>
+            <li><strong>Culture Digitale :</strong> On est passé de la Rareté (Atomes) à l'Abondance (Bits).</li>
+            <li><strong>IA :</strong> C'est un moteur de probabilités, pas de vérité.</li>
+            <li><strong>Prompt :</strong> Utilisez la méthode <strong>CRTF</strong> (Contexte, Rôle, Tâche, Format).</li>
+            <li><strong>Posture :</strong> Soyez le pilote, pas le passager.</li>
+        </ol>
+    </section>
+
+    <!-- SLIDE TP 1 : TITRE MISSION -->
+    <!-- SLIDE TP 1 : TITRE MISSION (Version Corrigée & Cohérente) -->
+    <section class="slide center-content">
+        <!-- Titre en Bleu Mundi (Style Standard) -->
+        <h1 style="font-size: 3.5em; margin-bottom: 10px; border:none; text-align: center;">GRAND TP FINAL</h1>
+        
+        <!-- Sous-titre en Orange pour le peps -->
+        <h2 style="color: var(--mundi-orange); font-size: 1.8em; margin-top: 0; text-align: center;">Mission : "L'Investisseur Asiatique"</h2>
+
+        <!-- Utilisation d'une "Card" pour la cohérence visuelle -->
+        <div class="card" style="background: #f8f9fa; border-left: 8px solid var(--mundi-blue); width: 85%; padding: 40px; margin-top: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <div style="display: flex; gap: 30px; align-items: center; justify-content: center;">
+                <!-- Icône -->
+                <div style="font-size: 4em;">🎯</div>
+                
+                <!-- Texte aligné et lisible -->
+                <div style="text-align: left;">
+                    <p style="font-size: 1.4em; margin: 10px 0; color: var(--mundi-blue);"><strong>Objectif :</strong> Produire une Note Stratégique d'Investissement.</p>
+                    <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+                    <p style="font-size: 1.4em; margin: 10px 0; color: #555;"><strong>Livrable :</strong> Un document PDF/Word unique contenant le <span style="color: var(--mundi-orange); font-weight: bold;">Rapport</span> + La <span style="color: var(--mundi-orange); font-weight: bold;">Méthodologie</span>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 2 : LE SCÉNARIO (CONTEXTE ÉCO) -->
+    <section class="slide">
+        <h1>1. Le Contexte de la Mission</h1>
+        <p>Vous êtes Analyste Senior au sein du "Morocco Investment Agency".</p>
+        
+        <div class="card" style="border-left: 5px solid var(--mundi-orange);">
+            <h3>📩 Demande Client (Mise en situation)</h3>
+            <p><strong>Client :</strong> Un grand fabricant chinois de batteries pour voitures électriques.</p>
+            <p><strong>Projet :</strong> Ils hésitent à installer leur "Gigafactory" (Usine géante) à <strong>Kénitra (Atlantic Free Zone)</strong>.</p>
+            <p><strong>Besoin :</strong> Ils veulent une analyse économique impartiale (pas de pub, des faits).</p>
+        </div>
+
+        <div class="cols-2">
+            <div>
+                <h3>Ce qu'ils craignent (Risques)</h3>
+                <ul>
+                    <li>Coût de l'énergie au Maroc.</li>
+                    <li>Formation de la main d'œuvre qualifiée.</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Ce qu'ils cherchent (Opportunités)</h3>
+                <ul>
+                    <li>Accès au marché européen (Douanes).</li>
+                    <li>Écosystème automobile existant (Stellantis/Renault).</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 3 : LA CONSIGNE (LE LIVRABLE) -->
+    <section class="slide">
+        <h1>2. Votre Livrable Final</h1>
+        <p>Vous devez me remettre (par email ou LMS) un document unique structuré exactement comme ceci :</p>
+
+        <div class="card" style="background: white; border: 1px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <h3 style="text-align: center; color: var(--mundi-blue); border-bottom: 1px solid #eee; padding-bottom: 10px;">📄 Structure du Document à Rendre</h3>
+            
+            <div style="padding: 10px 20px;">
+                <p><strong style="color: var(--mundi-orange);">PARTIE 1 : LA NOTE STRATÉGIQUE (Générée par IA)</strong></p>
+                <ul style="font-size: 0.9em; margin-bottom: 20px;">
+                    <li>Titre Professionnel.</li>
+                    <li>Synthèse Exécutive (5 lignes).</li>
+                    <li>Analyse SWOT (Forces/Faiblesses de Kénitra).</li>
+                    <li>Données chiffrées (Coût SMIG, Fiscalité Zone Franche).</li>
+                    <li>Recommandation finale (Go / No-Go).</li>
+                </ul>
+
+                <p><strong style="color: var(--mundi-blue);">PARTIE 2 : L'ANNEXE MÉTHODOLOGIQUE (Votre Travail)</strong></p>
+                <ul style="font-size: 0.9em;">
+                    <li><strong>Le "Golden Prompt" :</strong> Copiez-collez le meilleur prompt que vous avez utilisé pour obtenir ce résultat.</li>
+                    <li><strong>L'Explication CRTF :</strong> Expliquez en 2 lignes pourquoi vous avez choisi ce Rôle et ce Contexte.</li>
+                    <li><strong>Le Fact-Checking :</strong> Citez UN chiffre vérifié manuellement (Source HCP ou autre).</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 4 : LA STRATÉGIE CRTF -->
+    <!-- SLIDE TP 4 : LA STRATÉGIE CRTF (Version Corrigée) -->
+    <section class="slide">
+        <h1>3. Comment réussir ? (Méthode)</h1>
+        <p>Pour un rapport de niveau "Consultant", ne demandez pas juste <em>"Fais une analyse"</em>.</p>
+        <p>Vous devez construire un <strong>Mega-Prompt</strong> structuré.</p>
+        
+        <!-- align-items: stretch permet aux deux cartes d'avoir la même hauteur -->
+        <div class="cols-2" style="align-items: stretch;">
+            
+            <!-- MAUVAIS EXEMPLE -->
+            <div class="card" style="border-left-color: #e74c3c; background: #fff5f5; margin: 0; display: flex; flex-direction: column;">
+                <h3 style="color: #c0392b; margin-top: 0;">❌ Prompt "Étudiant" (Médiocre)</h3>
+                <div style="background: white; padding: 15px; border: 1px dashed #e74c3c; border-radius: 8px; margin-top: 10px; flex-grow: 1;">
+                    <p style="font-style: italic; color: #555; margin: 0;">
+                        "Écris un rapport sur pourquoi installer une usine de batterie à Kénitra. Donne des chiffres."
+                    </p>
+                </div>
+                <p style="font-size: 0.9em; color: #c0392b; margin-top: 15px;"><strong>Verdict :</strong> Trop vague. Résultat générique.</p>
+            </div>
+            
+            <!-- BON EXEMPLE -->
+            <div class="card" style="border-left-color: var(--mundi-blue); background: #e3f2fd; margin: 0; display: flex; flex-direction: column;">
+                <h3 style="color: var(--mundi-blue); margin-top: 0;">✅ Prompt "Expert" (Attendu)</h3>
+                <div style="background: white; padding: 15px; border: 1px solid var(--mundi-blue); border-radius: 8px; margin-top: 10px; font-size: 0.95em; flex-grow: 1;">
+                    <p style="margin-bottom: 8px;"><strong style="color:var(--mundi-orange)">[Rôle]</strong> "Agis comme un Expert en Investissement (IDE)."</p>
+                    <p style="margin-bottom: 8px;"><strong style="color:var(--mundi-orange)">[Contexte]</strong> "Pour un investisseur chinois hésitant..."</p>
+                    <p style="margin-bottom: 8px;"><strong style="color:var(--mundi-orange)">[Tâche]</strong> "Analyse coûts logistiques, énergie, fiscalité. Compare avec la Hongrie."</p>
+                    <p style="margin: 0;"><strong style="color:var(--mundi-orange)">[Format]</strong> "Note de synthèse avec SWOT."</p>
+                </div>
+                <p style="font-size: 0.9em; color: var(--mundi-blue); margin-top: 15px;"><strong>Verdict :</strong> Précis. Résultat exploitable.</p>
+            </div>
+
+        </div>
+    </section>
+
+    
+
+    <!-- SLIDE TP 6 : START -->
+    <section class="slide center-content">
+        <h1>⏳ À vous de jouer !</h1>
+        <p class="big-text">Temps imparti : 20 Minutes</p>
+        
+        <div class="card orange" style="text-align: left; width: 80%;">
+            <h3>Checklist de démarrage :</h3>
+            <ol>
+                <li>Ouvrez <strong>ChatGPT</strong> ou <strong>Microsoft Copilot</strong>.</li>
+                <li>Ouvrez <strong>Word</strong> (ou un éditeur de texte).</li>
+                <li>Rédigez votre Prompt (Méthode CRTF).</li>
+                <li>Générez, lisez, critiquez, régénérez (Itération).</li>
+                <li>Copiez le résultat final + le prompt dans votre document.</li>
+            </ol>
+        </div>
+        <p style="margin-top: 20px; font-style: italic;">"L'IA est le moteur, vous êtes le volant."</p>
+    </section>
+
+    <!-- SLIDE 33 : Fin -->
+    <section class="slide center-content">
+        <h1>Merci de votre attention !</h1>
+        <div class="card orange">
+            <h3>Devoirs pour la semaine prochaine</h3>
+            <p>1. Créez un compte sur OpenAI (ChatGPT) ou Microsoft Copilot.</p>
+            <p>2. Testez un prompt "CRTF" sur un sujet de votre choix.</p>
+        </div>
+        <p>Prochaine séance : <strong>Word + IA (Rédaction Augmentée)</strong></p>
+    </section>
+
+</div>
+
+<footer>
+    <button id="prevBtn" onclick="prevSlide()">Précédent</button>
+    
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="slide-num" id="currentSlide">1</span> / <span class="slide-num" id="totalSlides">33</span>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <button id="nextBtn" onclick="nextSlide()">Suivant</button>
+</footer>
+
+<script>
+    // --- LOGIQUE JAVASCRIPT ---
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    
+    // Éléments DOM
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideDisplay = document.getElementById('currentSlide');
+    const totalSlidesDisplay = document.getElementById('totalSlides');
+    const progressBar = document.getElementById('progressBar');
+
+    // Initialisation
+    totalSlidesDisplay.textContent = totalSlides;
+    updateUI();
+
+    function showSlide(index) {
+        if (index < 0 || index >= totalSlides) return;
+
+        // Gestion des classes pour l'animation
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'prev');
+            if (i === index) {
+                slide.classList.add('active');
+            } else if (i < index) {
+                slide.classList.add('prev');
+            }
+        });
+
+        currentSlideIndex = index;
+        updateUI();
+    }
+
+    function updateUI() {
+        // Mise à jour compteur
+        currentSlideDisplay.textContent = currentSlideIndex + 1;
+        
+        // Mise à jour barre de progression
+        const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+
+        // État des boutons
+        prevBtn.disabled = (currentSlideIndex === 0);
+        nextBtn.disabled = (currentSlideIndex === totalSlides - 1);
+    }
+
+    function nextSlide() {
+        showSlide(currentSlideIndex + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlideIndex - 1);
+    }
+
+    // Navigation Clavier
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+            prevSlide();
+        }
+    });
+
+    // Gestion clic boutons
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Séance 2 : Word Expert + IA - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE GRAPHIQUE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;       
+            --mundi-orange: #F37021;     
+            --mundi-grey: #f4f6f8;       
+            --text-main: #333333;
+            --white: #ffffff;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: var(--text-main);
+            overflow: hidden; height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* --- HEADER --- */
+        header {
+            height: 70px; background: var(--white);
+            border-bottom: 4px solid var(--mundi-orange);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10;
+        }
+        .header-logo img { height: 45px; }
+        .header-title { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-weight: 700; font-size: 1.1em; text-transform: uppercase; }
+
+        /* --- SLIDE STAGE --- */
+        #presentation-area {
+            flex-grow: 1; position: relative;
+            display: flex; justify-content: center; align-items: center;
+            background: radial-gradient(circle at center, #ffffff 0%, #eef2f5 100%);
+        }
+
+        .slide {
+            position: absolute; width: 85%; height: 85%; max-width: 1400px;
+            background: var(--white); border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 51, 102, 0.15);
+            padding: 50px 70px; box-sizing: border-box;
+            opacity: 0; transform: translateX(100px) scale(0.95);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            visibility: hidden; display: flex; flex-direction: column; overflow-y: auto;
+        }
+        .slide.active { opacity: 1; transform: translateX(0) scale(1); visibility: visible; z-index: 5; }
+        .slide.prev { transform: translateX(-100px) scale(0.95); opacity: 0; visibility: hidden; }
+
+        /* --- TYPOGRAPHY --- */
+        h1 { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-size: 2.5em; margin: 0 0 10px 0; position: relative; }
+        h1::after { content: ''; display: block; width: 60px; height: 6px; background: var(--mundi-orange); margin-top: 15px; border-radius: 3px; }
+        h2 { font-family: 'Montserrat', sans-serif; color: #666; font-weight: 300; font-size: 1.4em; margin: 0 0 30px 0; }
+        p, li { font-size: 1.1em; line-height: 1.6; color: #444; margin-bottom: 10px; }
+        strong { color: var(--mundi-blue); }
+        
+        /* --- LAYOUTS --- */
+        .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: flex-start; }
+        .center-content { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; }
+        
+        /* --- COMPONENTS --- */
+        .card { background: #f8f9fa; border-left: 5px solid var(--mundi-blue); padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card.orange { border-left-color: var(--mundi-orange); }
+        .card h3 { margin-top: 0; color: var(--mundi-blue); font-size: 1.1em; }
+        
+        .shortcut { display: inline-block; background: #eee; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #333; box-shadow: 0 2px 0 #ccc; }
+
+        .chat-sim { width: 100%; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white; margin-top: 10px; font-family: 'Arial', sans-serif; }
+        .chat-header { background: #343541; color: white; padding: 8px 15px; font-size: 0.8em; }
+        .chat-body { padding: 15px; background: #fff; font-size: 0.9em; }
+        .msg.user { background: #f0f0f0; margin-left: 15%; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .msg.ai { background: rgba(243, 112, 33, 0.1); border-left: 3px solid var(--mundi-orange); margin-right: 15%; padding: 10px; border-radius: 8px; }
+
+        /* --- FOOTER --- */
+        footer { height: 60px; background: var(--mundi-blue); display: flex; justify-content: center; align-items: center; color: white; gap: 20px; z-index: 10; }
+        button { background: var(--mundi-orange); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: scale(1.05); }
+        button:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
+        .slide-num { font-family: monospace; }
+        .progress-bar-bg { width: 200px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 5px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--mundi-orange); width: 0%; transition: width 0.3s; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-logo">
+        <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis Logo">
+    </div>
+    <div class="header-title">Culture Digitale & IA</div>
+</header>
+
+<div id="presentation-area">
+
+    <!-- SLIDE 1 : Titre -->
+    <section class="slide active center-content">
+        <div style="font-size: 4em; margin-bottom: 20px;">📘 + 🤖</div>
+        <h1 style="border: none; margin: 0;">SÉANCE 2 : Le Reporting Économique Augmenté</h1>
+        <h2 style="color: var(--mundi-orange); margin-top: 10px;">Word Expert + Intelligence Artificielle</h2>
+        <p style="margin-top: 40px; font-style: italic;">"Comment rédiger un rapport de 10 pages en 30 minutes (proprement)."</p>
+    </section>
+
+    <!-- SLIDE 2 : Le Problème -->
+    <section class="slide">
+        <h1>Pourquoi sommes-nous ici ?</h1>
+        <div class="cols-2">
+            <div class="card" style="border-left-color: red;">
+                <h3>😩 L'Enfer du "Word Manuel"</h3>
+                <ul>
+                    <li>Vous changez les titres en "Gras + Taille 16" un par un.</li>
+                    <li>Vous tapez la table des matières à la main (et les numéros de page changent tout le temps !).</li>
+                    <li>Vous déplacez une image et tout le texte explose.</li>
+                    <li>Votre bibliographie est un chaos.</li>
+                </ul>
+            </div>
+            <div class="card orange">
+                <h3>🚀 L'Objectif du Jour</h3>
+                <ul>
+                    <li><strong>Architecture :</strong> Automatiser la mise en forme (Styles).</li>
+                    <li><strong>Rédaction :</strong> Utiliser l'IA pour le premier jet.</li>
+                    <li><strong>Finition :</strong> Références et Bibliographie automatiques.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARTIE 1 : ARCHITECTURE -->
+    <section class="slide center-content" style="background: var(--mundi-blue); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">Partie 1 : L'Architecture du Document</h1>
+        <p style="color: #ddd;">Séparer le Fond (Texte) de la Forme (Design).</p>
+    </section>
+
+    <!-- SLIDE 4 : La Dictature des Styles -->
+    <!-- SLIDE A : LE PROBLÈME (LA DOULEUR) -->
+    <section class="slide">
+        <h1>Le Chaos du Formatage Manuel</h1>
+        <h2>Pourquoi votre méthode actuelle vous fait perdre du temps.</h2>
+
+        <div class="cols-2">
+            <div class="card" style="border-left-color: red;">
+                <h3>Vos habitudes (L'Artisanat)</h3>
+                <p>Pour mettre un titre, vous faites :</p>
+                <ol>
+                    <li>Sélectionner le texte.</li>
+                    <li>Clic sur "Gras".</li>
+                    <li>Clic sur "Taille 16".</li>
+                    <li>Clic sur "Couleur Bleu".</li>
+                    <li>... et vous répétez ça 50 fois.</li>
+                </ol>
+            </div>
+            <div class="card">
+                <h3>Les Conséquences Désastreuses</h3>
+                <ul>
+                    <li><strong>Perte de temps :</strong> Si vous changez d'avis sur la couleur, vous devez refaire les 50 titres à la main.</li>
+                    <li><strong>Incohérence :</strong> Un titre est en taille 16, l'autre en 15. C'est amateur.</li>
+                    <li><strong>Pas d'automatisation :</strong> La Table des Matières est impossible à générer.</li>
+                </ul>
+                <p class="highlight" style="background-color: rgba(228, 77, 66, 0.2);">C'est comme vouloir construire une usine avec un marteau et un clou.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE B : L'ANATOMIE DU DOCUMENT (LES CONCEPTS) -->
+    <section class="slide">
+        <h1>Anatomie d'un Document Word</h1>
+        <h2>Avant de manipuler, il faut comprendre.</h2>
+        <p>Un document Word n'est pas une "page blanche". C'est un ensemble de boîtes invisibles.</p>
+
+        <div style="border: 2px dashed #ccc; padding: 20px; border-radius: 10px; margin-top: 20px;">
+            <p><strong>NIVEAU 1 : Le Paragraphe (¶)</strong></p>
+            <p style="font-size: 0.9em;">Ce n'est pas juste un bloc de texte. C'est un <strong>conteneur</strong>. Chaque fois que vous appuyez sur <span class="shortcut">Entrée</span>, vous créez un nouveau paragraphe. Ce conteneur possède ses propres règles (alignement, espacement...).</p>
+            
+            <p style="margin-top: 20px;"><strong>NIVEAU 2 : Le Caractère</strong></p>
+            <p style="font-size: 0.9em;">C'est la lettre, le chiffre. Il a ses propriétés (Gras, Italique, Couleur). Le formatage manuel agit sur ce niveau, ce qui est inefficace.</p>
+
+            <p style="margin-top: 20px;"><strong>GUIDE PRATIQUE :</strong> Allez dans <strong>[Accueil]</strong> et cliquez sur l'icône <strong>¶</strong> ("Afficher tout"). Vous verrez toutes les marques de paragraphes invisibles. C'est le "Mode Rayons X" de Word.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE C : LA RÉVOLUTION DES STYLES (L'IDÉE) -->
+    <section class="slide">
+        <h1>La Révolution : Penser en "Styles"</h1>
+        <h2>C'est le concept le plus important de tout le cours.</h2>
+        
+        <div class="card orange">
+            <h3>Définition</h3>
+            <p>Un <strong>Style</strong> est une "Étiquette" qui contient un ensemble de règles de mise en forme (Police, Taille, Couleur, Espacement...).</p>
+            <p>Au lieu de décorer chaque paragraphe un par un, vous lui collez une étiquette : "Titre 1", "Corps de texte", "Citation".</p>
+        </div>
+
+        <div class="cols-2">
+            <div>
+                <h3>Artisanat (Manuel)</h3>
+                <div style="font-size: 4em; text-align: center;">🎨</div>
+                <p>Vous peignez chaque voiture à la main. C'est long et chaque voiture est légèrement différente.</p>
+            </div>
+            <div>
+                <h3>Industrie (Styles)</h3>
+                <div style="font-size: 4em; text-align: center;">🏭</div>
+                <p>Vous créez un <strong>Moule</strong> (Le Style). Toutes les voitures qui sortent de ce moule sont parfaitement identiques.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE D : APPLIQUER UN STYLE (LE GUIDE) -->
+    <section class="slide">
+        <h1>GUIDE : Appliquer un Style</h1>
+        <h2>Votre nouvelle routine en 3 secondes.</h2>
+        
+        <div class="card">
+            <h3>Le Processus Détaillé</h3>
+            <ol>
+                <li><strong>Étape 1 :</strong> Écrivez votre texte normalement, sans vous soucier de la forme. (Ex: "Introduction")</li>
+                <li><strong>Étape 2 :</strong> Cliquez <strong>n'importe où</strong> dans le paragraphe que vous voulez transformer en titre. (Pas besoin de tout sélectionner !)</li>
+                <li><strong>Étape 3 :</strong> Allez dans l'onglet <strong>[Accueil]</strong> du ruban Word.</li>
+                <li><strong>Étape 4 :</strong> Trouvez la grande boîte appelée <strong>"Galerie des Styles"</strong>.</li>
+                <li><strong>Étape 5 :</strong> Cliquez sur l'étiquette <strong>"Titre 1"</strong>. C'est tout. Votre texte est maintenant un titre officiel.</li>
+            </ol>
+            <p><strong>Raccourcis Clavier :</strong> Pour aller encore plus vite :</p>
+            <ul>
+                <li><span class="shortcut">Ctrl</span> + <span class="shortcut">Alt</span> + <span class="shortcut">1</span> = Appliquer le style "Titre 1"</li>
+                <li><span class="shortcut">Ctrl</span> + <span class="shortcut">Alt</span> + <span class="shortcut">2</span> = Appliquer le style "Titre 2"</li>
+            </ul>
+        </div>
+    </section>
+    
+    <!-- SLIDE E : MODIFIER UN STYLE (LA PUISSANCE) -->
+    <section class="slide">
+        <h1>GUIDE : Modifier un Style (Le Levier)</h1>
+        <h2>Changez une fois, mettez à jour partout.</h2>
+        <p>Imaginez : Votre professeur veut tous les titres en orange, pas en bleu. Vous avez 100 titres.</p>
+
+        <div class="card orange">
+            <h3>Le Processus Détaillé</h3>
+            <ol>
+                <li><strong>Étape 1 :</strong> Assurez-vous de ne rien avoir sélectionné (cliquez dans un espace blanc).</li>
+                <li><strong>Étape 2 :</strong> Dans la <strong>[Galerie des Styles]</strong> (Onglet Accueil), trouvez le style que vous voulez changer (Ex: "Titre 1").</li>
+                <li><strong>Étape 3 :</strong> Faites un <strong>Clic Droit</strong> sur ce style. Ne cliquez pas dessus !</li>
+                <li><strong>Étape 4 :</strong> Dans le menu qui apparaît, choisissez <strong>"Modifier..."</strong>.</li>
+                <li><strong>Étape 5 :</strong> Une nouvelle fenêtre s'ouvre. Changez la couleur en <strong>Orange Mundiapolis</strong>.</li>
+                <li><strong>Étape 6 :</strong> Cliquez sur <strong>"OK"</strong>.</li>
+            </ol>
+        </div>
+
+        <div class="center-content">
+            <div style="font-size: 4em; margin-bottom: 10px;">✨</div>
+            <p class="big-text">Observez : TOUS les Titres 1 de votre document de 50 pages viennent de passer en Orange instantanément.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE A : LE PROBLÈME (LA DOULEUR) -->
+    <section class="slide">
+        <h1>Se Perdre dans son Propre Rapport</h1>
+        <h2>Le problème des documents de plus de 10 pages.</h2>
+        <p>Sans un plan visible, votre rapport devient une jungle. Vous passez plus de temps à chercher qu'à écrire.</p>
+
+        <div class="cols-2">
+            <div class="card" style="border-left-color: red;">
+                <h3>Vos Frustrations Actuelles</h3>
+                <ul>
+                    <li>Le "Scrolling" infini pour trouver une section.</li>
+                    <li>Comparer deux chapitres (l'un en page 5, l'autre en page 25) est un cauchemar.</li>
+                    <li>Vous oubliez si vous avez déjà traité un point.</li>
+                    <li>Réorganiser le plan demande des couper-coller dangereux.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>La Solution : Le GPS Intégré</h3>
+                <p>Word possède une "carte" dynamique de votre document qui se met à jour en temps réel.</p>
+                <p>Cet outil s'appelle le <strong>Volet de Navigation</strong>.</p>
+                <div style="text-align: center; font-size: 4em; margin-top: 20px;">🗺️</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE B : LE CONCEPT (LE SECRET) -->
+    <section class="slide">
+        <h1>Le Secret : Le Volet est un Reflet des Styles</h1>
+        <h2>Comprendre la logique avant de cliquer.</h2>
+        <p>Le Volet de Navigation n'est pas magique. Il ne fait qu'une seule chose :</p>
+        
+        <div class="card orange">
+            <h3>La Règle d'Or du Volet de Navigation</h3>
+            <p>Le volet affiche <strong>UNIQUEMENT</strong> les paragraphes auxquels vous avez appliqué un style de <strong>Titre</strong> (Titre 1, Titre 2, Titre 3, etc.).</p>
+            <p>Il ignore le texte normal (style "Normal").</p>
+        </div>
+
+        <div class="cols-2">
+            <div>
+                <h3>L'Analogie de l'Architecture</h3>
+                <p>Les <strong>Styles de Titre</strong> sont les fondations, les murs porteurs et les étages de votre document.</p>
+                <p>Le <strong>Volet de Navigation</strong> est le plan de l'architecte qui vous montre cette structure.</p>
+            </div>
+            <div>
+                <h3>Conclusion Logique</h3>
+                <p>Si votre volet de navigation est vide, cela ne veut pas dire qu'il est cassé.</p>
+                <p class="highlight" style="background-color: rgba(228, 77, 66, 0.2);">Cela veut dire que vous n'avez appliqué aucun style de Titre !</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE C : LE GUIDE PRATIQUE (LE "COMMENT") -->
+    <section class="slide">
+        <h1>GUIDE : Activer et Utiliser le Volet</h1>
+        <h2>Votre nouveau meilleur ami.</h2>
+        <p>C'est une simple case à cocher, mais elle va changer votre vie.</p>
+        
+        <div class="card">
+            <h3>Le Processus Détaillé (30 secondes)</h3>
+            <ol>
+                <li><strong>Étape 1 :</strong> Regardez en haut de Word, vous voyez les onglets [Fichier, Accueil, Insertion...]. C'est le "Ruban".</li>
+                <li><strong>Étape 2 :</strong> Cliquez sur l'onglet <strong>[Affichage]</strong>.</li>
+                <li><strong>Étape 3 :</strong> Au milieu du ruban, vous verrez un groupe appelé "Afficher".</li>
+                <li><strong>Étape 4 :</strong> Cochez la case <strong>"Volet de Navigation"</strong>.</li>
+            </ol>
+        </div>
+        
+        <div class="center-content">
+            <div style="font-size: 3em; margin-bottom: 10px;">🎉</div>
+            <p class="big-text">Une colonne apparaît à gauche de votre écran.<br>C'est le plan interactif de votre rapport.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE D : LES SUPER-POUVOIRS (LE "POURQUOI") -->
+    <section class="slide">
+        <h1>Les Super-Pouvoirs du Volet de Navigation</h1>
+        <h2>Ce n'est pas juste pour lire, c'est pour AGIR.</h2>
+        
+        <div class="cols-2">
+            <div class="card" style="border-left-color: #3498db; background: #ecf0f1;">
+                <h3 style="color: #2980b9;">⚡ Pouvoir n°1 : Le Téléporteur</h3>
+                <p>Fini le scroll !</p>
+                <p><strong>Comment faire :</strong> Cliquez sur n'importe quel titre dans le volet (ex: "II.B. Chômage").</p>
+                <p><strong>Résultat :</strong> Word vous "téléporte" instantanément à cette section dans le document principal, même si elle est à la page 42.</p>
+            </div>
+            <div class="card orange">
+                <h3 style="color: var(--mundi-orange);">🏗️ Pouvoir n°2 : Le Réorganisateur</h3>
+                <p>La fonction la plus puissante.</p>
+                <p><strong>Mission :</strong> Vous décidez que le chapitre 3 doit devenir le chapitre 2.</p>
+                <p><strong>Comment faire :</strong> Dans le volet de navigation, cliquez sur "Chapitre 3", maintenez le clic, et <strong>glissez-le (Drag & Drop)</strong> au-dessus de "Chapitre 2".</p>
+                <p><strong>Résultat :</strong> Word déplace le titre ET tout le texte et les images de ce chapitre (parfois 10 pages !) en une seconde. La numérotation se met à jour automatiquement.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE A : LE CONCEPT (LA PHILOSOPHIE) -->
+    <section class="slide">
+        <h1>Anatomie Avancée : Le Concept de "Section"</h1>
+        <h2>Votre document Word n'est pas une seule feuille de papier.</h2>
+        <p>Par défaut, votre document est une seule grande "Section".</p>
+        
+        <div class="card orange">
+            <h3>Définition</h3>
+            <p>Une <strong>Section</strong> est un "sous-document" invisible à l'intérieur de votre document principal. Chaque section peut avoir ses propres règles de mise en page :</p>
+            <ul>
+                <li>Orientation (Portrait / Paysage)</li>
+                <li>Marges</li>
+                <li>Numérotation de page (commencer à 1, à 5, en chiffres romains...)</li>
+                <li>En-têtes et Pieds de page différents</li>
+            </ul>
+        </div>
+        <p class="highlight" style="text-align: center; margin-top: 20px;">Utiliser les Sections, c'est comme pouvoir utiliser des feuilles de papier de tailles différentes dans un même classeur.</p>
+    </section>
+
+    <!-- SLIDE B : LE PROBLÈME (LA DOULEUR) -->
+    <section class="slide">
+        <h1>Le Cas Pratique : Le Tableau Économétrique</h1>
+        <h2>Le problème que vous rencontrerez 100 fois dans votre carrière.</h2>
+        
+        <div class="cols-2">
+            <div class="card" style="border-left-color: red;">
+                <h3>La Situation</h3>
+                <p>Vous avez un rapport de 30 pages en format Portrait.</p>
+                <p>Au milieu, vous devez insérer un immense tableau de données (ex: Import/Export par pays) qui a 15 colonnes.</p>
+                <p>En format Portrait, le tableau est illisible, les colonnes sont écrasées.</p>
+                <h3 style="margin-top: 20px; color: #c0392b;">Ce que font les amateurs</h3>
+                <p>1. Ils créent un 2ème fichier Word séparé en Paysage.</p>
+                <p>2. Ils l'impriment à part et l'insèrent à la main. ❌</p>
+                <p>3. La numérotation des pages est cassée.</p>
+            </div>
+            
+            <!-- Visuel -->
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                <div style="width: 150px; height: 220px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; background: white;">
+                    <p style="writing-mode: vertical-rl; font-size: 0.8em; color: #aaa;">Texte Portrait</p>
+                </div>
+                <div style="width: 250px; height: 150px; border: 2px dashed red; margin-top: -150px; display: flex; align-items: center; justify-content: center; background: rgba(255,0,0,0.1);">
+                    <p style="color: red; font-weight: bold;">Tableau TROP LARGE !</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE C : LE GUIDE PRATIQUE (LE "COMMENT") -->
+    <section class="slide">
+        <h1>GUIDE : Créer une page Paysage (La Méthode)</h1>
+        <h2>La manipulation la plus rentable de votre vie sur Word.</h2>
+        <p>Pour isoler une page et la mettre en Paysage, vous avez besoin de <strong>DEUX</strong> sauts de section.</p>
+        
+        <div class="card">
+            <h3>Le Processus Détaillé (Suivez attentivement)</h3>
+            <ol>
+                <li><strong>Étape 1 : Isoler le début.</strong>
+                    <ul>
+                        <li>Placez votre curseur juste <strong>AVANT</strong> le tableau que vous voulez mettre en paysage.</li>
+                        <li>Allez dans l'onglet <strong>[Mise en page]</strong> > <strong>[Sauts de page]</strong>.</li>
+                        <li>Dans la section "Sauts de section", cliquez sur <strong>"Page suivante"</strong>.</li>
+                        <li><em>(Visuellement, il ne se passe rien de spectaculaire, c'est normal).</em></li>
+                    </ul>
+                </li>
+                <li><strong>Étape 2 : Isoler la fin.</strong>
+                    <ul>
+                        <li>Placez votre curseur juste <strong>APRÈS</strong> le tableau.</li>
+                        <li>Refaites la même chose : <strong>[Mise en page]</strong> > <strong>[Sauts de page]</strong> > <strong>"Page suivante"</strong>.</li>
+                    </ul>
+                </li>
+                 <li><strong>Étape 3 : Pivoter la page.</strong>
+                    <ul>
+                        <li>Maintenant, cliquez n'importe où sur la page de votre tableau (qui est maintenant dans sa propre "Section").</li>
+                        <li>Allez dans <strong>[Mise en page]</strong> > <strong>[Orientation]</strong> et choisissez <strong>"Paysage"</strong>.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </section>
+    
+    <!-- SLIDE D : LE RÉSULTAT VISUEL (LA RÉCOMPENSE) -->
+    <section class="slide">
+        <h1>Le Résultat : Un Document Professionnel</h1>
+        <h2>Vous maîtrisez maintenant la structure de vos rapports.</h2>
+        <p>Votre document est maintenant structuré comme ceci :</p>
+        
+        <div style="display: flex; gap: 10px; margin-top: 30px; align-items: center; justify-content: center; text-align: center; font-family: 'Courier New', monospace; font-size: 0.9em;">
+            <!-- Page Portrait 1 -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div style="width: 80px; height: 110px; border: 2px solid var(--mundi-blue); background: #e3f2fd;">
+                    <p style="font-size: 0.8em; margin-top: 10px;">Page 1<br>(Portrait)</p>
+                </div>
+                <p style="color: #999;">Section 1</p>
+            </div>
+
+            <!-- Saut de Section 1 -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                 <div style="font-size: 2em; color: var(--mundi-orange);">➔</div>
+                 <p style="color: var(--mundi-orange); font-weight: bold; font-size: 0.8em;">Saut de<br>Section</p>
+            </div>
+
+            <!-- Page Paysage -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div style="width: 110px; height: 80px; border: 2px solid var(--mundi-blue); background: #e3f2fd;">
+                     <p style="font-size: 0.8em; margin-top: 10px;">Page 2<br>(Paysage)</p>
+                </div>
+                <p style="color: #999;">Section 2</p>
+            </div>
+            
+             <!-- Saut de Section 2 -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                 <div style="font-size: 2em; color: var(--mundi-orange);">➔</div>
+                 <p style="color: var(--mundi-orange); font-weight: bold; font-size: 0.8em;">Saut de<br>Section</p>
+            </div>
+
+            <!-- Page Portrait 2 -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div style="width: 80px; height: 110px; border: 2px solid var(--mundi-blue); background: #e3f2fd;">
+                     <p style="font-size: 0.8em; margin-top: 10px;">Page 3<br>(Portrait)</p>
+                </div>
+                <p style="color: #999;">Section 3</p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 30px;">
+            <h3>Astuce de Pro : Visualiser les sauts</h3>
+            <p>Cliquez sur l'icône <strong>¶</strong> dans l'onglet [Accueil]. Vous verrez apparaître une ligne "----------- Saut de Section (Page suivante) -----------". Cela vous aide à ne pas les supprimer par erreur.</p>
+        </div>
+    </section>
+
+    <!-- PARTIE 2 : IA RÉDACTEUR -->
+    <section class="slide center-content" style="background: var(--mundi-orange); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">Partie 2 : L'IA comme Rédacteur en Chef</h1>
+        <p style="color: white;">Fini le syndrome de la page blanche.</p>
+    </section>
+
+    <!-- SLIDE A : LE PROBLÈME (POURQUOI) -->
+    <section class="slide">
+        <h1>1. L'IA comme Architecte de la Pensée</h1>
+        <h2>Ne plus jamais subir le "syndrome de la page blanche".</h2>
+        <p>Le moment le plus difficile dans la rédaction d'un rapport, c'est de commencer. On ne sait pas par où prendre le sujet.</p>
+
+        <div class="cols-2">
+            <div class="card" style="border-left-color: red;">
+                <h3>Le Danger de Rédiger "au fil de l'eau"</h3>
+                <ul>
+                    <li>Votre pensée est désorganisée.</li>
+                    <li>Vous vous répétez.</li>
+                    <li>Vous oubliez des points importants.</li>
+                    <li>À la fin, votre rapport est un "plat de spaghettis" illisible.</li>
+                </ul>
+            </div>
+            <div class="card orange">
+                <h3>La Stratégie du Consultant</h3>
+                <p>Un consultant ne rédige JAMAIS la première ligne sans avoir un <strong>plan détaillé (une structure)</strong> validé.</p>
+                <p>L'IA est l'outil le plus rapide au monde pour générer des structures de pensée professionnelles.</p>
+                <div style="text-align: center; font-size: 3em; margin-top: 20px;">🏗️</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE B : LE GUIDE PRATIQUE (COMMENT) -->
+    <section class="slide">
+        <h1>GUIDE : Générer un Plan Détaillé avec l'IA</h1>
+        <h2>Comment construire le prompt "Architecte" parfait.</h2>
+        <p>Ne demandez pas juste "Donne-moi un plan". Utilisez la méthode CRTF pour un résultat de qualité supérieure.</p>
+        
+        <div class="card">
+            <h3>Le Prompt "Architecte" (Anatomie)</h3>
+            <div class="chat-sim">
+                <div class="chat-header">Construction du Prompt</div>
+                <div class="chat-body" style="font-size: 1em;">
+                    <p><strong>[Contexte]</strong> "Je suis étudiant en économie et je dois rédiger une note de synthèse sur 'Les effets de l'inflation sur les ménages modestes au Maroc'."</p>
+                    <p><strong>[Rôle]</strong> "Agis comme un économiste senior au Haut Commissariat au Plan."</p>
+                    <p><strong>[Tâche]</strong> "Propose un plan détaillé en 3 parties (I, II, III) avec des sous-points (A, B). Le plan doit être problématisé, c'est-à-dire qu'il doit raconter une histoire logique."</p>
+                    <p><strong>[Format]</strong> "Le titre de chaque partie doit être explicite."</p>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; font-weight: bold; margin-top: 15px;">Ce prompt force l'IA à réfléchir comme un expert et à vous donner une structure qui n'est pas une simple liste.</p>
+    </section>
+
+    <!-- SLIDE C : L'INTÉGRATION DANS WORD (LA SUITE) -->
+    <section class="slide">
+        <h1>L'Étape Cruciale : Intégrer le Plan dans Word</h1>
+        <h2>Ne laissez pas le plan dans la fenêtre de chat !</h2>
+        <p>Une fois que l'IA a généré le plan, le travail commence. C'est là que tout ce que nous avons vu avant prend son sens.</p>
+        
+        <div class="cols-2">
+            <!-- RÉSULTAT IA -->
+            <div class="card" style="margin: 0;">
+                <h3>1. Résultat de l'IA</h3>
+                <div class="chat-sim" style="margin: 0;">
+                    <div class="msg ai" style="margin:0; border-radius: 0;"><strong>Titre : ...</strong><br>I. État des lieux...<br>&nbsp;&nbsp;A. Une inflation importée...<br>&nbsp;&nbsp;B. Une diffusion rapide...<br>II. ...</div>
+                </div>
+            </div>
+            
+            <!-- INTÉGRATION WORD -->
+            <div class="card orange" style="margin: 0;">
+                <h3>2. Votre Travail dans Word</h3>
+                <p><strong>Le Processus en 3 étapes :</strong></p>
+                <ol>
+                    <li><strong>Copiez-collez</strong> le plan de l'IA dans votre document Word vierge.</li>
+                    <li>Appliquez le style <strong>"Titre 1"</strong> à "I. État des lieux".</li>
+                    <li>Appliquez le style <strong>"Titre 2"</strong> à "A. Une inflation importée".</li>
+                </ol>
+                <hr>
+                <p><strong>Résultat :</strong> Votre document est déjà structuré. Le Volet de Navigation est actif. Vous n'avez plus qu'à "remplir les cases" en rédigeant sous chaque titre.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================= DRAFTING ========================= -->
+    
+    <!-- SLIDE A : DRAFTING (Le Concept) -->
+    <section class="slide">
+        <h1>2. Le Drafting : Du Cerveau à la Page</h1>
+        <h2>Comment transformer vos idées brutes en prose professionnelle.</h2>
+        <p>Le "Drafting" (rédaction du premier jet) est souvent lent car notre cerveau doit gérer deux tâches en même temps : <strong>penser au fond</strong> (les idées) et <strong>penser à la forme</strong> (les phrases).</p>
+
+        <div class="card orange">
+            <h3>La Stratégie de la "Division du Travail"</h3>
+            <p>Nous allons séparer ces deux tâches pour être beaucoup plus rapide et efficace.</p>
+            <div class="cols-2" style="margin-top: 20px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 3em;">🧠</div>
+                    <p><strong>Votre Cerveau (L'Expert)</strong><br>Se concentre à 100% sur le fond : les idées, les chiffres, les arguments. Vous les écrivez en style "télégraphique" (bullet points).</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 3em;">🤖</div>
+                    <p><strong>L'IA (Le Rédacteur)</strong><br>Se concentre à 100% sur la forme : elle transforme vos notes en paragraphes bien écrits, avec des connecteurs logiques et un vocabulaire adapté.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE B : DRAFTING (Le Guide) -->
+    <section class="slide">
+        <h1>GUIDE : La Méthode "Bullet-to-Text"</h1>
+        <h2>Votre nouveau super-pouvoir pour rédiger vite et bien.</h2>
+        <p>Ce processus se déroule en 3 étapes simples.</p>
+        
+        <div style="display: flex; gap: 20px; align-items: stretch;">
+            <!-- ETAPE 1 -->
+            <div class="card" style="flex: 1; text-align: center;">
+                <h3>Étape 1 : Vos Notes</h3>
+                <p style="font-size: 0.9em;">Sous un titre de votre plan (ex: "II.B. Impact sur le pouvoir d'achat"), écrivez vos idées en vrac :</p>
+                <ul style="font-size: 0.8em; text-align: left; background: #eee; padding: 10px; border-radius: 5px;">
+                    <li>- Prix tomate +15%</li>
+                    <li>- Huile olive rare (sécheresse)</li>
+                    <li>- Les ménages pauvres dépensent +40% budget en nourriture</li>
+                    <li>- Impact psychologique fort</li>
+                </ul>
+            </div>
+            
+            <!-- ETAPE 2 -->
+            <div class="card" style="flex: 1; text-align: center;">
+                <h3>Étape 2 : Le Prompt</h3>
+                <p style="font-size: 0.9em;">Copiez ces notes et utilisez un prompt "Rédacteur" :</p>
+                <p class="highlight" style="font-size: 0.8em; padding: 10px;">"Agis comme un analyste économique. Rédige un paragraphe formel et structuré à partir de ces points. Utilise des connecteurs logiques."</p>
+            </div>
+            
+            <!-- ETAPE 3 -->
+            <div class="card orange" style="flex: 1; text-align: center;">
+                <h3>Étape 3 : Intégration</h3>
+                <p style="font-size: 0.9em;">Copiez-collez le paragraphe généré par l'IA dans Word, à la place de vos notes.</p>
+                <p style="font-weight: bold; margin-top: 15px;">Lisez et validez.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE C : DRAFTING (Cas Pratique) -->
+    <section class="slide">
+        <h1>Cas Pratique : Drafting</h1>
+        <h2>Démonstration visuelle de la transformation.</h2>
+        
+        <div class="cols-2">
+            <!-- AVANT -->
+            <div>
+                <h3>AVANT : Vos Notes (Le Fond)</h3>
+                <div class="card">
+                    <ul style="font-size: 1em;">
+                        <li>- Le Maroc veut attirer les IDE</li>
+                        <li>- Zones franches (Tanger, Kénitra)</li>
+                        <li>- Fiscalité avantageuse (pas d'IS pendant 5 ans)</li>
+                        <li>- Proximité Europe</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- APRÈS -->
+            <div>
+                <h3>APRÈS : Le Paragraphe IA (La Forme)</h3>
+                <div class="card orange">
+                    <p>La stratégie marocaine de développement économique repose fortement sur l'attraction des Investissements Directs à l'Étranger (IDE). Pour ce faire, le Royaume a mis en place des zones franches industrielles, telles que celles de Tanger et Kénitra, qui agissent comme de véritables catalyseurs. Ces plateformes offrent une fiscalité particulièrement avantageuse, notamment une exonération totale de l'Impôt sur les Sociétés (IS) durant les cinq premières années d'activité. Cet avantage fiscal, couplé à la proximité géographique stratégique avec le marché européen, constitue un levier de compétitivité majeur.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================= REWRITING ========================= -->
+    
+    <!-- SLIDE D : REWRITING (Le Concept) -->
+    <section class="slide">
+        <h1>3. Le Rewriting : L'Art de la Réécriture</h1>
+        <h2>Changer le style d'un texte sans en changer le sens.</h2>
+        <p>Le "Rewriting" (Réécriture) est différent du "Drafting". Ici, le texte existe déjà, mais il n'est pas adapté à la situation.</p>
+        
+        <div class="card">
+            <h3>Quand utiliser le Rewriting ?</h3>
+            <ul style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <li><strong>Pour Vulgariser :</strong> Transformer un texte académique en article de blog.</li>
+                <li><strong>Pour Formaliser :</strong> Transformer des notes de réunion en compte-rendu officiel.</li>
+                <li><strong>Pour Synthétiser :</strong> Transformer 10 pages en 5 lignes (Executive Summary).</li>
+                <li><strong>Pour Adapter :</strong> Transformer une analyse en post LinkedIn ou en email.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- SLIDE E : REWRITING (Le Guide) -->
+    <section class="slide">
+        <h1>GUIDE : Le Prompt "Caméléon"</h1>
+        <h2>La structure du prompt de réécriture.</h2>
+        <p>C'est l'un des prompts les plus simples et les plus efficaces.</p>
+
+        <div class="card orange">
+            <h3>La Structure en 3 Blocs</h3>
+            <ol>
+                <li><strong>Le Rôle / L'Action :</strong> "Agis comme...", "Réécris...", "Synthétise...", "Vulgarise...".</li>
+                <li><strong>La Cible / L'Objectif :</strong> "...ce texte pour un public de [Ministres / Enfants / Investisseurs]".</li>
+                <li><strong>Le Texte à Transformer :</strong> "Voici le texte : [Collez votre texte ici]".</li>
+            </ol>
+        </div>
+        
+        <div class="chat-sim" style="margin-top: 20px;">
+            <div class="chat-header">Exemple de Prompt Complet</div>
+            <div class="chat-body">
+                <div class="msg user">
+                    "Synthétise ce paragraphe en une seule phrase percutante pour le titre d'une présentation PowerPoint. Voici le texte : [Collez votre paragraphe ici]."
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE F : REWRITING (Cas Pratique) -->
+    <section class="slide">
+        <h1>Cas Pratique : L'Executive Summary</h1>
+        <h2>Du technique au stratégique en un seul prompt.</h2>
+        
+        <div class="cols-2">
+            <!-- AVANT -->
+            <div>
+                <h3>AVANT : Votre Conclusion Technique</h3>
+                <div class="card">
+                    <p style="font-size: 0.9em;">"L'analyse économétrique via un modèle VAR indique une corrélation positive statistiquement significative entre l'augmentation du taux directeur de Bank Al-Maghrib et une décélération de l'indice des prix à la consommation (IPC) avec un retard de 2 trimestres. Le coefficient de causalité de Granger suggère une unidirectionnalité de l'instrument monétaire vers l'inflation, bien que l'élasticité demeure faible..."</p>
+                </div>
+            </div>
+
+            <!-- APRÈS -->
+            <div>
+                <h3>APRÈS : L'Executive Summary (pour un Ministre)</h3>
+                <div class="card orange">
+                    <p style="font-size: 0.9em; font-weight: bold; color: var(--mundi-orange); margin-bottom: 10px;">Prompt : "Réécris ce texte en 3 points clairs pour un décideur politique."</p>
+                    <hr>
+                    <ul style="font-size: 1em; line-height: 1.8;">
+                        <li><strong>1. Fait :</strong> Augmenter les taux d'intérêt fonctionne pour calmer l'inflation.</li>
+                        <li><strong>2. Délai :</strong> L'effet n'est pas immédiat, il faut attendre 6 mois pour voir les prix baisser.</li>
+                        <li><strong>3. Limite :</strong> L'impact reste modéré ; la politique monétaire ne peut pas tout résoudre seule.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARTIE 3 : CRÉDIBILITÉ -->
+    <section class="slide center-content" style="background: #2c3e50; color: white;">
+        <h1 style="color: var(--mundi-orange); border-bottom-color: white;">Partie 3 : La Crédibilité Académique</h1>
+        <p style="color: white;">Références, Légendes et Bibliographie.</p>
+    </section>
+
+    <!-- SLIDE 12 : Légendes et Renvois -->
+    <!-- ========================= LÉGENDES & RENVOIS ========================= -->
+
+    <!-- SLIDE A : LE PROBLÈME (LA DOULEUR) -->
+    <section class="slide">
+        <h1>Le Cauchemar des Références Manuelles</h1>
+        <h2>"Comme nous l'avons vu dans le tableau 3 page 12..."</h2>
+        <p>Cette phrase, tapée à la main, est une bombe à retardement dans votre rapport.</p>
+
+        <div class="card" style="border-left-color: red;">
+            <h3>Le Scénario Catastrophe</h3>
+            <ol>
+                <li>Vous avez fini votre rapport de 50 pages.</li>
+                <li>Votre professeur vous demande d'ajouter un graphique en page 5.</li>
+                <li>Vous l'ajoutez. Tout se décale.</li>
+                <li>Le "Tableau 3 page 12" est maintenant le "Tableau 4 page 13".</li>
+                <li><strong>Toutes les références dans votre texte sont maintenant FAUSSES.</strong> Vous devez relire 50 pages pour tout corriger à la main. 😭</li>
+            </ol>
+        </div>
+        <p style="text-align: center; font-weight: bold; margin-top: 20px;">La solution : Ne jamais taper un numéro de figure ou de tableau. Laissez Word le faire pour vous.</p>
+    </section>
+
+    <!-- SLIDE B : LÉGENDES (LE GUIDE) -->
+    <section class="slide">
+        <h1>GUIDE Étape 1 : Insérer une Légende Dynamique</h1>
+        <h2>Donner un "Nom Officiel" à vos images et tableaux.</h2>
+        <p>Une légende n'est pas juste un texte sous une image. C'est un objet intelligent que Word peut suivre.</p>
+        
+        <div class="cols-2">
+            <!-- LE PROCESSUS -->
+            <div class="card">
+                <h3>Le Processus Détaillé</h3>
+                <ol>
+                    <li><strong>Étape 1 :</strong> Insérez votre image ou votre tableau dans le document.</li>
+                    <li><strong>Étape 2 :</strong> Faites un <strong>Clic Droit</strong> directement sur l'image/tableau.</li>
+                    <li><strong>Étape 3 :</strong> Dans le menu qui apparaît, choisissez <strong>"Insérer une légende..."</strong>.</li>
+                    <li><strong>Étape 4 :</strong> Une petite fenêtre s'ouvre.
+                        <ul>
+                            <li>Word propose déjà "Figure 1". C'est parfait.</li>
+                            <li>Tapez votre description après : " : Évolution du PIB Marocain (2010-2020)".</li>
+                            <li>Cliquez sur "OK".</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- LE RÉSULTAT -->
+            <div class="card orange" style="text-align: center;">
+                <h3>Le Résultat</h3>
+                <div style="width: 80%; height: 150px; background: #eee; border: 1px solid #ccc; margin: 20px auto;"></div>
+                <p style="font-family: 'Times New Roman', serif; font-size: 0.9em; font-style: italic;"><strong>Figure 1 :</strong> Évolution du PIB Marocain (2010-2020)</p>
+                <hr>
+                <p>Ce n'est pas du texte normal. C'est un "champ" Word. Si vous insérez une autre figure avant, celui-ci deviendra automatiquement "Figure 2".</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE C : RENVOIS (LE GUIDE) -->
+    <section class="slide">
+        <h1>GUIDE Étape 2 : Créer un Renvoi Dynamique</h1>
+        <h2>Lier votre texte à vos légendes.</h2>
+        <p>Maintenant que vos figures ont un nom, vous pouvez les "appeler" depuis votre texte.</p>
+
+        <div class="card orange">
+            <h3>Le Processus Détaillé</h3>
+            <ol>
+                <li><strong>Étape 1 :</strong> Écrivez votre phrase normalement, mais arrêtez-vous là où le numéro doit apparaître.
+                    <ul><li>Ex: "L'analyse de la croissance est illustrée dans la..."</li></ul>
+                </li>
+                <li><strong>Étape 2 :</strong> Allez dans l'onglet <strong>[Références]</strong> du ruban.</li>
+                <li><strong>Étape 3 :</strong> Cliquez sur le bouton <strong>"Renvoi"</strong>.</li>
+                <li><strong>Étape 4 :</strong> Une fenêtre s'ouvre :
+                    <ul>
+                        <li>Dans "Catégorie", choisissez <strong>"Figure"</strong>.</li>
+                        <li>Word vous montre la liste de toutes vos légendes ("Figure 1", "Figure 2"...).</li>
+                        <li>Sélectionnez celle que vous voulez et cliquez sur "Insérer".</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="center-content">
+            <p class="big-text">Votre phrase devient : "L'analyse... illustrée dans la <span style="background: #ddd; padding: 2px 5px;">Figure 1</span>."</p>
+            <p>Ce "Figure 1" est un lien gris. Si la légende change, faites <strong>Clic Droit > Mettre à jour les champs</strong>, et le texte se corrige.</p>
+        </div>
+    </section>
+
+
+    <!-- ========================= BIBLIOGRAPHIE ========================= -->
+    
+    <!-- SLIDE D : LE PROBLÈME (LA DOULEUR) -->
+    <section class="slide">
+        <h1>Le Cauchemar de la Bibliographie Manuelle</h1>
+        <h2>"Est-ce que le prénom va avant ou après le nom ?"</h2>
+        <p>Un rapport économique sans sources est un article de blog. Un rapport avec des sources mal formatées est un travail d'amateur.</p>
+
+        <div class="card" style="border-left-color: red;">
+            <h3>Les Erreurs qui vous coûtent des points</h3>
+            <ul>
+                <li><strong>Incohérence :</strong> Une source est en format APA, l'autre en Harvard.</li>
+                <li><strong>Oublis :</strong> Vous citez un auteur dans le texte mais il n'est pas dans la biblio finale.</li>
+                <li><strong>Perte de temps :</strong> Vous passez des heures à chercher où mettre les virgules et les italiques, au lieu de vous concentrer sur le fond.</li>
+            </ul>
+        </div>
+        <p style="text-align: center; font-weight: bold; margin-top: 20px;">La solution : Utiliser Word comme une base de données de vos lectures.</p>
+    </section>
+
+    <!-- SLIDE E : LE GUIDE WORD + IA -->
+    <section class="slide">
+        <h1>GUIDE : La Bibliographie Automatique</h1>
+        <h2>Le processus en 3 temps : Collecter, Citer, Générer.</h2>
+        
+        <div class="cols-2">
+            <!-- WORD -->
+            <div class="card">
+                <h3>1. Collecter les Sources (Word)</h3>
+                <p>Allez dans <strong>[Références] > Gérer les sources</strong>.</p>
+                <p>Pour chaque livre ou article, cliquez sur "Nouveau" et remplissez la fiche (Auteur, Année, Titre...).</p>
+                <p>Word garde tout en mémoire pour TOUS vos futurs documents !</p>
+                
+                <h3 style="margin-top: 20px;">2. Citer dans le texte</h3>
+                <p>Quand vous écrivez, cliquez sur <strong>[Références] > Insérer une citation</strong>.</p>
+                <p>Choisissez la source. Word insère : <strong>(Ben-Aboud, 2024)</strong>.</p>
+            </div>
+
+            <!-- IA -->
+            <div class="card orange">
+                <h3>L'Assistant IA pour la Collecte</h3>
+                <p>Vous avez trouvé un article en ligne ? Ne remplissez pas la fiche à la main !</p>
+                <div class="chat-sim">
+                    <div class="chat-body">
+                        <div class="msg user">"Voici l'URL de cet article du FMI. Extrais les informations (Auteur, Titre, Année, Éditeur) pour que je puisse remplir ma fiche bibliographique Word."</div>
+                        <div class="msg ai"><strong>Auteur:</strong> Kristalina Georgieva<br><strong>Année:</strong> 2023<br><strong>Titre:</strong> Global Economic Outlook...</div>
+                    </div>
+                </div>
+                <p>Vous n'avez plus qu'à copier-coller dans les bons champs de Word.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE F : LA MAGIE FINALE (GÉNÉRATION) -->
+    <section class="slide">
+        <h1>L'Étape Finale : La Génération en 1 Clic</h1>
+        <h2>Transformer vos citations en une bibliographie parfaite.</h2>
+        <p>Une fois que vous avez fini votre rapport et inséré toutes vos citations (Ex: (HCP, 2022))...</p>
+        
+        <div class="card">
+            <h3>Le Processus Détaillé</h3>
+            <ol>
+                <li>Allez à la dernière page de votre document.</li>
+                <li>Écrivez le titre "Bibliographie" et appliquez le style "Titre 1".</li>
+                <li>Allez dans l'onglet <strong>[Références]</strong>.</li>
+                <li>Dans la section "Style", choisissez le format demandé par votre professeur (ex: <strong>APA</strong>, <strong>Chicago</strong>...).</li>
+                <li>Cliquez sur le gros bouton <strong>"Bibliographie"</strong> et choisissez un modèle.</li>
+            </ol>
+        </div>
+        
+        <div class="center-content">
+            <div style="font-size: 4em; margin-bottom: 10px;">🪄</div>
+            <p class="big-text">Word génère instantanément la liste complète de TOUTES les sources que vous avez citées, parfaitement triées par ordre alphabétique et formatées selon les règles APA.</p>
+        </div>
+    </section>
+
+    <!-- PARTIE 4 : COLLABORATION -->
+    <section class="slide center-content" style="background: var(--mundi-blue); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">Partie 4 : Travailler en Équipe</h1>
+        <p style="color: #ddd;">Sans s'entretuer sur les versions de fichiers.</p>
+    </section>
+
+    <!-- SLIDE 15 : Suivi des Modifications -->
+    <!-- SLIDE A : LE PROBLÈME (LA DOULEUR) -->
+    <section class="slide">
+        <h1>Le Chaos des Versions de Fichiers</h1>
+        <h2>Comment le travail de groupe sur Word devient un cauchemar.</h2>
+        <p>Sans méthode, voici à quoi ressemble le dossier de votre projet de groupe :</p>
+        
+        <div class="card" style="font-family: 'Courier New', monospace; font-size: 0.9em; text-align: center;">
+            <p>Rapport_Economie.docx</p>
+            <p>Rapport_Economie_Final.docx</p>
+            <p>Rapport_Economie_Final_Modif_Fatima.docx</p>
+            <p style="color:red; font-weight: bold;">Rapport_Economie_Final_VRAIMENT_FINAL_v2.docx</p>
+        </div>
+
+        <div class="cols-2" style="margin-top: 20px;">
+            <div>
+                <h3>Les Questions qui tuent :</h3>
+                <ul>
+                    <li>Quelle est la bonne version ?</li>
+                    <li>Qu'est-ce que Fatima a changé exactement ?</li>
+                    <li>Avons-nous perdu une partie du texte ?</li>
+                </ul>
+            </div>
+            <div>
+                <h3>La Solution</h3>
+                <p>Arrêter d'échanger des fichiers. Travailler sur <strong>UN SEUL</strong> document avec les outils de collaboration de Word.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE B : LE CONCEPT (LA PHILOSOPHIE) -->
+    <section class="slide">
+        <h1>La Règle d'Or : Le Suivi des Modifications</h1>
+        <h2>Transformer le chaos en une conversation structurée.</h2>
+        <p>Le "Suivi des modifications" (Track Changes) est le mode "Collaboration" de Word. C'est une question de respect pour le travail de l'auteur original.</p>
+        
+        <div class="card orange">
+            <h3>Le Concept</h3>
+            <p>Au lieu de modifier directement le texte, vous proposez des changements. L'auteur original a le pouvoir final d'<strong>Accepter</strong> ou de <strong>Refuser</strong> chaque suggestion.</p>
+        </div>
+
+        <div class="cols-2">
+            <div>
+                <h3>L'Analogie du Papier</h3>
+                <p>C'est comme si votre collègue ne gommait pas votre texte, mais le barrait proprement au stylo rouge et écrivait sa suggestion au-dessus au stylo bleu.</p>
+            </div>
+            <div>
+                <h3>Les "Commentaires"</h3>
+                <p>En plus de modifier, vous pouvez ajouter des commentaires dans la marge pour <strong>expliquer POURQUOI</strong> vous faites une suggestion. (Ex: "J'ai reformulé car ce n'était pas assez formel").</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE C : GUIDE 1 (ACTIVER LE SUIVI) -->
+    <section class="slide">
+        <h1>GUIDE Étape 1 : Activer le Suivi (Le Correcteur)</h1>
+        <h2>Votre réflexe avant de toucher au texte de quelqu'un d'autre.</h2>
+        
+        <div class="card">
+            <h3>Le Processus Détaillé (Quand vous corrigez)</h3>
+            <ol>
+                <li><strong>Étape 1 :</strong> Ouvrez le document que vous devez relire.</li>
+                <li><strong>Étape 2 :</strong> Allez immédiatement dans l'onglet <strong>[Révision]</strong> du ruban.</li>
+                <li><strong>Étape 3 :</strong> Cliquez sur le gros bouton <strong>"Suivi des modifications"</strong>. Il doit devenir grisé pour montrer qu'il est actif.</li>
+                <li><strong>Étape 4 :</strong> Travaillez normalement.
+                    <ul>
+                        <li>Quand vous supprimez du texte, il apparaît <span style="color:red; text-decoration: line-through;">barré en rouge</span>.</li>
+                        <li>Quand vous ajoutez du texte, il apparaît <span style="color:blue; text-decoration: underline;">souligné en bleu</span>.</li>
+                    </ul>
+                </li>
+                <li><strong>Étape 5 (Bonus) :</strong> Pour justifier une grosse modification, sélectionnez votre ajout et cliquez sur <strong>"Nouveau commentaire"</strong>.</li>
+            </ol>
+        </div>
+    </section>
+    
+    <!-- SLIDE D : GUIDE 2 (VALIDER LES CHANGEMENTS) -->
+    <section class="slide">
+        <h1>GUIDE Étape 2 : Valider les Changements (L'Auteur)</h1>
+        <h2>Reprendre le contrôle de votre document.</h2>
+        <p>Vous avez reçu le document corrigé. Votre texte est plein de rouge et de bleu. Pas de panique.</p>
+        
+        <div class="card orange">
+            <h3>Le Processus Détaillé (Quand vous recevez)</h3>
+            <ol>
+                <li><strong>Étape 1 :</strong> Allez dans l'onglet <strong>[Révision]</strong>.</li>
+                <li><strong>Étape 2 :</strong> Dans le groupe "Modifications", vous avez les 4 boutons magiques :
+                    <ul>
+                        <li><strong>Accepter :</strong> Rend la modification définitive.</li>
+                        <li><strong>Refuser :</strong> Annule la suggestion et revient à votre texte original.</li>
+                        <li><strong>Précédent / Suivant :</strong> Pour naviguer de modification en modification.</li>
+                    </ul>
+                </li>
+                <li><strong>Étape 3 :</strong> Pour chaque suggestion, lisez-la, lisez le commentaire associé, et prenez votre décision : Accepter ou Refuser.</li>
+            </ol>
+            <p><strong>Astuce de Pro :</strong> Cliquez sur la petite flèche sous "Accepter" pour faire <strong>"Accepter toutes les modifications"</strong> si vous avez confiance.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE E : LE PLAN B (COMPARER) -->
+    <section class="slide">
+        <h1>Le Plan B : L'Outil "Comparer"</h1>
+        <h2>Scénario catastrophe : Votre collègue a oublié d'activer le suivi...</h2>
+        <p>Vous avez deux fichiers, `Rapport_v1.docx` et `Rapport_v2.docx`, et vous n'avez aucune idée de ce qui a changé.</p>
+
+        <div class="card">
+            <h3>Le Processus de "Sauvetage"</h3>
+            <ol>
+                <li><strong>Étape 1 :</strong> Ouvrez un document Word vierge.</li>
+                <li><strong>Étape 2 :</strong> Allez dans l'onglet <strong>[Révision]</strong> > Groupe <strong>"Comparer"</strong> > Cliquez sur <strong>"Comparer..."</strong>.</li>
+                <li><strong>Étape 3 :</strong> Une fenêtre s'ouvre avec deux cases :
+                    <ul>
+                        <li><strong>Document Original :</strong> Mettez votre fichier `Rapport_v1.docx`.</li>
+                        <li><strong>Document Révisé :</strong> Mettez le fichier de votre collègue `Rapport_v2.docx`.</li>
+                    </ul>
+                </li>
+                <li><strong>Étape 4 :</strong> Cliquez sur "OK".</li>
+            </ol>
+        </div>
+        <p style="text-align: center; font-weight: bold; margin-top: 20px;">Word va créer un <strong>troisième document</strong> qui fusionne les deux et active automatiquement le Suivi des Modifications pour vous montrer toutes les différences.</p>
+    </section>
+
+    <!-- SLIDE F : L'IA COMME COLLABORATEUR -->
+    <section class="slide">
+        <h1>L'IA comme Relecteur Augmenté</h1>
+        <h2>Utiliser "Comparer" pour valider le travail de l'IA.</h2>
+        <p>Vous pouvez utiliser l'IA comme un collaborateur qui ne dort jamais. Mais vous devez garder le contrôle.</p>
+
+        <div class="card orange">
+            <h3>Le Workflow Professionnel</h3>
+            <ol>
+                <li><strong>Vous :</strong> Vous écrivez votre version 1 du rapport (`Rapport_v1.docx`).</li>
+                <li><strong>IA :</strong> Vous copiez tout votre texte et vous le donnez à ChatGPT avec le prompt :
+                    <ul><li><em>"Agis comme un secrétaire de rédaction. Corrige ce texte (orthographe, syntaxe, répétitions) sans changer le sens. Rends le style plus percutant."</em></li></ul>
+                </li>
+                <li><strong>Vous :</strong> Vous copiez la réponse de l'IA dans un nouveau fichier (`Rapport_IA.docx`).</li>
+                <li><strong>La Magie :</strong> Vous utilisez la fonction <strong>"Comparer"</strong> de Word entre votre `v1` et la version de l'IA.</li>
+            </ol>
+        </div>
+        <p class="big-text">Résultat : Word vous montre exactement ce que l'IA a changé. Vous pouvez <strong>Accepter</strong> ou <strong>Refuser</strong> chaque correction, et ainsi apprendre tout en gardant le contrôle.</p>
+    </section>
+
+    <!-- SLIDE BASICS 1 : L'INTERFACE -->
+    <section class="slide">
+        <h1>Kit de Survie : Le "Cockpit" Word</h1>
+        <h2>Repérez-vous en 30 secondes.</h2>
+        <p>Word est organisé en <strong>Onglets</strong> (en haut). Voici les 4 seuls que vous utiliserez 90% du temps :</p>
+
+        <div class="cols-2" style="gap: 20px;">
+            <div class="card" style="margin: 0;">
+                <h3>🏠 1. ACCUEIL (Le Quotidien)</h3>
+                <p>C'est votre trousse d'école.</p>
+                <ul style="font-size: 0.9em;">
+                    <li><strong>Presse-papiers :</strong> Copier / Coller.</li>
+                    <li><strong>Police :</strong> Gras, Italique (⚠️ à utiliser avec modération).</li>
+                    <li><strong>Paragraphe :</strong> Centrer, Listes à puces.</li>
+                    <li><strong>STYLES :</strong> (La zone la plus importante, à droite).</li>
+                </ul>
+            </div>
+            <div class="card orange" style="margin: 0;">
+                <h3>➕ 2. INSERTION (Ajouter des choses)</h3>
+                <p>Pour mettre autre chose que du texte.</p>
+                <ul style="font-size: 0.9em;">
+                    <li><strong>Tableaux :</strong> Pour vos données chiffrées.</li>
+                    <li><strong>Images :</strong> Graphiques, Logos.</li>
+                    <li><strong>Numéro de page :</strong> Indispensable (Pied de page).</li>
+                </ul>
+            </div>
+            <div class="card" style="margin: 0; border-left-color: #27ae60;">
+                <h3>📐 3. MISE EN PAGE (L'Aspect)</h3>
+                <p>Pour toucher au papier lui-même.</p>
+                <ul style="font-size: 0.9em;">
+                    <li><strong>Marges :</strong> "Normales" ou "Étroites".</li>
+                    <li><strong>Orientation :</strong> Portrait (Debout) / Paysage (Couché).</li>
+                    <li><strong>Sauts :</strong> Pour les sections (on y reviendra).</li>
+                </ul>
+            </div>
+            <div class="card" style="margin: 0; border-left-color: #8e44ad;">
+                <h3>📚 4. RÉFÉRENCES (L'Académique)</h3>
+                <p>La zone des "Pros".</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Table des Matières.</li>
+                    <li>Bibliographie.</li>
+                    <li>Légendes des figures.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE BASICS 2 : LES INVISIBLES -->
+    <section class="slide">
+        <h1>Kit de Survie : Voir l'Invisible (¶)</h1>
+        <h2>Le bouton magique pour comprendre pourquoi votre mise en page "casse".</h2>
+        
+        <div class="cols-2">
+            <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <h3 style="margin-bottom: 20px;">Le Bouton "Afficher Tout"</h3>
+                <div style="font-size: 5em; color: var(--mundi-blue); border: 3px solid var(--mundi-orange); padding: 10px 30px; border-radius: 10px; cursor: pointer;">¶</div>
+                <p style="margin-top: 15px;">Onglet <strong>[Accueil]</strong> > Groupe Paragraphe</p>
+            </div>
+            
+            <div class="card orange">
+                <h3>À quoi ça sert ?</h3>
+                <p>Word vous cache des caractères. Cliquez dessus et vous verrez :</p>
+                <ul style="font-size: 1em; line-height: 2;">
+                    <li><strong>Les Points (·) :</strong> Ce sont les espaces. (Utile pour voir les doubles espaces).</li>
+                    <li><strong>Le Pied de Mouche (¶) :</strong> C'est la fin d'un paragraphe (Touche Entrée).</li>
+                    <li><strong>La Flèche (→) :</strong> C'est une tabulation.</li>
+                </ul>
+                <p class="highlight">Si votre texte est bizarrement aligné, activez ce bouton. Vous verrez l'erreur tout de suite.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE BASICS 3 : LE COPIER-COLLER -->
+    <section class="slide">
+        <h1>Kit de Survie : Le Copier-Coller (Spécial IA)</h1>
+        <h2>Comment coller du texte de ChatGPT sans le fond gris moche.</h2>
+        <p>Quand vous copiez depuis le web ou une IA, vous copiez aussi le "style" (police web, fond gris, liens bleus). C'est sale.</p>
+
+        <div class="card" style="border-left-color: red;">
+            <h3>❌ Le CTRL+V Classique</h3>
+            <p>Il garde la mise en forme source. Votre document devient un arlequin de polices différentes.</p>
+        </div>
+
+        <div class="card orange">
+            <h3>✅ Le Collage "Texte Brut" (L'Astuce Pro)</h3>
+            <div class="cols-2">
+                <div>
+                    <p><strong>Méthode 1 (Clic Droit) :</strong></p>
+                    <ol>
+                        <li>Faites Clic Droit là où vous voulez coller.</li>
+                        <li>Dans "Options de collage", choisissez l'icône avec un <strong>"A"</strong> (Conserver uniquement le texte).</li>
+                    </ol>
+                </div>
+                <div>
+                    <p><strong>Méthode 2 (La liste) :</strong></p>
+                    <p>Dans l'onglet [Accueil], cliquez sur la petite flèche sous "Coller" > "Collage Spécial" > "Texte sans mise en forme".</p>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; font-weight: bold;">Cela force le texte à prendre le style de VOTRE document Word.</p>
+    </section>
+
+    <!-- SLIDE BASICS 4 : IMAGES -->
+    <section class="slide">
+        <h1>Kit de Survie : Dompter les Images</h1>
+        <h2>"J'ai bougé l'image et mon texte a explosé !"</h2>
+        <p>Par défaut, Word traite une image comme une grosse lettre (Aligné sur le texte). C'est pour ça que c'est rigide.</p>
+
+        <div class="cols-2">
+            <div class="card">
+                <h3>Libérer l'Image</h3>
+                <ol>
+                    <li>Cliquez sur l'image.</li>
+                    <li>Un petit bouton apparaît à côté (Options de mise en page) OU allez dans l'onglet <strong>[Mise en forme de l'image]</strong>.</li>
+                    <li>Cherchez le bouton <strong>"Habillage"</strong> (Le chien avec des lignes).</li>
+                </ol>
+            </div>
+            
+            <div class="card orange">
+                <h3>Les 2 Modes à connaître</h3>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 15px;">
+                        <strong>🟦 Carré (Square) :</strong><br>
+                        Le texte coule autour de l'image (comme dans un journal).
+                    </li>
+                    <li>
+                        <strong>↕️ Haut et Bas (Top and Bottom) :</strong><br>
+                        L'image prend toute la largeur, le texte est au-dessus et en-dessous. <span style="font-weight: bold;">(Recommandé pour les rapports).</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- TP FINAL -->
+    <!-- SLIDE TP 1 : LE BRIEFING (SCÉNARIO) -->
+    <section class="slide center-content" style="background: linear-gradient(135deg, var(--mundi-blue) 0%, #001a33 100%); color: white;">
+        <h1 style="color: var(--mundi-orange); border:none; font-size: 3.5em; text-align: center;">EXAMEN PRATIQUE</h1>
+        <h2 style="color: white; text-align: center;">Challenge : "Le Rapport FMI"</h2>
+        
+        <div class="card" style="background: rgba(255,255,255,0.5); border-left: 5px solid var(--mundi-orange); width: 80%; margin-top: 30px;">
+            <p style="font-size: 1.3em; color: white;"><strong>Votre Mission :</strong></p>
+            <p style="color: #ddd;">Vous êtes économiste au FMI. Votre directrice, Kristalina Georgieva, veut une note urgente sur <strong>"La Dette Publique des Pays Émergents"</strong>.</p>
+            <hr style="border-color: rgba(255,255,255,0.5);">
+            <p style="font-size: 1.1em; color: #ddd;">⏳ Temps imparti : <strong>45 Minutes</strong></p>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 2 : PHASE 1 - ARCHITECTURE (5 MIN) -->
+    <section class="slide">
+        <h1>Phase 1 : L'Architecture (Squelette)</h1>
+        <h2>Ne rédigez rien ! Préparez le terrain.</h2>
+        <p>Ouvrez un document Word vierge et faites ceci immédiatement :</p>
+
+        <div class="cols-2">
+            <div class="card">
+                <h3>1. Préparez les Titres</h3>
+                <p>Écrivez ces 4 lignes sur votre page blanche :</p>
+                <ul style="background: white; padding: 10px; border: 1px dashed #ccc;">
+                    <li>Introduction</li>
+                    <li>Analyse Comparative</li>
+                    <li>Données Chiffrées</li>
+                    <li>Conclusion & Recommandations</li>
+                </ul>
+            </div>
+            <div class="card orange">
+                <h3>2. Appliquez les Styles</h3>
+                <p>1. Sélectionnez ces 4 lignes.</p>
+                <p>2. Cliquez sur <strong>Titre 1</strong> dans la galerie des styles.</p>
+                <p>3. Activez le <strong>Volet de Navigation</strong> (Affichage) pour vérifier qu'ils apparaissent.</p>
+            </div>
+        </div>
+        <p style="text-align: center; color: var(--mundi-blue);">✅ Objectif : Avoir une structure navigable vide.</p>
+    </section>
+
+    <!-- SLIDE TP 3 : PHASE 2 - CONTENU IA (10 MIN) -->
+    <section class="slide">
+        <h1>Phase 2 : Le Contenu (L'IA au travail)</h1>
+        <h2>Remplissez les sections avec du contenu intelligent.</h2>
+        
+        <div class="card">
+            <h3>Prompt pour l'Introduction & Analyse</h3>
+            <div class="chat-sim">
+                <div class="msg user">"Agis comme un expert du FMI. Rédige une introduction formelle sur les risques de la dette souveraine post-Covid. Ensuite, rédige deux paragraphes d'analyse sur la situation du Brésil et de la Turquie."</div>
+            </div>
+            <p>👉 Copiez-collez le texte sous vos titres "Introduction" et "Analyse".</p>
+        </div>
+
+        <div class="card orange">
+            <h3>Prompt pour le Tableau (Données)</h3>
+            <div class="chat-sim">
+                <div class="msg user">"Génère un tableau comparatif avec 3 colonnes (Pays, Dette/PIB %, Taux d'intérêt) pour ces pays : Maroc, Brésil, Turquie, Égypte. Donne des chiffres réalistes 2023."</div>
+            </div>
+            <p>👉 Gardez ce tableau de côté pour la Phase 3.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 4 : PHASE 3 - LA MISE EN PAGE COMPLEXE (15 MIN) -->
+    <section class="slide">
+        <h1>Phase 3 : Le Défi "Paysage" (Crucial)</h1>
+        <h2>C'est ici que se joue votre note technique.</h2>
+        <p>Le tableau généré par l'IA est trop large. Il faut une page spéciale.</p>
+
+        <div class="card" style="border-left-color: red;">
+            <h3>La Manipulation Chirurgicale</h3>
+            <ol>
+                <li>Placez votre curseur sous le titre "Données Chiffrées".</li>
+                <li><strong>Mise en page > Sauts > Saut de Section (Page Suivante).</strong></li>
+                <li>Appuyez sur Entrée quelques fois.</li>
+                <li><strong>Mise en page > Sauts > Saut de Section (Page Suivante).</strong></li>
+                <li>Cliquez maintenant sur la page vide (celle du milieu) entre les deux sauts.</li>
+                <li><strong>Mise en page > Orientation > Paysage.</strong></li>
+                <li>Collez votre tableau IA sur cette page Paysage.</li>
+            </ol>
+        </div>
+        <p style="text-align: center;">✅ Résultat : Portrait -> Paysage (Tableau) -> Portrait.</p>
+    </section>
+
+    <!-- SLIDE TP 5 : PHASE 4 - FINITIONS PRO (10 MIN) -->
+    <section class="slide">
+        <h1>Phase 4 : Crédibilité & Finitions</h1>
+        <h2>Transformez votre brouillon en rapport officiel.</h2>
+
+        <div class="cols-2">
+            <div>
+                <h3>1. Légende & Renvoi</h3>
+                <ul>
+                    <li>Clic droit sur le tableau > <strong>Insérer une légende</strong> ("Tableau 1 : Comparatif Dette").</li>
+                    <li>Allez dans votre Introduction. Écrivez : <em>"Comme le montre le..."</em></li>
+                    <li><strong>Références > Renvoi</strong> > Choisissez "Tableau 1".</li>
+                </ul>
+            </div>
+            <div>
+                <h3>2. Bibliographie</h3>
+                <ul>
+                    <li>Allez dans <strong>Références > Gérer les sources</strong>.</li>
+                    <li>Ajoutez manuellement une source fictive (Auteur: FMI, Titre: World Economic Outlook, Année: 2023).</li>
+                    <li>Allez à la fin du document.</li>
+                    <li>Cliquez sur <strong>Bibliographie</strong>.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card orange" style="margin-top: 10px; text-align: center;">
+            <h3>Dernière étape : La Table des Matières</h3>
+            <p>Remontez tout en haut (Page 1).<br><strong>Références > Table des Matières.</strong></p>
+        </div>
+    </section>
+
+    <!-- SLIDE TP 6 : CHECKLIST FINALE -->
+    <section class="slide center-content">
+        <h1>📝 Auto-Évaluation avant envoi</h1>
+        <p>Vérifiez ces 5 points avant de lever la main.</p>
+        
+        <div class="card" style="text-align: left; width: 60%;">
+            <ul style="list-style: none; font-size: 1.2em; line-height: 1.8;">
+                <li>🔲 J'ai une Table des Matières automatique en Page 1.</li>
+                <li>🔲 Mes titres utilisent les styles "Titre 1".</li>
+                <li>🔲 Ma page 3 est bien en format <strong>Paysage</strong>.</li>
+                <li>🔲 J'ai un lien cliquable (renvoi) vers mon tableau.</li>
+                <li>🔲 J'ai une bibliographie générée automatiquement à la fin.</li>
+            </ul>
+        </div>
+        <p style="color: var(--mundi-orange); font-weight: bold; margin-top: 20px;">Si vous avez tout coché : Félicitations, vous êtes un expert Word.</p>
+    </section>
+
+    <!-- SLIDE 19 : Conclusion -->
+    <section class="slide center-content">
+        <h1>Fin de la Séance 2</h1>
+        <p class="big-text">Vous n'êtes plus des "Tapeurs de texte".<br>Vous êtes des <span style="color:var(--mundi-orange)">Éditeurs Augmentés</span>.</p>
+        <div class="card">
+            <h3>La semaine prochaine : EXCEL 📊</h3>
+            <p>On va apprendre à nettoyer 1000 lignes de données sales en 10 secondes grâce à l'IA.</p>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <button id="prevBtn">Précédent</button>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="slide-num" id="currentSlide">1</span> / <span class="slide-num" id="totalSlides">19</span>
+        <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+    <button id="nextBtn">Suivant</button>
+</footer>
+
+<script>
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideDisplay = document.getElementById('currentSlide');
+    const totalSlidesDisplay = document.getElementById('totalSlides');
+    const progressBar = document.getElementById('progressBar');
+
+    totalSlidesDisplay.textContent = totalSlides;
+    updateUI();
+
+    function showSlide(index) {
+        if (index < 0 || index >= totalSlides) return;
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'prev');
+            if (i === index) slide.classList.add('active');
+            else if (i < index) slide.classList.add('prev');
+        });
+        currentSlideIndex = index;
+        updateUI();
+    }
+
+    function updateUI() {
+        currentSlideDisplay.textContent = currentSlideIndex + 1;
+        const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+        prevBtn.disabled = (currentSlideIndex === 0);
+        nextBtn.disabled = (currentSlideIndex === totalSlides - 1);
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+    nextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlideIndex + 1);
+        if (e.key === 'ArrowLeft') showSlide(currentSlideIndex - 1);
+    });
+</script>
+
+</body>
+</html>
