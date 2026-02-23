@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootcamp Bureautique - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;       
+            --mundi-orange: #F37021;     
+            --mundi-grey: #f4f6f8;       
+            --text-main: #333333;
+            --white: #ffffff;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: var(--text-main);
+            overflow: hidden; height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* --- HEADER --- */
+        header {
+            height: 70px; background: var(--white);
+            border-bottom: 4px solid var(--mundi-orange);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10;
+        }
+        .header-logo img { height: 45px; }
+        .header-title { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-weight: 700; font-size: 1.1em; text-transform: uppercase; }
+
+        /* --- SLIDE STAGE --- */
+        #presentation-area {
+            flex-grow: 1; position: relative;
+            display: flex; justify-content: center; align-items: center;
+            background: radial-gradient(circle at center, #ffffff 0%, #eef2f5 100%);
+        }
+
+        .slide {
+            position: absolute; width: 85%; height: 85%; max-width: 1400px;
+            background: var(--white); border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 51, 102, 0.15);
+            padding: 40px 60px; box-sizing: border-box;
+            opacity: 0; transform: translateX(100px) scale(0.95);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            visibility: hidden; display: flex; flex-direction: column; overflow-y: auto;
+        }
+        .slide.active { opacity: 1; transform: translateX(0) scale(1); visibility: visible; z-index: 5; }
+        .slide.prev { transform: translateX(-100px) scale(0.95); opacity: 0; visibility: hidden; }
+
+        /* --- TYPOGRAPHY --- */
+        h1 { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-size: 2.2em; margin: 0 0 15px 0; position: relative; }
+        h1::after { content: ''; display: block; width: 60px; height: 6px; background: var(--mundi-orange); margin-top: 10px; border-radius: 3px; }
+        h2 { font-family: 'Montserrat', sans-serif; color: #666; font-weight: 300; font-size: 1.3em; margin: 0 0 25px 0; }
+        p, li { font-size: 1em; line-height: 1.5; color: #444; margin-bottom: 8px; }
+        strong { color: var(--mundi-blue); }
+        
+        /* --- COMPONENTS --- */
+        .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: flex-start; }
+        .center-content { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; }
+        .card { background: #f8f9fa; border-left: 5px solid var(--mundi-blue); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card.orange { border-left-color: var(--mundi-orange); }
+        .shortcut { display: inline-block; background: #333; color: white; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
+
+        /* --- EXCEL GRID SIMULATION --- */
+        .excel-table { border-collapse: collapse; width: 100%; font-family: sans-serif; margin-top: 10px; font-size: 0.9em; }
+        .excel-table th { background: #e6e6e6; border: 1px solid #999; padding: 5px; font-weight: normal; color: #333; }
+        .excel-table td { border: 1px solid #ccc; padding: 5px; text-align: center; background: white; }
+        .excel-table td.active { border: 2px solid #217346; }
+
+        /* --- FOOTER --- */
+        footer { height: 60px; background: var(--mundi-blue); display: flex; justify-content: center; align-items: center; color: white; gap: 20px; z-index: 10; }
+        button { background: var(--mundi-orange); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: scale(1.05); }
+        button:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
+        .progress-bar-bg { width: 200px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 5px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--mundi-orange); width: 0%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-logo"><img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis Logo"></div>
+    <div class="header-title">Bootcamp Bureautique</div>
+</header>
+
+<div id="presentation-area">
+
+    <!-- SLIDE 1 : TITRE -->
+    <section class="slide active center-content">
+        <h1 style="border: none; font-size: 3.5em;">BOOTCAMP BUREAUTIQUE</h1>
+        <h2 style="color: var(--mundi-orange);">Mise à Niveau Intégrale : Word & Excel</h2>
+        <p>Tout ce que vous devez maîtriser avant de toucher à l'IA.</p>
+    </section>
+
+    <!-- SLIDE 2 : MENU -->
+    <section class="slide">
+        <h1>Programme du Bootcamp</h1>
+        <div class="cols-2">
+            <div class="card">
+                <h3>📝 Microsoft Word (1h30)</h3>
+                <ul>
+                    <li>L'Interface & les Invisibles</li>
+                    <li>Paragraphes & Alignement</li>
+                    <li>Styles & Structure</li>
+                    <li>Listes à Puces & Numérotation</li>
+                    <li>Mise en Page (Sauts, Marges)</li>
+                    <li>Images & Tableaux</li>
+                    <li>Export PDF Professionnel</li>
+                </ul>
+            </div>
+            <div class="card orange">
+                <h3>📊 Microsoft Excel (1h30)</h3>
+                <ul>
+                    <li>Navigation & Types de Données</li>
+                    <li>Formules de Base (+ - * /)</li>
+                    <li>Les Ancrages ($) - Crucial !</li>
+                    <li>Fonctions (SOMME, MOYENNE, SI)</li>
+                    <li>Tri & Filtre (Gérer la Data)</li>
+                    <li>Graphiques Simples</li>
+                    <li>Mise en page pour impression</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= WORD ================= -->
+    <section class="slide center-content" style="background: #2b579a; color: white;">
+        <h1 style="color: white; border-bottom-color: white;">MODULE 1 : WORD</h1>
+        <p>De la page blanche au rapport d'expert.</p>
+    </section>
+
+    <!-- WORD 1 : INTERFACE -->
+    <section class="slide">
+        <h1>1. L'Interface & Le Zoom</h1>
+        <p>Ne travaillez pas à l'aveugle.</p>
+        <div class="cols-2">
+            <div class="card">
+                <h3>Le Ruban (En haut)</h3>
+                <p>Ne cherchez pas partout. 90% des outils sont dans <strong>[Accueil]</strong> et <strong>[Insertion]</strong>.</p>
+                <p>Astuce : Double-cliquez sur un onglet pour masquer/afficher le ruban.</p>
+            </div>
+            <div class="card orange">
+                <h3>Le Zoom (En bas)</h3>
+                <p>Beaucoup d'étudiants travaillent sur une page minuscule.</p>
+                <p>Utilisez <span class="shortcut">Ctrl</span> + <span class="shortcut">Molette Souris</span> pour zoomer/dézoomer instantanément.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORD 2 : INVISIBLES -->
+    <section class="slide">
+        <h1>2. Les Caractères Invisibles (¶)</h1>
+        <p>Le secret des pros pour comprendre pourquoi la mise en page "casse".</p>
+        <div class="card">
+            <h3>Activez le bouton ¶ (Pi)</h3>
+            <p>Dans l'onglet Accueil, cliquez sur ce symbole. Vous verrez :</p>
+            <ul>
+                <li><strong>. (Point médian)</strong> = Un espace. (Utile pour voir les doubles espaces).</li>
+                <li><strong>¶ (Pied de mouche)</strong> = Une fin de paragraphe (Touche Entrée).</li>
+                <li><strong>→ (Flèche)</strong> = Une tabulation.</li>
+            </ul>
+        </div>
+        <p class="highlight">Si votre texte est bizarre, activez ¶. Vous verrez sûrement des espaces ou des tabulations en trop.</p>
+    </section>
+
+    <!-- WORD 3 : PARAGRAPHES -->
+    <section class="slide">
+        <h1>3. Maîtriser le Paragraphe</h1>
+        <p>Ne faites pas "Espace, Espace, Espace" pour décaler un texte !</p>
+        <div class="cols-2">
+            <div>
+                <h3>L'Alignement</h3>
+                <ul>
+                    <li><strong>Gauche :</strong> Standard.</li>
+                    <li><strong>Centré :</strong> Pour les titres.</li>
+                    <li><strong>Justifié :</strong> OBLIGATOIRE pour les rapports (bords droits des deux côtés).</li>
+                </ul>
+            </div>
+            <div>
+                <h3>L'Interligne</h3>
+                <p>L'espace entre les lignes. Pour un rapport universitaire, utilisez <strong>1.15</strong> ou <strong>1.5</strong> pour aérer la lecture.</p>
+                <p><em>(Bouton avec les flèches haut/bas dans Paragraphe).</em></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORD 4 : STYLES -->
+    <section class="slide">
+        <h1>4. Les Styles (Rappel Vital)</h1>
+        <p>Nous le reverrons, mais c'est la base.</p>
+        <div class="card orange">
+            <h3>Règle Absolue</h3>
+            <p>Pour un titre, ne changez pas la taille manuellement.</p>
+            <p>Cliquez sur <strong>"Titre 1"</strong> ou <strong>"Titre 2"</strong> dans la galerie des styles.</p>
+        </div>
+        <p>Pourquoi ? Pour la cohérence, la navigation, et la table des matières automatique.</p>
+    </section>
+
+    <!-- WORD 5 : LISTES -->
+    <section class="slide">
+        <h1>5. Listes à Puces & Numéros</h1>
+        <p>Structurer l'information pour qu'elle soit lisible.</p>
+        <div class="cols-2">
+            <div class="card">
+                <h3>Listes à Puces (•)</h3>
+                <p>Pour des éléments sans ordre précis.</p>
+                <p><em>Astuce :</em> Utilisez <span class="shortcut">Tab</span> pour décaler une puce vers la droite (sous-liste) et <span class="shortcut">Shift</span>+<span class="shortcut">Tab</span> pour revenir.</p>
+            </div>
+            <div class="card">
+                <h3>Numérotation (1. 2. 3.)</h3>
+                <p>Pour des étapes ou un classement.</p>
+                <p><em>Attention :</em> Si la numérotation casse (recommence à 1), faites Clic Droit > "Continuer la numérotation".</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORD 6 : FORMATAGE TEXTE -->
+    <section class="slide">
+        <h1>6. Le Formatage de Caractère</h1>
+        <p>Gras, Italique, Souligné... avec modération.</p>
+        <div class="cols-2">
+            <div>
+                <h3>Les Raccourcis de Survie</h3>
+                <ul>
+                    <li><span class="shortcut">Ctrl</span> + <span class="shortcut">G</span> = <strong>Gras</strong> (Important)</li>
+                    <li><span class="shortcut">Ctrl</span> + <span class="shortcut">I</span> = <em>Italique</em> (Citations, Mots étrangers)</li>
+                    <li><span class="shortcut">Ctrl</span> + <span class="shortcut">U</span> = <u>Souligné</u> (Rarement utilisé en pro)</li>
+                </ul>
+            </div>
+            <div>
+                <h3>La "Gomme" Magique</h3>
+                <p>Vous avez mis du gras, du rouge, du grand... et c'est moche ?</p>
+                <p>Sélectionnez tout et cliquez sur le bouton <strong>"Effacer la mise en forme"</strong> (A avec une gomme rose).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORD 7 : COPIER COLLER -->
+    <section class="slide">
+        <h1>7. Le "Vrai" Copier-Coller</h1>
+        <p>Indispensable quand on copie depuis Wikipedia ou ChatGPT.</p>
+        <div class="card" style="border-left-color: red;">
+            <h3>Ne faites jamais juste Ctrl+V !</h3>
+            <p>Sinon vous importez le fond gris, la police du site web et les liens bleus.</p>
+        </div>
+        <div class="card orange">
+            <h3>La Méthode</h3>
+            <p>Clic Droit > Options de collage > <strong>Icône "A" (Conserver uniquement le texte)</strong>.</p>
+        </div>
+    </section>
+
+    <!-- WORD 8 : INSERTION IMAGE -->
+    <section class="slide">
+        <h1>8. Insérer des Images (Sans tout casser)</h1>
+        <p>Par défaut, Word déteste les images. Il faut les dompter.</p>
+        <div class="card">
+            <h3>L'Habillage (Wrap Text)</h3>
+            <p>Dès que vous insérez une image :</p>
+            <ol>
+                <li>Cliquez sur l'image.</li>
+                <li>Cliquez sur le petit pont (ou onglet Format).</li>
+                <li>Choisissez <strong>"Haut et Bas"</strong> (Top & Bottom).</li>
+            </ol>
+            <p>Maintenant, vous pouvez bouger l'image sans que le texte ne se mélange.</p>
+        </div>
+    </section>
+
+    <!-- WORD 9 : TABLEAUX -->
+    <section class="slide">
+        <h1>9. Les Tableaux dans Word</h1>
+        <p>Pour présenter des données proprement.</p>
+        <div class="cols-2">
+            <div>
+                <h3>Création</h3>
+                <p>Insertion > Tableau. Dessinez la grille.</p>
+            </div>
+            <div>
+                <h3>Astuces de Pro</h3>
+                <ul>
+                    <li><strong>Ajouter une ligne :</strong> Mettez-vous dans la dernière case et appuyez sur <span class="shortcut">Tab</span>.</li>
+                    <li><strong>Fusionner :</strong> Sélectionnez plusieurs cases > Clic Droit > Fusionner.</li>
+                    <li><strong>Ajuster :</strong> Double-cliquez sur la ligne verticale pour ajuster la largeur à son contenu.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORD 10 : MISE EN PAGE -->
+    <section class="slide">
+        <h1>10. Mise en Page & Export</h1>
+        <p>La finition avant d'envoyer.</p>
+        <div class="cols-2">
+            <div class="card">
+                <h3>Marges & Orientation</h3>
+                <p>Onglet <strong>Mise en page</strong>.</p>
+                <p>Pour un rapport standard : Marges "Normales" (2.5cm) et Orientation "Portrait".</p>
+            </div>
+            <div class="card orange">
+                <h3>PDF (Obligatoire)</h3>
+                <p>N'envoyez jamais un .docx à un prof (la mise en page peut bouger chez lui).</p>
+                <p><strong>Fichier > Exporter > Créer PDF.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= EXCEL ================= -->
+    <section class="slide center-content" style="background: #217346; color: white;">
+        <h1 style="color: white; border-bottom-color: white;">MODULE 2 : EXCEL</h1>
+        <p>Comprendre la logique du tableur.</p>
+    </section>
+
+    <!-- EXCEL 1 : ANATOMIE -->
+    <section class="slide">
+        <h1>1. Anatomie : La Grille</h1>
+        <p>Excel est une bataille navale géante.</p>
+        <div class="cols-2">
+            <div>
+                <p><strong>Colonne :</strong> Lettre (A, B, C...)</p>
+                <p><strong>Ligne :</strong> Chiffre (1, 2, 3...)</p>
+                <p><strong>Cellule :</strong> Intersection (ex: <strong>B4</strong>)</p>
+                <hr>
+                <p><strong>Feuille :</strong> Les onglets en bas. On peut en avoir plusieurs dans un seul fichier (Classeur).</p>
+            </div>
+            <div>
+                <table class="excel-table">
+                    <tr><th></th><th>A</th><th>B</th></tr>
+                    <tr><th>1</th><td></td><td></td></tr>
+                    <tr><th>2</th><td></td><td class="active">B2</td></tr>
+                    <tr><th>3</th><td></td><td></td></tr>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXCEL 2 : SAISIE -->
+    <section class="slide">
+        <h1>2. La Saisie : Valider vs Annuler</h1>
+        <p>Comment écrire dans une case ?</p>
+        <ul>
+            <li><strong>Entrée :</strong> Valide et descend d'une case.</li>
+            <li><strong>Tab :</strong> Valide et va à droite.</li>
+            <li><strong>Echap (Esc) :</strong> Annule ce qu'on est en train d'écrire (Sauve la vie si on fait une erreur !).</li>
+            <li><strong>Double-clic :</strong> Pour modifier le contenu d'une case déjà remplie.</li>
+        </ul>
+    </section>
+
+    <!-- EXCEL 3 : TYPES DE DONNÉES -->
+    <section class="slide">
+        <h1>3. Texte, Nombre, Date (Crucial)</h1>
+        <p>Excel ne voit pas le monde comme nous.</p>
+        <div class="grid-container" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+            <div class="card">
+                <h3>Texte</h3>
+                <p>S'aligne à <strong>Gauche</strong>.</p>
+                <p>Pas de calcul possible.</p>
+            </div>
+            <div class="card orange">
+                <h3>Nombre</h3>
+                <p>S'aligne à <strong>Droite</strong>.</p>
+                <p>Calculs possibles.</p>
+            </div>
+            <div class="card">
+                <h3>Date</h3>
+                <p>C'est un nombre déguisé.</p>
+                <p>Si Excel affiche "44562" au lieu de "12/05/2023", changez le format en "Date Courte".</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXCEL 4 : FORMAT MONETAIRE -->
+    <section class="slide">
+        <h1>4. L'Argent et les Pourcentages</h1>
+        <p>Ne tapez jamais "100 DH" à la main !</p>
+        <div class="card" style="border-left-color: red;">
+            <h3>Erreur Fatale</h3>
+            <p>Si vous tapez "100 DH", Excel croit que c'est du Texte. Il ne pourra pas l'additionner.</p>
+        </div>
+        <div class="card orange">
+            <h3>La Bonne Méthode</h3>
+            <p>1. Tapez juste "100".</p>
+            <p>2. Cliquez sur le bouton <strong>Pièces/Billets</strong> (Format Comptabilité) ou <strong>%</strong> dans l'onglet Accueil.</p>
+            <p>Excel ajoute "DH" ou "%" visuellement, mais garde "100" en mémoire pour le calcul.</p>
+        </div>
+    </section>
+
+    <!-- EXCEL 5 : FORMULES BASE -->
+    <section class="slide">
+        <h1>5. Les Formules de Base</h1>
+        <p>Tout commence par le signe <strong>=</strong></p>
+        <div class="card">
+            <h3>Opérateurs</h3>
+            <ul>
+                <li><strong>+</strong> (Addition)</li>
+                <li><strong>-</strong> (Soustraction)</li>
+                <li><strong>*</strong> (Multiplication - Étoile)</li>
+                <li><strong>/</strong> (Division - Slash)</li>
+            </ul>
+        </div>
+        <p class="highlight">Ne calculez jamais de tête ! Faites <code>=A1+B1</code>, pas <code>=10+20</code>. Ainsi, si A1 change, le résultat change.</p>
+    </section>
+
+    <!-- EXCEL 6 : POIGNEE RECOPIE -->
+    <section class="slide">
+        <h1>6. La Poignée de Recopie (Drag & Drop)</h1>
+        <p>Le plus grand gain de temps de l'histoire.</p>
+        <p>Si vous avez la formule en haut, ne la retapez pas 1000 fois.</p>
+        <ol>
+            <li>Sélectionnez la case avec la formule.</li>
+            <li>Visez le petit carré vert en bas à droite.</li>
+            <li>Le curseur devient une <strong>croix noire mince</strong>.</li>
+            <li>Double-cliquez ou tirez vers le bas.</li>
+        </ol>
+        <p>Excel adapte la formule pour chaque ligne (A1 devient A2, A3...).</p>
+    </section>
+
+    <!-- EXCEL 7 : ANCRAGE ($) -->
+    <section class="slide">
+        <h1>7. Les Ancrages ($) - Niveau Économiste</h1>
+        <p>Le piège classique : Convertir en Euros avec un taux fixe.</p>
+        <div class="cols-2">
+            <div class="card" style="border-left-color: red;">
+                <h3>Le Problème</h3>
+                <p>Vous avez le taux de change en case G1.</p>
+                <p>Si vous faites <code>=A1*G1</code> et que vous tirez vers le bas...</p>
+                <p>La ligne suivante devient <code>=A2*G2</code>. Mais G2 est vide ! Erreur.</p>
+            </div>
+            <div class="card orange">
+                <h3>La Solution : Le Dollar</h3>
+                <p>Il faut "clouer" la case G1.</p>
+                <p>On écrit : <code>=A1*$G$1</code>.</p>
+                <p><strong>Raccourci :</strong> Appuyez sur <span class="shortcut">F4</span> après avoir cliqué sur G1.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXCEL 8 : FONCTIONS VITALES -->
+    <section class="slide">
+        <h1>8. Les 3 Mousquetaires : SOMME, MOYENNE, SI</h1>
+        <div class="grid-container" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div class="card">
+                <h3>=SOMME(A1:A10)</h3>
+                <p>Additionne tout le bloc.</p>
+            </div>
+            <div class="card">
+                <h3>=MOYENNE(A1:A10)</h3>
+                <p>Calcule la moyenne arithmétique.</p>
+            </div>
+            <div class="card orange" style="grid-column: span 2;">
+                <h3>=SI(Test; Vrai; Faux)</h3>
+                <p>La logique.</p>
+                <p><code>=SI(A1>=10; "Admis"; "Recalé")</code></p>
+                <p>Si la note est sup ou égale à 10, écrire Admis, sinon Recalé.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXCEL 9 : GESTION DATA -->
+    <section class="slide">
+        <h1>9. Trier et Filtrer</h1>
+        <p>Comment gérer 1000 lignes de données ?</p>
+        <div class="cols-2">
+            <div class="card">
+                <h3>Le Filtre (Entonnoir)</h3>
+                <p>Sélectionnez les titres de votre tableau.</p>
+                <p>Onglet <strong>Données > Filtrer</strong>.</p>
+                <p>Des petites flèches apparaissent. Vous pouvez maintenant dire "Montre-moi seulement le secteur Automobile".</p>
+            </div>
+            <div class="card">
+                <h3>Figer les Volets</h3>
+                <p>Quand on scrolle, on perd les titres.</p>
+                <p>Onglet <strong>Affichage > Figer les volets > Figer la ligne supérieure</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXCEL 10 : GRAPHIQUES -->
+    <section class="slide">
+        <h1>10. Graphiques Rapides</h1>
+        <p>Transformer les chiffres en images.</p>
+        <ol>
+            <li>Sélectionnez votre tableau (Données + Titres).</li>
+            <li>Onglet <strong>Insertion</strong>.</li>
+            <li>Choisissez le graphique recommandé.</li>
+        </ol>
+        <div class="card orange">
+            <h3>Règle d'Or Éco</h3>
+            <ul>
+                <li><strong>Camembert (Secteur) :</strong> Pour des pourcentages (Parts de marché).</li>
+                <li><strong>Bâtons (Histogramme) :</strong> Pour comparer des quantités (PIB par pays).</li>
+                <li><strong>Ligne (Courbe) :</strong> Pour voir une évolution dans le temps (Inflation sur 10 ans).</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section class="slide center-content">
+        <h1>Bootcamp Terminé ! 🎓</h1>
+        <p class="big-text">Vous avez maintenant les bases solides.</p>
+        <p>Word pour structurer, Excel pour calculer.</p>
+        <div class="card">
+            <h3>Prochaine étape :</h3>
+            <p>Utiliser l'IA pour faire tout cela... beaucoup plus vite.</p>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <button id="prevBtn">Précédent</button>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="slide-num" id="currentSlide">1</span> / <span class="slide-num" id="totalSlides">35</span>
+        <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+    <button id="nextBtn">Suivant</button>
+</footer>
+
+<script>
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideDisplay = document.getElementById('currentSlide');
+    const totalSlidesDisplay = document.getElementById('totalSlides');
+    const progressBar = document.getElementById('progressBar');
+
+    totalSlidesDisplay.textContent = totalSlides;
+    updateUI();
+
+    function showSlide(index) {
+        if (index < 0 || index >= totalSlides) return;
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'prev');
+            if (i === index) slide.classList.add('active');
+            else if (i < index) slide.classList.add('prev');
+        });
+        currentSlideIndex = index;
+        updateUI();
+    }
+
+    function updateUI() {
+        currentSlideDisplay.textContent = currentSlideIndex + 1;
+        const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+        prevBtn.disabled = (currentSlideIndex === 0);
+        nextBtn.disabled = (currentSlideIndex === totalSlides - 1);
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+    nextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlideIndex + 1);
+        if (e.key === 'ArrowLeft') showSlide(currentSlideIndex - 1);
+    });
+</script>
+
+</body>
+</html>

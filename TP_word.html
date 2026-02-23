@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP Word - Bootcamp - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;
+            --mundi-orange: #F37021;
+            --mundi-grey: #f4f6f8;
+            --white: #ffffff;
+            --text-main: #333333;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--white);
+            border-bottom: 5px solid var(--mundi-orange);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--mundi-blue);
+            font-weight: 700;
+            font-size: 1.2em;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero-card {
+            background: linear-gradient(135deg, var(--mundi-blue) 0%, #001a33 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 51, 102, 0.2);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .hero-card h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.5em; }
+        .hero-card p { font-size: 1.2em; opacity: 0.9; margin-top: 10px; }
+
+        /* --- INSTRUCTION CARDS --- */
+        .task-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--mundi-blue);
+            position: relative;
+        }
+
+        .task-card.orange { border-left-color: var(--mundi-orange); }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            background: var(--mundi-orange);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: var(--mundi-blue);
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* --- RAW TEXT BOX --- */
+        .raw-text-box {
+            background: #eef2f5;
+            border: 2px dashed #ccc;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #555;
+            white-space: pre-wrap;
+            border-radius: 8px;
+            margin: 20px 0;
+            user-select: all; /* Facilite la sélection */
+        }
+        
+        .copy-hint {
+            font-size: 0.8em;
+            color: var(--mundi-orange);
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 5px;
+        }
+
+        /* --- CHECKLIST --- */
+        .checklist { list-style: none; padding: 0; }
+        .checklist li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+        }
+        .checklist li::before {
+            content: '⬜';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            cursor: pointer;
+        }
+        .checklist li.checked::before { content: '✅'; }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        /* --- BUTTON --- */
+        .btn-action {
+            display: inline-block;
+            background: var(--mundi-blue);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" height="45" alt="Mundiapolis">
+        </div>
+        <div class="header-title">Bootcamp Word • Travaux Pratiques</div>
+    </header>
+
+    <div class="container">
+
+        <!-- INTRO -->
+        <div class="hero-card">
+            <h1>Mission : Nettoyage de Rapport</h1>
+            <p>Transformez un texte brut et "sale" en un document professionnel.</p>
+            <div style="margin-top: 20px; font-size: 0.9em; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50px; display: inline-block;">
+                ⏳ Durée estimée : 30 minutes
+            </div>
+        </div>
+
+        <!-- ETAPE 0 : LE MATÉRIAU -->
+        <div class="task-card">
+            <div class="step-number">0</div>
+            <h2>Le Matériau Brut</h2>
+            <p>Voici le texte que vous devez mettre en forme. Il est volontairement mal présenté (pas de titres, espaces bizarres).</p>
+            
+            <div class="copy-hint">👇 Copiez ce texte (Ctrl+C) 👇</div>
+            <div class="raw-text-box">L'économie numérique au Maroc : Enjeux et Perspectives
+
+Introduction
+Le Maroc s'est engagé depuis plusieurs années dans une stratégie de transformation digitale. L'objectif est de faire du Royaume un hub numérique régional. Cependant, plusieurs défis structurels persistent.
+
+I. État des lieux des infrastructures
+Le taux de pénétration d'Internet a atteint des niveaux records en 2023. On observe une démocratisation de la fibre optique dans les grandes villes comme Casablanca, Rabat et Tanger.
+Cependant, la fracture numérique entre les zones urbaines et rurales reste une préoccupation majeure pour les décideurs publics.
+
+II. Les secteurs clés de la croissance
+Plusieurs secteurs bénéficient directement de cette digitalisation :
+L'Offshoring (Centres d'appels et développement informatique).
+Le E-commerce (Jumia, Glovo).
+La Fintech (Paiement mobile).
+
+III. Analyse chiffrée
+Voici les investissements prévus par secteur (en millions de DH) :
+Secteur	Investissement
+Infrastructures	5000
+Formation	2000
+Startups	1500
+
+Conclusion
+Pour réussir ce pari, le Maroc doit investir massivement dans le capital humain. La formation des jeunes aux métiers de la Data et de l'IA est la priorité absolue pour les dix prochaines années.</div>
+            
+            <p><strong>Action :</strong> Ouvrez un document Word vierge et collez ce texte en utilisant <strong>"Collage Spécial > Conserver uniquement le texte"</strong>.</p>
+        </div>
+
+        <!-- ETAPE 1 : NETTOYAGE -->
+        <div class="task-card orange">
+            <div class="step-number">1</div>
+            <h2>Nettoyage & Paragraphes</h2>
+            <p>Le texte est "collé" aux marges. Il faut l'aérer.</p>
+            <ul class="checklist">
+                <li>Activez les caractères invisibles (bouton <strong>¶</strong>) pour vérifier s'il n'y a pas d'espaces en trop.</li>
+                <li>Sélectionnez tout le texte (<span style="font-family:monospace; background:#eee;">Ctrl+A</span>).</li>
+                <li>Mettez l'alignement en <strong>Justifié</strong> (bords droits).</li>
+                <li>Mettez l'interligne à <strong>1.5</strong> pour aérer la lecture.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 2 : STYLES -->
+        <div class="task-card">
+            <div class="step-number">2</div>
+            <h2>La Structure (Styles)</h2>
+            <p>C'est le moment d'utiliser la "Dictature des Styles". Ne touchez pas à la taille de police manuellement !</p>
+            <ul class="checklist">
+                <li>Appliquez le style <strong>"Titre"</strong> à la première ligne ("L'économie numérique au Maroc...").</li>
+                <li>Appliquez le style <strong>"Titre 1"</strong> aux lignes : "Introduction", "I. État des lieux...", "II. Les secteurs...", "III. Analyse chiffrée", "Conclusion".</li>
+                <li><strong>Défi :</strong> Modifiez le style "Titre 1" (Clic droit > Modifier) pour qu'il soit en <strong>Orange</strong> et en <strong>Gras</strong>. Vérifiez que tous les titres ont changé.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 3 : LISTES & TABLEAUX -->
+        <div class="task-card orange">
+            <div class="step-number">3</div>
+            <h2>Enrichissement Visuel</h2>
+            <p>Transformons les listes et les données brutes.</p>
+            
+            <h3>A. La Liste à puces</h3>
+            <p>Dans la partie "II. Les secteurs clés", sélectionnez les 3 lignes (Offshoring, E-commerce, Fintech) et transformez-les en <strong>Liste à puces</strong> (•).</p>
+            
+            <h3>B. Le Tableau</h3>
+            <p>Dans la partie "III. Analyse chiffrée" :</p>
+            <ul class="checklist">
+                <li>Insérez un vrai tableau Word (Onglet Insertion > Tableau) de 2 colonnes et 4 lignes.</li>
+                <li>Recopiez les données du texte (Infrastructures 5000, etc.) dans les cases.</li>
+                <li>Supprimez l'ancien texte brut des chiffres.</li>
+                <li>Mettez la ligne d'en-tête (Secteur / Investissement) en Gras avec un fond gris clair.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 4 : IMAGE & MISE EN PAGE -->
+        <div class="task-card">
+            <div class="step-number">4</div>
+            <h2>Mise en Page Pro</h2>
+            
+            <h3>A. L'Image</h3>
+            <p>Allez sur Google Images, trouvez une photo de "Technologie Maroc" (ou n'importe quoi).</p>
+            <ul class="checklist">
+                <li>Copiez-collez l'image dans votre document, sous l'Introduction.</li>
+                <li>Cliquez sur l'image et changez l'habillage en <strong>"Haut et Bas"</strong> pour que le texte ne se casse pas.</li>
+                <li>Redimensionnez-la pour qu'elle ne prenne pas toute la page.</li>
+            </ul>
+
+            <h3>B. Finitions</h3>
+            <ul class="checklist">
+                <li>Allez dans <strong>Insertion > Numéro de page</strong> et mettez-le en bas à droite.</li>
+                <li>Allez tout en haut du document (avant le titre principal) et insérez une <strong>Table des Matières</strong> automatique (Onglet Références).</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 5 : EXPORT -->
+        <div class="task-card orange">
+            <div class="step-number">5</div>
+            <h2>Sauvegarde & Livraison</h2>
+            <p>Le document est prêt. Il faut le figer.</p>
+            <ul class="checklist">
+                <li>Enregistrez votre travail en <strong>.docx</strong> (pour vous).</li>
+                <li>Exportez le document en <strong>.PDF</strong> (Fichier > Exporter > Créer PDF).</li>
+                <li>Ouvrez le PDF pour vérifier que rien n'a bougé.</li>
+            </ul>
+            <div style="margin-top: 20px; text-align: center;">
+                <p><em>Si votre PDF ressemble à un rapport officiel, vous avez validé le Bootcamp Word ! 🎓</em></p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        Université Mundiapolis &copy; 2024 - Cours de Culture Digitale
+    </footer>
+
+    <script>
+        // Petit script pour rendre les checklists interactives (satisfaction utilisateur)
+        document.querySelectorAll('.checklist li').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+    </script>
+
+</body>
+</html>
