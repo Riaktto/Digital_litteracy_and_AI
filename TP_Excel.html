@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP Excel - Bootcamp - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;
+            --mundi-orange: #F37021;
+            --mundi-grey: #f4f6f8;
+            --white: #ffffff;
+            --text-main: #333333;
+            --excel-green: #217346; /* Vert Excel */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--white);
+            border-bottom: 5px solid var(--excel-green); /* Vert pour Excel */
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--mundi-blue);
+            font-weight: 700;
+            font-size: 1.2em;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero-card {
+            background: linear-gradient(135deg, var(--excel-green) 0%, #004d26 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(33, 115, 70, 0.3);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .hero-card h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.5em; }
+        .hero-card p { font-size: 1.2em; opacity: 0.9; margin-top: 10px; }
+
+        /* --- INSTRUCTION CARDS --- */
+        .task-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--mundi-blue);
+            position: relative;
+        }
+
+        .task-card.green { border-left-color: var(--excel-green); }
+        .task-card.orange { border-left-color: var(--mundi-orange); }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            background: var(--mundi-blue);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .task-card.green .step-number { background: var(--excel-green); }
+        .task-card.orange .step-number { background: var(--mundi-orange); }
+
+        h2 {
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* --- RAW DATA TABLE --- */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin: 20px 0;
+            background: #fff;
+        }
+        .data-table th { background: #eee; border: 1px solid #ccc; padding: 8px; text-align: left; }
+        .data-table td { border: 1px solid #ccc; padding: 8px; }
+
+        /* --- CODE / FORMULA BOX --- */
+        .formula-box {
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #d63384; /* Couleur style Excel */
+            display: inline-block;
+        }
+
+        /* --- CHECKLIST --- */
+        .checklist { list-style: none; padding: 0; }
+        .checklist li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+        }
+        .checklist li::before {
+            content: '⬜';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            cursor: pointer;
+        }
+        .checklist li.checked::before { content: '✅'; }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" height="45" alt="Mundiapolis">
+        </div>
+        <div class="header-title">Bootcamp Excel • Travaux Pratiques</div>
+    </header>
+
+    <div class="container">
+
+        <!-- INTRO -->
+        <div class="hero-card">
+            <h1>Mission : Gestion Commerciale</h1>
+            <p>De la saisie brute à l'analyse de rentabilité.</p>
+            <div style="margin-top: 20px; font-size: 0.9em; background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 50px; display: inline-block;">
+                🎯 Objectif : Maîtriser les Formules et le Dollar ($)
+            </div>
+        </div>
+
+        <!-- ETAPE 0 : LE MATÉRIAU -->
+        <div class="task-card">
+            <div class="step-number">0</div>
+            <h2>La Saisie (Le Brut)</h2>
+            <p>Vous êtes gérant d'un magasin d'informatique. Voici vos ventes de la semaine.</p>
+            <p><strong>Action :</strong> Ouvrez un nouveau classeur Excel et recopiez <strong>exactement</strong> ces données dans les cellules A1 à D6.</p>
+            
+            <table class="data-table">
+                <tr>
+                    <th></th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td><b>Produit</b></td>
+                    <td><b>Catégorie</b></td>
+                    <td><b>Prix Unit</b></td>
+                    <td><b>Quantité</b></td>
+                </tr>
+                <tr>
+                    <th>2</th>
+                    <td>PC Gamer</td>
+                    <td>Ordinateur</td>
+                    <td>12000</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <th>3</th>
+                    <td>Souris Pro</td>
+                    <td>Accessoire</td>
+                    <td>450</td>
+                    <td>15</td>
+                </tr>
+                <tr>
+                    <th>4</th>
+                    <td>Clavier</td>
+                    <td>Accessoire</td>
+                    <td>800</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <th>5</th>
+                    <td>Ecran 4K</td>
+                    <td>Ecran</td>
+                    <td>3500</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <th>6</th>
+                    <td>Imprimante</td>
+                    <td>Bureau</td>
+                    <td>2100</td>
+                    <td>3</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ETAPE 1 : FORMATAGE -->
+        <div class="task-card green">
+            <div class="step-number">1</div>
+            <h2>Nettoyage & Formats</h2>
+            <p>Transformez cette grille brute en tableau professionnel.</p>
+            <ul class="checklist">
+                <li>Sélectionnez les titres (A1:D1) : Mettez-les en <strong>Gras</strong> avec un fond de couleur (ex: Bleu clair).</li>
+                <li>Sélectionnez les Prix (C2:C6) : Appliquez le format <strong>Monétaire</strong> (DH ou €) via l'onglet Accueil.</li>
+                <li>Mettez des <strong>Bordures</strong> partout (bouton "Toutes les bordures").</li>
+                <li>Ajustez la largeur des colonnes (double-clic entre A et B) pour qu'on lise tout.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 2 : CALCUL SIMPLE -->
+        <div class="task-card">
+            <div class="step-number">2</div>
+            <h2>Le Calcul de Base</h2>
+            <p>Calculons le Chiffre d'Affaires Hors Taxe (CA HT).</p>
+            <ul class="checklist">
+                <li>En <strong>E1</strong>, écrivez le titre : "Total HT".</li>
+                <li>En <strong>E2</strong>, écrivez la formule : <span class="formula-box">=C2*D2</span> (Prix * Quantité).</li>
+                <li>Validez avec Entrée. Cela doit afficher 24 000.</li>
+                <li>Utilisez la <strong>Poignée de recopie</strong> (petit carré vert en bas à droite) pour tirer la formule jusqu'en bas (E6).</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 3 : LE DÉFI DU DOLLAR ($) -->
+        <div class="task-card orange">
+            <div class="step-number">3</div>
+            <h2>Le Piège de la TVA (Ancrage)</h2>
+            <p>C'est l'étape la plus importante du TP. Suivez bien.</p>
+            
+            <p><strong>Préparation :</strong></p>
+            <ul style="margin-bottom: 20px;">
+                <li>Laissez la colonne F vide pour l'instant.</li>
+                <li>En <strong>G1</strong>, écrivez "Taux TVA".</li>
+                <li>En <strong>G2</strong>, écrivez <strong>20%</strong>.</li>
+            </ul>
+
+            <p><strong>L'Action :</strong></p>
+            <ul class="checklist">
+                <li>En <strong>F1</strong>, écrivez le titre "Montant TVA".</li>
+                <li>En <strong>F2</strong>, nous voulons calculer 20% du Total HT.</li>
+                <li>Tentez la formule <span class="formula-box">=E2*G2</span> et tirez vers le bas. <strong>Regardez le désastre :</strong> ça affiche 0 ou erreur sur les lignes d'après !</li>
+                <li><strong>Correction :</strong> Revenez en F2. Il faut "clouer" la case G2.</li>
+                <li>La bonne formule est : <span class="formula-box">=E2*$G$2</span> (Appuyez sur F4 sur G2).</li>
+                <li>Tirez vers le bas. Maintenant ça marche !</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 4 : STATISTIQUES -->
+        <div class="task-card green">
+            <div class="step-number">4</div>
+            <h2>L'Analyse (Fonctions)</h2>
+            <p>Faisons parler les chiffres en bas du tableau.</p>
+            <ul class="checklist">
+                <li>Laissez une ligne vide (ligne 7).</li>
+                <li>En <strong>A8</strong>, écrivez "TOTAL VENTES". En E8, utilisez <span class="formula-box">=SOMME(E2:E6)</span>.</li>
+                <li>En <strong>A9</strong>, écrivez "PANIER MOYEN". En E9, utilisez <span class="formula-box">=MOYENNE(E2:E6)</span>.</li>
+                <li>En <strong>A10</strong>, écrivez "MEILLEURE VENTE". En E10, utilisez <span class="formula-box">=MAX(E2:E6)</span>.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 5 : LOGIQUE & GRAPHIQUE -->
+        <div class="task-card">
+            <div class="step-number">5</div>
+            <h2>Bonus : Logique & Visuel</h2>
+            
+            <h3>A. La fonction SI (Logique)</h3>
+            <p>En colonne H, titre "Bonus Vendeur". Si la vente dépasse 5000 DH, on écrit "Prime", sinon "Rien".</p>
+            <p>Formule en H2 : <span class="formula-box">=SI(E2>5000; "Prime"; "Rien")</span>.</p>
+
+            <h3>B. Le Graphique</h3>
+            <ul class="checklist">
+                <li>Sélectionnez la colonne <strong>Produit</strong> (A1:A6) ET la colonne <strong>Total HT</strong> (E1:E6). <em>(Astuce : Maintenez la touche Ctrl pour sélectionner deux colonnes séparées).</em></li>
+                <li>Allez dans <strong>Insertion > Graphiques recommandés</strong>.</li>
+                <li>Choisissez un "Histogramme" (Bâtons).</li>
+                <li>Placez le graphique proprement à côté du tableau.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 6 : LIVRAISON -->
+        <div class="task-card orange">
+            <div class="step-number">6</div>
+            <h2>Export Final</h2>
+            <p>Le travail est fini. Il faut le figer.</p>
+            <ul class="checklist">
+                <li>Faites <strong>Mise en page > Orientation > Paysage</strong> (car le tableau est large).</li>
+                <li>Faites <strong>Fichier > Exporter > Créer PDF</strong>.</li>
+                <li>Ouvrez le PDF. Si tout tient sur une page : <strong>BRAVO !</strong> 🎉</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <footer>
+        Université Mundiapolis &copy; 2024 - Cours de Culture Digitale
+    </footer>
+
+    <script>
+        // Script pour les cases à cocher interactives
+        document.querySelectorAll('.checklist li').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+    </script>
+
+</body>
+</html>
