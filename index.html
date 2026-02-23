@@ -81,7 +81,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
-            border-top: 6px solid transparent; /* Pour l'effet hover */
+            border-top: 6px solid transparent;
             position: relative;
         }
 
@@ -90,6 +90,44 @@
             box-shadow: 0 15px 30px rgba(0, 51, 102, 0.2);
             border-top-color: var(--mundi-orange);
         }
+
+        /* --- BOOTCAMP CARD SPECIAL STYLE --- */
+        .card.bootcamp-card {
+            grid-column: 1 / -1; /* Prend toute la largeur de la grille */
+            border-top-color: #27ae60; /* Vert pour distinguer */
+            background: #fff;
+        }
+        
+        .card.bootcamp-card .session-number {
+            background-color: #e8f5e9;
+            color: #27ae60;
+        }
+
+        .bootcamp-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-main { background-color: #27ae60; color: white; }
+        .btn-main:hover { background-color: #219150; }
+
+        .btn-sec { background-color: #f4f6f8; color: var(--mundi-blue); border: 1px solid #ddd; }
+        .btn-sec:hover { background-color: #e2e6ea; border-color: #ccc; }
+
 
         .card-header {
             padding: 25px 25px 10px 25px;
@@ -144,6 +182,7 @@
             display: flex;
             align-items: center;
             margin-bottom: 30px;
+            margin-top: 20px;
         }
         .section-header h2 {
             font-family: 'Montserrat', sans-serif;
@@ -169,7 +208,6 @@
 
     <header>
         <div class="logo">
-            <!-- Logo Mundiapolis -->
             <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis Logo">
         </div>
         <div class="course-info">
@@ -221,6 +259,36 @@
                     <span>Ouvrir</span> <span>→</span>
                 </div>
             </a>
+        </div>
+
+        <!-- BLOC BOOTCAMP (SPECIAL) -->
+        <div class="section-header">
+            <h2>Mise à Niveau Technique</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="grid">
+            <!-- CARTE BOOTCAMP UNIQUE AVEC 3 LIENS -->
+            <div class="card bootcamp-card">
+                <div class="card-header">
+                    <span class="session-number">Module Intensif</span>
+                    <span class="card-icon">🛠️</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Bootcamp Bureautique (Word & Excel)</div>
+                    <div class="card-desc">
+                        Module pratique pour maîtriser les bases indispensables avant d'intégrer l'IA. 
+                        Comprend le support de cours complet et deux ateliers pratiques (TP).
+                    </div>
+                </div>
+                <div class="card-footer" style="background: white; border-top: none;">
+                    <div class="bootcamp-actions">
+                        <a href="bootcamp.html" class="action-btn btn-main">🎓 Ouvrir le Cours (Bootcamp)</a>
+                        <a href="TP_word.html" class="action-btn btn-sec">📘 TP Word</a>
+                        <a href="TP_excel.html" class="action-btn btn-sec">📊 TP Excel</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- BLOC 2 : ANALYSE DE DONNÉES -->
@@ -340,7 +408,7 @@
     </div>
 
     <footer>
-        <p>Université Mundiapolis &copy; 2024-2025<br>École de Commerce et de Gestion</p>
+        <p>Université Mundiapolis &copy; 2025-2026</p>
     </footer>
 
 </body>
