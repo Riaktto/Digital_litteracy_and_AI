@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Datasets & Démos - Séance 3</title>
+    <title>Datasets & Démos - Séance 5</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { --mundi-blue: #003366; --mundi-orange: #F37021; --mundi-grey: #f4f6f8; --excel-green: #217346; --white: #ffffff; }
@@ -17,7 +17,6 @@
         .task-card.orange { border-left-color: var(--mundi-orange); }
         h2 { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         
-        /* Amélioration de la boîte de code pour les grands volumes */
         .raw-text-box { 
             background: #eef2f5; 
             border: 2px dashed #ccc; 
@@ -28,13 +27,37 @@
             white-space: pre; 
             overflow-x: auto; 
             overflow-y: auto; 
-            max-height: 250px; /* Ajout d'un scroll pour ne pas polluer la page */
+            max-height: 200px; 
             border-radius: 8px; 
-            margin: 10px 0; 
-            user-select: all; 
-            cursor: copy; 
+            margin: 15px 0 0 0; 
         }
-        .copy-hint { font-size: 0.9em; color: var(--mundi-orange); font-weight: bold; background: #fff3e0; padding: 5px 10px; border-radius: 5px; display: inline-block;}
+
+        .download-btn {
+            background-color: var(--excel-green);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(33, 115, 70, 0.2);
+        }
+
+        .download-btn:hover {
+            background-color: #165c36;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(33, 115, 70, 0.3);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -46,15 +69,15 @@
 
     <div class="container">
         <div class="hero-card">
-            <h1>Boîte à Outils : Données Brutes</h1>
-            <p>Cliquez dans les cadres gris, faites <strong>Ctrl+A</strong> (Tout sélectionner) puis <strong>Ctrl+C</strong> (Copier), et collez dans Excel.</p>
+            <h1>Boîte à Outils : Fichiers CSV</h1>
+            <p>Cliquez sur les boutons pour télécharger directement les données brutes de chaque exercice afin de les ouvrir dans Excel.</p>
         </div>
 
         <!-- EXERCICE 1 : CSV -->
         <div class="task-card">
             <h2>Démo 1 : Le Mauvais CSV (Séparateur point-virgule)</h2>
             <p><strong>Problème :</strong> Excel va tout coincer dans la colonne A. Utilisez <em>Données > Convertir</em>.</p>
-            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <button class="download-btn" onclick="downloadCSV(this, 'Demo1_Mauvais_CSV.csv')">📥 Télécharger le CSV</button>
             <div class="raw-text-box">ID_Transaction;Date_Vente;Ville_Client;Secteur;Chiffre_Affaires
 TRX-001;12/01/2023;Casablanca;Technologie;150000
 TRX-002;15/01/2023;Rabat;Agriculture;95000
@@ -82,7 +105,7 @@ TRX-020;25/07/2023;Casablanca;Textile;88000</div>
         <div class="task-card orange">
             <h2>Démo 2 : Grille vs Tableau Officiel</h2>
             <p><strong>Problème :</strong> Voir qu'une formule ne s'étend pas automatiquement sans <em>Ctrl+L</em>.</p>
-            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <button class="download-btn" onclick="downloadCSV(this, 'Demo2_Tableau.csv')">📥 Télécharger le CSV</button>
             <div class="raw-text-box">Produit	Prix_Unitaire	Quantite
 PC Gamer Pro	12000	5
 Souris Sans Fil	400	45
@@ -105,7 +128,7 @@ Adaptateur USB-C	250	60</div>
         <div class="task-card">
             <h2>Démo 3 : Espaces Fantômes (SUPPRESPACE)</h2>
             <p><strong>Problème :</strong> Nettoyer des villes avec des espaces invisibles qui faussent les calculs.</p>
-            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <button class="download-btn" onclick="downloadCSV(this, 'Demo3_Espaces.csv')">📥 Télécharger le CSV</button>
             <div class="raw-text-box">Ville_Saisie
 Casablanca 
 Rabat
@@ -129,7 +152,7 @@ Agadir
         <div class="task-card orange">
             <h2>Démo 4 : La Casse (NOMPROPRE)</h2>
             <p><strong>Problème :</strong> Uniformiser des noms de clients écrits n'importe comment.</p>
-            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <button class="download-btn" onclick="downloadCSV(this, 'Demo4_Casse.csv')">📥 Télécharger le CSV</button>
             <div class="raw-text-box">Nom_Client
 jean dupont
 KARIM ALAMI
@@ -152,7 +175,7 @@ youssef naciri</div>
         <div class="task-card">
             <h2>Démo 5 : Chiffres déguisés en Texte (IA)</h2>
             <p><strong>Problème :</strong> Extraire le chiffre et le convertir (CNUM + SUBSTITUE via ChatGPT).</p>
-            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <button class="download-btn" onclick="downloadCSV(this, 'Demo5_Chiffres_Texte.csv')">📥 Télécharger le CSV</button>
             <div class="raw-text-box">Salaire_Saisi
  5400 MAD 
 12500 MAD
@@ -175,7 +198,7 @@ youssef naciri</div>
         <div class="task-card orange">
             <h2>Démo 6 : Extraction Complexe (IA)</h2>
             <p><strong>Problème :</strong> Extraire uniquement le code du milieu (Secteur) via un prompt IA.</p>
-            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <button class="download-btn" onclick="downloadCSV(this, 'Demo6_Extraction.csv')">📥 Télécharger le CSV</button>
             <div class="raw-text-box">Code_Facture
 2023-AUTO-CASA
 2024-AGRO-RABAT
@@ -200,7 +223,7 @@ youssef naciri</div>
         <div class="task-card">
             <h2>Démo 7 : La Base pour le TCD (Le Crash Test)</h2>
             <p><strong>Problème :</strong> Analyser 60 lignes instantanément (Saisonnalité, Part de marché, Segments).</p>
-            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <button class="download-btn" onclick="downloadCSV(this, 'Demo7_Base_TCD.csv')">📥 Télécharger le CSV</button>
             <div class="raw-text-box">Date_Vente	Mois	Région	Secteur	Ventes_MAD
 05/01/2023	Janvier	Centre	Technologie	124500
 12/01/2023	Janvier	Sud	Agriculture	85200
@@ -264,5 +287,31 @@ youssef naciri</div>
         </div>
 
     </div>
+
+    <!-- SCRIPT DE TÉLÉCHARGEMENT -->
+    <script>
+        function downloadCSV(buttonElement, filename) {
+            // Trouver la boîte de texte brut correspondante (située juste après le bouton)
+            const rawTextBox = buttonElement.nextElementSibling;
+            let csvContent = rawTextBox.innerText || rawTextBox.textContent;
+
+            // Ajouter le BOM UTF-8 pour s'assurer qu'Excel lit bien les accents français
+            const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+            const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8;' });
+
+            // Créer un lien de téléchargement caché et le cliquer automatiquement
+            const link = document.createElement("a");
+            if (link.download !== undefined) { 
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url); // Libérer la mémoire
+            }
+        }
+    </script>
 </body>
 </html>
