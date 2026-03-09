@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datasets & Démos - Séance 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --mundi-blue: #003366; --mundi-orange: #F37021; --mundi-grey: #f4f6f8; --excel-green: #217346; --white: #ffffff; }
+        body { margin: 0; padding: 0; font-family: 'Open Sans', sans-serif; background-color: var(--mundi-grey); color: #333; }
+        header { background: var(--white); border-bottom: 5px solid var(--excel-green); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .header-title { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-weight: 700; font-size: 1.2em; text-transform: uppercase; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .hero-card { background: linear-gradient(135deg, var(--excel-green) 0%, #004d26 100%); color: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(33, 115, 70, 0.3); margin-bottom: 40px; text-align: center; }
+        .hero-card h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.5em; }
+        .task-card { background: var(--white); border-radius: 10px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--mundi-blue); }
+        .task-card.orange { border-left-color: var(--mundi-orange); }
+        h2 { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        /* Amélioration de la boîte de code pour les grands volumes */
+        .raw-text-box { 
+            background: #eef2f5; 
+            border: 2px dashed #ccc; 
+            padding: 15px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 0.85em; 
+            color: #444; 
+            white-space: pre; 
+            overflow-x: auto; 
+            overflow-y: auto; 
+            max-height: 250px; /* Ajout d'un scroll pour ne pas polluer la page */
+            border-radius: 8px; 
+            margin: 10px 0; 
+            user-select: all; 
+            cursor: copy; 
+        }
+        .copy-hint { font-size: 0.9em; color: var(--mundi-orange); font-weight: bold; background: #fff3e0; padding: 5px 10px; border-radius: 5px; display: inline-block;}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" height="45" alt="Mundiapolis"></div>
+        <div class="header-title">Démos & Datasets (Séance 3)</div>
+    </header>
+
+    <div class="container">
+        <div class="hero-card">
+            <h1>Boîte à Outils : Données Brutes</h1>
+            <p>Cliquez dans les cadres gris, faites <strong>Ctrl+A</strong> (Tout sélectionner) puis <strong>Ctrl+C</strong> (Copier), et collez dans Excel.</p>
+        </div>
+
+        <!-- EXERCICE 1 : CSV -->
+        <div class="task-card">
+            <h2>Démo 1 : Le Mauvais CSV (Séparateur point-virgule)</h2>
+            <p><strong>Problème :</strong> Excel va tout coincer dans la colonne A. Utilisez <em>Données > Convertir</em>.</p>
+            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <div class="raw-text-box">ID_Transaction;Date_Vente;Ville_Client;Secteur;Chiffre_Affaires
+TRX-001;12/01/2023;Casablanca;Technologie;150000
+TRX-002;15/01/2023;Rabat;Agriculture;95000
+TRX-003;03/02/2023;Tanger;Automobile;210000
+TRX-004;14/02/2023;Casablanca;Technologie;130000
+TRX-005;22/02/2023;Marrakech;Tourisme;85000
+TRX-006;05/03/2023;Fes;Textile;45000
+TRX-007;12/03/2023;Agadir;Tourisme;175000
+TRX-008;19/03/2023;Rabat;Technologie;220000
+TRX-009;02/04/2023;Casablanca;Automobile;310000
+TRX-010;11/04/2023;Tanger;Textile;55000
+TRX-011;24/04/2023;Marrakech;Tourisme;92000
+TRX-012;05/05/2023;Fes;Agriculture;34000
+TRX-013;16/05/2023;Agadir;Technologie;128000
+TRX-014;21/05/2023;Casablanca;Automobile;450000
+TRX-015;02/06/2023;Rabat;Textile;67000
+TRX-016;14/06/2023;Tanger;Technologie;290000
+TRX-017;28/06/2023;Marrakech;Agriculture;76000
+TRX-018;07/07/2023;Fes;Tourisme;115000
+TRX-019;19/07/2023;Agadir;Automobile;198000
+TRX-020;25/07/2023;Casablanca;Textile;88000</div>
+        </div>
+
+        <!-- EXERCICE 2 : TABLEAU -->
+        <div class="task-card orange">
+            <h2>Démo 2 : Grille vs Tableau Officiel</h2>
+            <p><strong>Problème :</strong> Voir qu'une formule ne s'étend pas automatiquement sans <em>Ctrl+L</em>.</p>
+            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <div class="raw-text-box">Produit	Prix_Unitaire	Quantite
+PC Gamer Pro	12000	5
+Souris Sans Fil	400	45
+Clavier Mécanique	850	30
+Ecran 27 Pouces	2500	12
+Casque Audio	600	25
+Disque Dur 1To	750	40
+Câble HDMI	100	150
+Webcam HD	900	18
+Microphone USB	1200	10
+Onduleur 1000VA	1500	8
+Clé USB 64Go	150	80
+Enceintes PC	450	22
+Tapis de souris	120	100
+Support PC	350	15
+Adaptateur USB-C	250	60</div>
+        </div>
+
+        <!-- EXERCICE 3 : ESPACES -->
+        <div class="task-card">
+            <h2>Démo 3 : Espaces Fantômes (SUPPRESPACE)</h2>
+            <p><strong>Problème :</strong> Nettoyer des villes avec des espaces invisibles qui faussent les calculs.</p>
+            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <div class="raw-text-box">Ville_Saisie
+Casablanca 
+Rabat
+ Tanger
+Casablanca
+ Rabat 
+  Marrakech
+Agadir  
+Fes
+  Fes
+Tanger 
+ Casablanca
+Rabat  
+Oujda
+ Oujda 
+Agadir
+ Marrakech </div>
+        </div>
+
+        <!-- EXERCICE 4 : CASSE -->
+        <div class="task-card orange">
+            <h2>Démo 4 : La Casse (NOMPROPRE)</h2>
+            <p><strong>Problème :</strong> Uniformiser des noms de clients écrits n'importe comment.</p>
+            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <div class="raw-text-box">Nom_Client
+jean dupont
+KARIM ALAMI
+fatima zahra
+Omar Berrada
+SALMA BENNIS
+mehdi chraibi
+yassine ben-aboud
+MOHAMED RACHIDI
+sara tazi
+HICHAM EL FASSI
+zineb guessous
+Amine Bennani
+khalid lazrak
+MERIEM IRAQI
+youssef naciri</div>
+        </div>
+
+        <!-- EXERCICE 5 : CHIFFRES -->
+        <div class="task-card">
+            <h2>Démo 5 : Chiffres déguisés en Texte (IA)</h2>
+            <p><strong>Problème :</strong> Extraire le chiffre et le convertir (CNUM + SUBSTITUE via ChatGPT).</p>
+            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <div class="raw-text-box">Salaire_Saisi
+ 5400 MAD 
+12500 MAD
+ 8900 MAD 
+  21000 MAD
+15600 MAD 
+ 7200 MAD
+ 34000 MAD
+9800 MAD  
+  11200 MAD
+ 6700 MAD
+18900 MAD
+  4500 MAD 
+13400 MAD
+ 25000 MAD 
+9100 MAD</div>
+        </div>
+
+        <!-- EXERCICE 6 : EXTRACTION -->
+        <div class="task-card orange">
+            <h2>Démo 6 : Extraction Complexe (IA)</h2>
+            <p><strong>Problème :</strong> Extraire uniquement le code du milieu (Secteur) via un prompt IA.</p>
+            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <div class="raw-text-box">Code_Facture
+2023-AUTO-CASA
+2024-AGRO-RABAT
+2023-TECH-TANGER
+2024-TOURISME-MARRAKECH
+2023-IMMO-FES
+2024-TEXTILE-AGADIR
+2023-FINANCE-CASA
+2024-AUTO-RABAT
+2023-AGRO-TANGER
+2024-TECH-MARRAKECH
+2023-TOURISME-FES
+2024-IMMO-AGADIR
+2023-TEXTILE-CASA
+2024-FINANCE-RABAT
+2023-AUTO-TANGER
+2024-AGRO-MARRAKECH
+2023-TECH-FES</div>
+        </div>
+
+        <!-- EXERCICE 7 : TCD -->
+        <div class="task-card">
+            <h2>Démo 7 : La Base pour le TCD (Le Crash Test)</h2>
+            <p><strong>Problème :</strong> Analyser 60 lignes instantanément (Saisonnalité, Part de marché, Segments).</p>
+            <div class="copy-hint">👇 Clic > Ctrl+A > Ctrl+C 👇</div>
+            <div class="raw-text-box">Date_Vente	Mois	Région	Secteur	Ventes_MAD
+05/01/2023	Janvier	Centre	Technologie	124500
+12/01/2023	Janvier	Sud	Agriculture	85200
+18/01/2023	Janvier	Nord	Tourisme	41000
+22/01/2023	Janvier	Oriental	Textile	32000
+03/02/2023	Février	Centre	Technologie	156000
+10/02/2023	Février	Sud	Agriculture	92000
+15/02/2023	Février	Nord	Tourisme	38000
+24/02/2023	Février	Oriental	Textile	28000
+02/03/2023	Mars	Centre	Technologie	110500
+09/03/2023	Mars	Sud	Agriculture	98000
+17/03/2023	Mars	Nord	Tourisme	46000
+26/03/2023	Mars	Oriental	Textile	35000
+04/04/2023	Avril	Centre	Technologie	165000
+11/04/2023	Avril	Sud	Agriculture	105000
+19/04/2023	Avril	Nord	Tourisme	52000
+28/04/2023	Avril	Oriental	Textile	39000
+06/05/2023	Mai	Centre	Technologie	142000
+14/05/2023	Mai	Sud	Agriculture	89000
+21/05/2023	Mai	Nord	Tourisme	58000
+30/05/2023	Mai	Oriental	Textile	41000
+03/06/2023	Juin	Centre	Technologie	178000
+12/06/2023	Juin	Sud	Agriculture	112000
+18/06/2023	Juin	Nord	Tourisme	65000
+25/06/2023	Juin	Oriental	Textile	44000
+05/07/2023	Juillet	Centre	Technologie	135000
+13/07/2023	Juillet	Sud	Agriculture	94000
+22/07/2023	Juillet	Nord	Tourisme	72000
+29/07/2023	Juillet	Oriental	Textile	38000
+04/08/2023	Août	Centre	Technologie	122000
+11/08/2023	Août	Sud	Agriculture	87000
+20/08/2023	Août	Nord	Tourisme	85000
+27/08/2023	Août	Oriental	Textile	36000
+02/09/2023	Septembre	Centre	Technologie	185000
+10/09/2023	Septembre	Sud	Agriculture	118000
+18/09/2023	Septembre	Nord	Tourisme	55000
+26/09/2023	Septembre	Oriental	Textile	48000
+05/10/2023	Octobre	Centre	Technologie	154000
+14/10/2023	Octobre	Sud	Agriculture	102000
+21/10/2023	Octobre	Nord	Tourisme	48000
+29/10/2023	Octobre	Oriental	Textile	42000
+03/11/2023	Novembre	Centre	Technologie	198000
+12/11/2023	Novembre	Sud	Agriculture	125000
+19/11/2023	Novembre	Nord	Tourisme	42000
+27/11/2023	Novembre	Oriental	Textile	51000
+04/12/2023	Décembre	Centre	Technologie	215000
+13/12/2023	Décembre	Sud	Agriculture	132000
+20/12/2023	Décembre	Nord	Tourisme	68000
+28/12/2023	Décembre	Oriental	Textile	55000
+08/01/2024	Janvier	Centre	Technologie	130000
+16/01/2024	Janvier	Sud	Agriculture	88000
+24/01/2024	Janvier	Nord	Tourisme	43000
+02/02/2024	Février	Oriental	Textile	34000
+12/02/2024	Février	Centre	Technologie	162000
+19/02/2024	Février	Sud	Agriculture	95000
+27/02/2024	Février	Nord	Tourisme	40000
+05/03/2024	Mars	Oriental	Textile	29000
+14/03/2024	Mars	Centre	Technologie	118000
+21/03/2024	Mars	Sud	Agriculture	101000
+29/03/2024	Mars	Nord	Tourisme	49000</div>
+        </div>
+
+    </div>
+</body>
+</html>

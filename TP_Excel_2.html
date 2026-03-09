@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP Data & TCD - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;
+            --mundi-orange: #F37021;
+            --mundi-grey: #f4f6f8;
+            --excel-green: #217346;
+            --white: #ffffff;
+            --text-main: #333333;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--white);
+            border-bottom: 5px solid var(--excel-green);
+            padding: 20px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--mundi-blue);
+            font-weight: 700; font-size: 1.2em; text-transform: uppercase;
+        }
+
+        /* --- CONTAINER --- */
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+        /* --- HERO SECTION --- */
+        .hero-card {
+            background: linear-gradient(135deg, var(--excel-green) 0%, #004d26 100%);
+            color: white; padding: 40px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(33, 115, 70, 0.3);
+            margin-bottom: 40px; text-align: center;
+        }
+
+        .hero-card h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.5em; }
+        .hero-card p { font-size: 1.2em; opacity: 0.9; margin-top: 10px; }
+
+        /* --- INSTRUCTION CARDS --- */
+        .task-card {
+            background: var(--white); border-radius: 10px; padding: 30px;
+            margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--mundi-blue); position: relative;
+        }
+
+        .task-card.orange { border-left-color: var(--mundi-orange); }
+        .task-card.green { border-left-color: var(--excel-green); }
+        .task-card.red { border-left-color: #e74c3c; }
+
+        .step-number {
+            position: absolute; top: -15px; left: -15px;
+            background: var(--mundi-blue); color: white;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .task-card.orange .step-number { background: var(--mundi-orange); }
+        .task-card.green .step-number { background: var(--excel-green); }
+        .task-card.red .step-number { background: #e74c3c; }
+
+        h2 { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+
+        /* --- RAW TEXT BOX --- */
+        .raw-text-box {
+            background: #eef2f5; border: 2px dashed #ccc; padding: 15px;
+            font-family: 'Courier New', monospace; font-size: 0.85em;
+            color: #444; white-space: pre; overflow-x: auto; overflow-y: auto;
+            max-height: 250px; border-radius: 8px; margin: 10px 0;
+            user-select: all; cursor: copy;
+        }
+        
+        .copy-hint { font-size: 0.8em; color: var(--mundi-orange); font-weight: bold; text-align: right; margin-bottom: 5px; }
+        .shortcut { display: inline-block; background: #eee; border: 1px solid #ccc; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #333; }
+
+        /* --- CHECKLIST --- */
+        .checklist { list-style: none; padding: 0; }
+        .checklist li { margin-bottom: 10px; padding-left: 30px; position: relative; cursor: pointer; }
+        .checklist li::before { content: '⬜'; position: absolute; left: 0; top: 2px; }
+        .checklist li.checked::before { content: '✅'; }
+
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" height="45" alt="Mundiapolis">
+        </div>
+        <div class="header-title">TP Data & TCD • Séance 3</div>
+    </header>
+
+    <div class="container">
+
+        <!-- INTRO -->
+        <div class="hero-card">
+            <h1>Mission : Le Bilan Annuel</h1>
+            <p>Nettoyez une base de données corrompue et générez un Tableau de Bord stratégique.</p>
+            <div style="margin-top: 20px; font-size: 0.9em; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50px; display: inline-block;">
+                ⏳ Durée estimée : 45 minutes
+            </div>
+        </div>
+
+        <!-- ETAPE 0 : LE MATÉRIAU -->
+        <div class="task-card red">
+            <div class="step-number">0</div>
+            <h2>La Data Brute (Le Chaos)</h2>
+            <p>Vous recevez ce fichier d'export du logiciel de vente. Il est plein d'erreurs humaines et de problèmes de formatage.</p>
+            
+            <div class="copy-hint">👇 Cliquez dans la boîte, faites Ctrl+A puis Ctrl+C 👇</div>
+            <div class="raw-text-box">ID_Facture;Date_Achat;Client_Nom;Ville_Livraison;Secteur_Produit;Montant_Brut
+FAC-101;15/01/2023;khalid ALAMI;Casablanca ;Technologie; 125000 MAD
+FAC-102;22/01/2023;SARA bennis; Rabat;Agriculture; 85000 MAD 
+FAC-103;10/02/2023;youssef TAZI;Tanger ;Automobile; 210000 MAD
+FAC-104;05/03/2023;Fatima ZAHRA; Casablanca;Technologie; 140000 MAD
+FAC-105;18/03/2023;OMAR chraibi;Marrakech ;Tourisme; 95000 MAD
+FAC-106;02/04/2023;mehdi FILALI;Agadir;Agriculture; 75000 MAD
+FAC-107;14/04/2023;Zineb guessous; Rabat ;Technologie; 160000 MAD
+FAC-108;25/05/2023;hicham IRAQI;Tanger;Automobile; 320000 MAD
+FAC-109;11/06/2023;salma naciri; Casablanca ;Tourisme; 115000 MAD
+FAC-110;20/07/2023;AMINE bennani;Marrakech;Technologie; 180000 MAD
+FAC-111;08/08/2023;karim Lahlou; Agadir ;Agriculture; 65000 MAD
+FAC-112;15/09/2023;Meryem IDRISSI;Rabat;Tourisme; 105000 MAD
+FAC-113;03/10/2023;Reda el fassi;Casablanca ;Automobile; 280000 MAD
+FAC-114;19/11/2023;sanaa TAHIRI; Tanger ;Technologie; 195000 MAD
+FAC-115;12/12/2023;Yassine LAZRAK;Marrakech;Agriculture; 88000 MAD
+FAC-116;05/01/2024;khalid ALAMI;Casablanca ;Technologie; 135000 MAD
+FAC-117;18/01/2024;SARA bennis; Rabat;Agriculture; 92000 MAD 
+FAC-118;10/02/2024;youssef TAZI;Tanger ;Automobile; 225000 MAD
+FAC-119;25/02/2024;Fatima ZAHRA; Casablanca;Technologie; 155000 MAD
+FAC-120;14/03/2024;OMAR chraibi;Marrakech ;Tourisme; 102000 MAD
+FAC-121;10/04/2024;mehdi FILALI;Agadir;Agriculture; 82000 MAD
+FAC-122;22/04/2024;Zineb guessous; Rabat ;Technologie; 175000 MAD</div>
+            
+            <p><strong>Action :</strong> Ouvrez un classeur Excel vierge, sélectionnez la cellule <strong>A1</strong> et faites <span class="shortcut">Ctrl+V</span>.</p>
+        </div>
+
+        <!-- ETAPE 1 : IMPORT & STRUCTURE -->
+        <div class="task-card green">
+            <div class="step-number">1</div>
+            <h2>L'Acquisition & La Structure</h2>
+            <p>Sortons du piège du CSV et créons un objet dynamique.</p>
+            <ul class="checklist">
+                <li>Sélectionnez toute la colonne A (en cliquant sur la lettre A en haut).</li>
+                <li>Allez dans l'onglet <strong>Données > Convertir</strong> (Texte en colonnes).</li>
+                <li>Choisissez "Délimité", puis cochez <strong>"Point-virgule"</strong> et validez. Les colonnes doivent se séparer proprement.</li>
+                <li>Cliquez n'importe où dans vos données et faites <span class="shortcut">Ctrl+L</span>.</li>
+                <li>Vérifiez que "Mon tableau comporte des en-têtes" est coché et validez. <strong>Vous avez un Tableau Officiel !</strong></li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 2 : NETTOYAGE IA -->
+        <div class="task-card orange">
+            <div class="step-number">2</div>
+            <h2>Le Nettoyage (Reverse Prompting)</h2>
+            <p>Votre base est truffée de pièges. Ouvrez <strong>ChatGPT</strong> (ou Copilot) pour obtenir les formules de nettoyage.</p>
+            
+            <h3>A. La Casse & Les Espaces</h3>
+            <ul class="checklist">
+                <li>Le <code>Client_Nom</code> est mal écrit. Créez une nouvelle colonne "Client Propre" à côté.</li>
+                <li><strong>Prompt ChatGPT :</strong> <em>"Sur Excel FR. Formule pour mettre la première lettre de chaque mot en majuscule."</em> Collez la formule obtenue.</li>
+                <li>La <code>Ville_Livraison</code> contient des espaces fantômes. Créez une colonne "Ville Propre".</li>
+                <li><strong>Prompt ChatGPT :</strong> <em>"Sur Excel FR. Formule pour supprimer les espaces inutiles au début et à la fin d'un texte."</em> Collez la formule.</li>
+            </ul>
+
+            <h3>B. Le Chiffre déguisé (Le Boss Final)</h3>
+            <ul class="checklist">
+                <li>Le <code>Montant_Brut</code> est aligné à gauche. C'est du texte (" 125000 MAD").</li>
+                <li>Créez une colonne "Montant Propre".</li>
+                <li><strong>Prompt ChatGPT :</strong> <em>"Sur Excel FR. En F2 j'ai ' 125000 MAD '. Donne-moi la formule pour enlever ' MAD', enlever les espaces, et convertir en vrai nombre."</em></li>
+                <li>Collez la formule (qui devrait contenir CNUM et SUBSTITUE) et vérifiez que le chiffre s'aligne à <strong>DROITE</strong>.</li>
+            </ul>
+
+            <h3>C. La Fossilisation</h3>
+            <ul class="checklist">
+                <li>Sélectionnez vos 3 nouvelles colonnes "Propres". Faites <strong>Copier</strong>.</li>
+                <li>Faites Clic Droit au même endroit > Options de collage > <strong>Valeurs (123)</strong>.</li>
+                <li>Supprimez les 3 anciennes colonnes sales. Votre base est saine.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 3 : TCD BASE -->
+        <div class="task-card green">
+            <div class="step-number">3</div>
+            <h2>L'Analyse : Le Tableau Croisé Dynamique</h2>
+            <p>Faisons parler les chiffres. Le Directeur veut le Chiffre d'Affaires par Ville et par Secteur.</p>
+            <ul class="checklist">
+                <li>Cliquez dans votre tableau. Allez dans <strong>Insertion > Tableau croisé dynamique</strong> > OK.</li>
+                <li>Dans le panneau de droite, glissez <strong>Ville Propre</strong> dans la zone "Lignes".</li>
+                <li>Glissez <strong>Secteur_Produit</strong> dans la zone "Colonnes".</li>
+                <li>Glissez <strong>Montant Propre</strong> dans la zone "Valeurs".</li>
+                <li><strong>ATTENTION AU PIÈGE :</strong> Si les chiffres sont tout petits (ex: 2, 3...), Excel a fait "Nombre". Faites Clic Droit sur un chiffre > <em>Synthétiser les valeurs par</em> > Choisissez <strong>Somme</strong>.</li>
+                <li>Sélectionnez les chiffres et mettez-les au format "Monétaire" (DH) dans l'onglet Accueil.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 4 : TCD AVANCÉ -->
+        <div class="task-card">
+            <div class="step-number">4</div>
+            <h2>Saisonnalité & Pourcentages</h2>
+            <p>Allons plus loin dans l'analyse économique.</p>
+            
+            <h3>A. Grouper par Année/Mois</h3>
+            <ul class="checklist">
+                <li>Enlevez "Ville" des Lignes (cliquez et glissez-le dehors).</li>
+                <li>Mettez <strong>Date_Achat</strong> dans la zone "Lignes" à la place.</li>
+                <li>Faites un Clic Droit sur une des dates dans le tableau > <strong>Grouper</strong>.</li>
+                <li>Sélectionnez <strong>Mois</strong> ET <strong>Années</strong>. Validez.</li>
+            </ul>
+
+            <h3>B. Penser en Part de Marché (%)</h3>
+            <ul class="checklist">
+                <li>Faites un Clic Droit sur un des montants en DH.</li>
+                <li>Allez dans <strong>Afficher les valeurs en</strong> > Choisissez <strong>% du total général</strong>.</li>
+                <li>Identifiez immédiatement l'année et le secteur qui ont le plus rapporté.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 5 : DASHBOARD & IA -->
+        <div class="task-card orange">
+            <div class="step-number">5</div>
+            <h2>Finition : Segments & Interprétation IA</h2>
+            <p>Le rendu pour la Direction Générale.</p>
+            <ul class="checklist">
+                <li>Cliquez sur le TCD. Allez dans l'onglet <strong>Analyse du tableau croisé dynamique</strong>.</li>
+                <li>Cliquez sur <strong>Insérer un segment</strong>. Cochez "Ville Propre" et validez.</li>
+                <li>Amusez-vous à cliquer sur les villes dans le segment pour voir le TCD se mettre à jour.</li>
+                <li><strong>Boucle IA :</strong> Sélectionnez votre TCD (les cellules) et copiez-le.</li>
+                <li>Allez dans ChatGPT. Tapez : <em>"Agis comme un Data Analyst. Voici mon TCD des ventes par Secteur et par Année. Rédige-moi une note d'analyse de 5 lignes pour le Directeur."</em> + Collez les données.</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px;">
+            <p style="font-size: 1.5em; font-weight: bold; color: var(--excel-green);">Mission Accomplie ! 🎓</p>
+            <p>Vous venez de réaliser en 45 minutes ce que beaucoup de professionnels mettent une demi-journée à faire.</p>
+        </div>
+
+    </div>
+
+    <footer>
+        Université Mundiapolis &copy; 2024 - Cours de Culture Digitale
+    </footer>
+
+    <script>
+        // Script pour rendre les checklists interactives
+        document.querySelectorAll('.checklist li').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+    </script>
+
+</body>
+</html>

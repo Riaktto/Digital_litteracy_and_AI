@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Séance 3 : Data & TCD (Cours Complet) - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --mundi-blue: #003366; --mundi-orange: #F37021; --mundi-grey: #f4f6f8; --excel-green: #217346; --text-main: #333333; --white: #ffffff; }
+        body { margin: 0; padding: 0; font-family: 'Open Sans', sans-serif; background-color: var(--mundi-grey); color: var(--text-main); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        header { height: 70px; background: var(--white); border-bottom: 4px solid var(--excel-green); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10; }
+        .header-logo img { height: 45px; }
+        .header-title { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-weight: 700; font-size: 1.1em; text-transform: uppercase; }
+        #presentation-area { flex-grow: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle at center, #ffffff 0%, #eef2f5 100%); }
+        .slide { position: absolute; width: 85%; height: 85%; max-width: 1400px; background: var(--white); border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 51, 102, 0.15); padding: 40px 60px; box-sizing: border-box; opacity: 0; transform: translateX(100px) scale(0.95); transition: all 0.4s ease; visibility: hidden; display: flex; flex-direction: column; overflow-y: auto; }
+        .slide.active { opacity: 1; transform: translateX(0) scale(1); visibility: visible; z-index: 5; }
+        .slide.prev { transform: translateX(-100px) scale(0.95); opacity: 0; visibility: hidden; }
+        h1 { font-family: 'Montserrat', sans-serif; color: var(--mundi-blue); font-size: 2.2em; margin: 0 0 10px 0; position: relative; }
+        h1::after { content: ''; display: block; width: 60px; height: 6px; background: var(--mundi-orange); margin-top: 15px; border-radius: 3px; }
+        h2 { font-family: 'Montserrat', sans-serif; color: #666; font-weight: 300; font-size: 1.3em; margin: 0 0 20px 0; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        p, li { font-size: 1.05em; line-height: 1.6; color: #444; margin-bottom: 10px; }
+        .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: flex-start; }
+        .center-content { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; }
+        .card { background: #f8f9fa; border-left: 5px solid var(--mundi-blue); padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card.orange { border-left-color: var(--mundi-orange); }
+        .card.green { border-left-color: var(--excel-green); }
+        .card.red { border-left-color: #e74c3c; }
+        .shortcut { display: inline-block; background: #eee; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #333; }
+        .chat-sim { width: 100%; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white; margin-top: 10px; font-family: 'Arial', sans-serif; }
+        .chat-header { background: #343541; color: white; padding: 8px 15px; font-size: 0.8em; }
+        .chat-body { padding: 15px; background: #fff; font-size: 0.9em; }
+        .msg.user { background: #f0f0f0; margin-left: 15%; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .msg.ai { background: rgba(33, 115, 70, 0.1); border-left: 3px solid var(--excel-green); margin-right: 15%; padding: 10px; border-radius: 8px; font-family: monospace; }
+        footer { height: 60px; background: var(--mundi-blue); display: flex; justify-content: center; align-items: center; color: white; gap: 20px; z-index: 10; }
+        button { background: var(--mundi-orange); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: scale(1.05); }
+        button:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
+        .slide-num { font-family: monospace; }
+        .progress-bar-bg { width: 300px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 5px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--mundi-orange); width: 0%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-logo"><img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis"></div>
+    <div class="header-title">Culture Digitale & IA</div>
+</header>
+
+<div id="presentation-area">
+
+    <!-- ================= INTRODUCTION (1-7) ================= -->
+    
+    <section class="slide active center-content">
+        <div style="font-size: 4em; margin-bottom: 20px;">📊 ➔ 🧠</div>
+        <h1 style="border: none; margin: 0; font-size: 3.5em;">SÉANCE 5</h1>
+        <h2 style="color: var(--mundi-orange); margin-top: 10px; font-size: 1.8em; border:none;">Data, Nettoyage IA & Tableaux Croisés</h2>
+        <p style="margin-top: 40px; font-style: italic; font-size: 1.2em;">L'Odyssée de la Donnée : de la collecte à la décision.</p>
+    </section>
+
+    <section class="slide">
+        <h1>Agenda de la Séance</h1>
+        <h2>Un parcours en 5 étapes logiques</h2>
+        <div class="cols-2">
+            <div class="card">
+                <ol style="line-height: 2;">
+                    <li><strong>La Philosophie Data :</strong> Comprendre ce qu'est une donnée.</li>
+                    <li><strong>L'Acquisition :</strong> Importer des fichiers bruts (CSV).</li>
+                    <li><strong>La Structure :</strong> Grilles vs Tableaux dynamiques.</li>
+                    <li><strong>Le Nettoyage :</strong> Réparer les erreurs avec l'IA.</li>
+                    <li><strong>L'Analyse :</strong> Maîtriser le Tableau Croisé Dynamique.</li>
+                </ol>
+            </div>
+            <div class="card orange" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <p><strong>Pré-requis immédiat :</strong></p>
+                <p>Ouvrez le fichier <br><span class="shortcut" style="font-size: 1.2em;">Demos_Datasets.html</span><br> fourni sur votre portail.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>1. La Philosophie de la Donnée</h1>
+        <h2>Qu'est-ce qu'une donnée (Data) ?</h2>
+        <p>En économie, on fait souvent la confusion entre "Donnée" et "Information".</p>
+        <div class="cols-2">
+            <div class="card">
+                <h3>La Donnée (Brute)</h3>
+                <p>C'est un fait brut, isolé, sans contexte.</p>
+                <p><em>Exemple : "1500", "Casablanca", "12/05".</em></p>
+                <p>En l'état, un chef d'entreprise ne peut prendre aucune décision avec ça.</p>
+            </div>
+            <div class="card green">
+                <h3>L'Information (Traitée)</h3>
+                <p>C'est une donnée qui a été nettoyée, croisée et analysée pour lui donner un sens.</p>
+                <p><em>Exemple : "Le CA de Casablanca a baissé de 15% en mai."</em></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Le Rôle de l'Économiste</h1>
+        <h2>Transformer le plomb en or.</h2>
+        <p>Votre métier n'est pas de "taper" des chiffres sur un clavier (les logiciels le font). Votre métier est de concevoir le pont entre la donnée brute et la décision stratégique.</p>
+        <div class="center-content">
+            <div style="font-size: 2em; background: #eee; padding: 20px; border-radius: 10px; width: 80%;">
+                <span style="color:#555;">Donnée</span> ➔ <span style="color:var(--mundi-blue); font-weight:bold;">Analyste (VOUS)</span> ➔ <span style="color:var(--mundi-orange);">Décision</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Le Principe Fondamental : G.I.G.O</h1>
+        <h2>La loi implacable de la science des données.</h2>
+        <div class="card red" style="text-align: center; padding: 40px;">
+            <h3 style="font-size: 2em; color: #c0392b; margin:0;">Garbage In, Garbage Out</h3>
+            <p style="font-size: 1.2em; margin-top: 20px;">(Déchets à l'entrée = Déchets à la sortie)</p>
+        </div>
+        <p style="margin-top: 20px;">Même si vous maîtrisez les mathématiques financières les plus complexes, si votre tableau Excel de départ contient des erreurs de saisie, <strong>votre rapport final sera mathématiquement faux</strong>.</p>
+    </section>
+
+    <section class="slide">
+        <h1>Anatomie d'un Dataset</h1>
+        <h2>Parler le même vocabulaire.</h2>
+        <p>Un tableau de données (Dataset) a une structure universelle, que ce soit sur Excel, Python ou dans l'IA.</p>
+        <div class="cols-2">
+            <div class="card">
+                <h3>Les Colonnes = Variables</h3>
+                <p>Chaque colonne représente une <strong>caractéristique</strong> mesurée.</p>
+                <p><em>Ex: Âge, Salaire, Ville, Sexe.</em></p>
+                <p>On ne mélange JAMAIS deux types d'informations dans une même colonne.</p>
+            </div>
+            <div class="card orange">
+                <h3>Les Lignes = Observations</h3>
+                <p>Chaque ligne représente un <strong>individu unique</strong> ou une <strong>transaction unique</strong>.</p>
+                <p><em>Ex: Le client Karim, La facture N°45.</em></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide center-content" style="background: var(--mundi-blue); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">2. L'Acquisition des Données</h1>
+        <p style="color: #ddd;">Où trouve-t-on la donnée et comment l'importer sans la casser ?</p>
+    </section>
+
+    <!-- ================= SOURCING & CSV (8-14) ================= -->
+
+    <section class="slide">
+        <h1>Le format universel : Le CSV</h1>
+        <h2>Le cauchemar des étudiants, le standard des pros.</h2>
+        <p>Quand vous allez sur le site de la Banque Mondiale ou du HCP, les fichiers ne sont pas en <code>.xlsx</code> (Excel). Ils sont en <code>.csv</code>.</p>
+        <div class="card">
+            <h3>Définition : Comma Separated Values</h3>
+            <p>C'est un fichier texte extrêmement simple et léger. Il ne contient aucune mise en forme (pas de gras, pas de couleur). Les colonnes sont séparées par un caractère spécial appelé <strong>Délimiteur</strong>.</p>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Pourquoi utiliser le CSV ?</h1>
+        <h2>Si c'est moche, pourquoi tout le monde l'utilise ?</h2>
+        <div class="cols-2">
+            <div>
+                <ul>
+                    <li><strong>Interopérabilité :</strong> Un fichier Excel (.xlsx) appartient à Microsoft. Un .csv peut être lu par Mac, Linux, Python, un vieux logiciel des années 90, etc.</li>
+                    <li><strong>Poids :</strong> Un fichier Excel de 1 million de lignes pèse très lourd et plante. Un CSV est du texte pur, il s'ouvre instantanément.</li>
+                </ul>
+            </div>
+            <div class="card orange">
+                <h3>Les Délimiteurs fréquents</h3>
+                <p>Selon les pays, le séparateur change :</p>
+                <ul>
+                    <li>La Virgule <code>,</code> (Standard US)</li>
+                    <li>Le Point-virgule <code>;</code> (Standard Européen)</li>
+                    <li>La Tabulation (Espace long)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Le Problème de l'Ouverture</h1>
+        <h2>Ce qui se passe quand Excel "ne comprend pas".</h2>
+        <p>Si vous double-cliquez sur un CSV américain depuis un ordinateur configuré en français, Excel se trompe de délimiteur.</p>
+        <div class="card red">
+            <h3>Le Résultat (Le mur de texte)</h3>
+            <p>Toutes vos données (Date, Nom, Prix) s'entassent dans la <strong>Colonne A</strong>.</p>
+            <p style="font-family: monospace; background: white; padding: 10px; border: 1px solid #ccc; color: #333;">A1: TRX-001;12/01/2023;Casablanca;150000<br>A2: TRX-002;15/01/2023;Rabat;95000</p>
+            <p>Impossible de faire un calcul ou un graphique avec ça.</p>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>DÉMO 1 : Le CSV "Cassé"</h1>
+        <h2>Allons réparer cela ensemble.</h2>
+        <div class="card">
+            <h3>Étape 1 : Préparation</h3>
+            <p>Allez dans votre fichier <span class="shortcut">Demos_Datasets.html</span>.</p>
+            <p>Copiez le bloc de texte de la <strong>Démo 1</strong>.</p>
+            <p>Ouvrez un fichier Excel vierge, cliquez sur la cellule <strong>A1</strong>, et faites Coller (Ctrl+V).</p>
+        </div>
+        <p class="highlight">Observez le résultat : tout est dans la colonne A. Essayez d'élargir la colonne B ou C, elles sont vides !</p>
+    </section>
+
+    <section class="slide">
+        <h1>La Solution : L'outil "Convertir"</h1>
+        <h2>Comment forcer Excel à découper le texte.</h2>
+        <div class="cols-2">
+            <ol style="line-height: 1.8;">
+                <li>Cliquez sur la lettre <strong>A</strong> tout en haut pour sélectionner toute la colonne malade.</li>
+                <li>Allez dans l'onglet <strong>[Données]</strong> du ruban.</li>
+                <li>Cliquez sur le bouton <strong>"Convertir"</strong> (ou "Texte en colonnes").</li>
+                <li>L'assistant s'ouvre. Étape 1 : Choisissez <strong>"Délimité"</strong> et faites Suivant.</li>
+            </ol>
+            <div class="card green">
+                <h3>L'Étape Magique</h3>
+                <p>Dans l'Étape 2 de l'assistant, vous devez indiquer à Excel quel est le délimiteur.</p>
+                <p>Cochez <strong>Point-virgule</strong>. Regardez l'aperçu en bas : des lignes verticales apparaissent pour séparer vos colonnes !</p>
+                <p>Cliquez sur "Terminer".</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Générer des "Dummy Data" (IA)</h1>
+        <h2>Quand vous n'avez pas de données, inventez-les.</h2>
+        <p>Souvent, un économiste doit préparer un modèle (formules, graphiques) avant même de recevoir le fichier client. Comment faire ? On demande à l'IA d'inventer des données de test ("Dummy Data").</p>
+        
+        <div class="card orange">
+            <h3>Le Prompt "Générateur de Dataset"</h3>
+            <p>Il faut être extrêmement précis sur la structure demandée.</p>
+            <p style="font-style: italic;">"Agis comme un générateur de données. Crée un dataset de 20 lignes sur les exportations marocaines. Format attendu : CSV séparé par des points-virgules. Colonnes : Mois, Produit (Phosphate, Auto, Textile), Pays_Destination, Montant_MAD. Ne mets aucun texte avant ou après le tableau."</p>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Intégrer les Dummy Data</h1>
+        <h2>De ChatGPT vers Excel.</h2>
+        <ol>
+            <li>L'IA va générer un bloc de code gris.</li>
+            <li>Cliquez sur "Copy Code" en haut à droite du bloc.</li>
+            <li><strong>Ne collez pas directement dans Excel !</strong></li>
+            <li>Ouvrez le "Bloc-notes" (Notepad) sur Windows.</li>
+            <li>Collez le texte.</li>
+            <li>Faites "Enregistrer sous". Nommez le fichier <code>Test.csv</code> (n'oubliez pas l'extension .csv) et choisissez "Tous les fichiers" dans le type.</li>
+            <li>Ouvrez ce fichier avec Excel.</li>
+        </ol>
+    </section>
+
+    <section class="slide center-content" style="background: var(--excel-green); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">3. Structurer la Donnée</h1>
+        <p style="color: #ddd;">Arrêter le bricolage, passer en mode professionnel.</p>
+    </section>
+
+    <!-- ================= STRUCTURER (15-21) ================= -->
+
+    <section class="slide">
+        <h1>L'erreur n°1 : La "Grille" Excel</h1>
+        <h2>Avoir des chiffres dans des cases ≠ Avoir un tableau.</h2>
+        <p>Par défaut, Excel considère que vous dessinez sur une feuille blanche. Il ne comprend pas que vos données sont liées entre elles.</p>
+        
+        <div class="card red">
+            <h3>Le Bricolage (La Grille)</h3>
+            <p>L'étudiant sélectionne la ligne 1, met en gras, ajoute un fond bleu, et trace des bordures noires avec la souris.</p>
+            <p><strong>Visuellement :</strong> C'est joli.</p>
+            <p><strong>Techniquement :</strong> C'est "mort". Excel ne sait pas que la ligne 2 et la ligne 3 font partie du même ensemble.</p>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Le Risque de la Grille Statique</h1>
+        <h2>Pourquoi ça va exploser.</h2>
+        <div class="cols-2">
+            <div>
+                <p>Imaginez que vous ayez une base de 100 clients. Vous faites une formule à côté : <code>=SOMME(B2:B101)</code>.</p>
+                <p>Le lendemain, un collègue ajoute 5 nouveaux clients à la fin de la grille (lignes 102 à 106).</p>
+            </div>
+            <div class="card">
+                <h3>Le Crash Silencieux</h3>
+                <p>Votre formule <code>=SOMME(B2:B101)</code> ne se mettra PAS à jour.</p>
+                <p>Elle ignorera les 5 nouveaux clients.</p>
+                <p>Vous présenterez un bilan financier faux à votre direction sans même vous en rendre compte.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>La Solution : Le "Tableau Officiel"</h1>
+        <h2>Transformer le plomb en or avec un seul raccourci.</h2>
+        <p>Il faut "déclarer" à Excel que cette zone de cellules est un objet cohérent et dynamique.</p>
+        
+        <div class="card green">
+            <h3>La manipulation (Le "Ctrl+L")</h3>
+            <ol>
+                <li>Cliquez sur <strong>n'importe quelle case</strong> remplie de votre base (ne sélectionnez pas tout à la souris, c'est inutile).</li>
+                <li>Appuyez sur <span class="shortcut">Ctrl</span> + <span class="shortcut">L</span> (L pour Liste/List). <em>Sur Mac : Cmd+L ou Ctrl+T.</em></li>
+                <li>Une petite fenêtre apparaît. Laissez la sélection telle quelle.</li>
+                <li>Cochez impérativement la case <strong>"Mon tableau comporte des en-têtes"</strong>.</li>
+                <li>Faites OK.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>DÉMO 2 : Grille vs Tableau</h1>
+        <h2>Testons la différence en direct.</h2>
+        
+        <div class="cols-2">
+            <div>
+                <h3>Étape 1 : Préparation</h3>
+                <p>Ouvrez la <strong>Démo 2</strong> depuis vos Datasets.</p>
+                <p>Collez-la dans Excel. Ne la transformez PAS en tableau pour l'instant.</p>
+            </div>
+            <div class="card">
+                <h3>Étape 2 : Le Test</h3>
+                <ol>
+                    <li>En D2, tapez <code>=B2*C2</code> et faites Entrée. (Seule la D2 se calcule).</li>
+                    <li>Maintenant, annulez (Ctrl+Z).</li>
+                    <li>Transformez vos données en <strong>Tableau Officiel (Ctrl+L)</strong>.</li>
+                    <li>Refaites la formule en D2. Appuyez sur Entrée.</li>
+                </ol>
+            </div>
+        </div>
+        <p class="highlight" style="margin-top: 20px; text-align: center;">Magie ! La formule s'est copiée toute seule jusqu'en bas de la colonne. Plus besoin de "tirer" la poignée !</p>
+    </section>
+
+    <section class="slide">
+        <h1>Les Super-Pouvoirs du Tableau Officiel</h1>
+        <h2>Pourquoi on ne s'en passe plus.</h2>
+        
+        <div class="grid-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="card">
+                <h3>1. Il est Élastique</h3>
+                <p>Ajoutez un nom sous la dernière ligne. Le tableau "s'agrandit" (couleur, bordure) et l'absorbe automatiquement.</p>
+            </div>
+            <div class="card">
+                <h3>2. Formules Dynamiques</h3>
+                <p>Comme vu dans la démo, une formule tapée en haut s'applique à toute la colonne. Adieu les oublis.</p>
+            </div>
+            <div class="card">
+                <h3>3. Graphiques Sécurisés</h3>
+                <p>Un graphique basé sur un Tableau se mettra à jour automatiquement si de nouvelles données sont ajoutées.</p>
+            </div>
+            <div class="card">
+                <h3>4. Design Instantané</h3>
+                <p>Bandes colorées alternées créées automatiquement pour faciliter la lecture. (Modifiables dans l'onglet <em>Création de tableau</em>).</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide center-content" style="background: #e74c3c; color: white;">
+        <h1 style="color: white; border-bottom-color: white;">4. Le Nettoyage Assisté par IA</h1>
+        <p style="color: #ddd;">Résoudre les erreurs invisibles sans apprendre de formules.</p>
+    </section>
+
+    <!-- ================= CLEANING & IA (22-35) ================= -->
+
+    <section class="slide">
+        <h1>Pourquoi Nettoyer ? (Le Coût de l'Erreur)</h1>
+        <h2>L'ordinateur est stupide. Il prend les choses au pied de la lettre.</h2>
+        <p>Dans une base de données de centaines de lignes saisies à la main, l'erreur est garantie.</p>
+        
+        <div class="card">
+            <h3>Le Problème de l'Analyste</h3>
+            <p>Si la cellule A2 contient "Paris" et la cellule A15 contient "Paris " (avec un espace à la fin tapé par erreur).</p>
+            <p>Pour vous, c'est la même ville. Pour Excel, ce sont <strong>deux villes différentes</strong> (5 caractères vs 6 caractères).</p>
+            <hr>
+            <p><strong>Conséquence :</strong> Quand vous calculerez le CA total de Paris, Excel créera deux lignes séparées. Votre total régional sera faux.</p>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Le Paradigme du Nettoyage (Avant)</h1>
+        <h2>Ce qu'on enseignait il y a encore 3 ans.</h2>
+        <p>L'étudiant devait apprendre par cœur un dictionnaire de formules mathématiques et textuelles complexes.</p>
+        
+        <div class="cols-2">
+            <ul style="font-family: monospace; font-size: 0.9em; background: #eee; padding: 15px; border-radius: 8px;">
+                <li>=SUPPRESPACE()</li>
+                <li>=STXT()</li>
+                <li>=GAUCHE()</li>
+                <li>=DROITE()</li>
+                <li>=CNUM()</li>
+                <li>=CHERCHE()</li>
+            </ul>
+            <div class="card red">
+                <h3>Le résultat</h3>
+                <p>On passait 2 heures à chercher sur des forums (StackOverflow) comment combiner =GAUCHE et =CHERCHE pour couper un mot. Frustration totale.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Le Paradigme du Nettoyage (Aujourd'hui)</h1>
+        <h2>Le Reverse Prompting avec l'IA.</h2>
+        <p>L'Intelligence Artificielle (ChatGPT, Copilot) connaît TOUTES les formules Excel par cœur et sait les combiner.</p>
+        
+        <div class="card green" style="text-align: center;">
+            <p style="font-size: 1.2em; font-weight: bold;">Nous n'allons plus écrire de formules.</p>
+            <p style="font-size: 1.2em; font-weight: bold;">Nous allons <u>décrire notre problème</u> à l'IA.</p>
+        </div>
+        <p>L'IA nous donnera le code exact à copier-coller dans notre cellule. Notre seule tâche est de vérifier que le résultat est correct.</p>
+    </section>
+
+    <section class="slide">
+        <h1>L'Anatomie du Prompt Excel</h1>
+        <h2>Comment parler à l'IA pour qu'elle comprenne la grille.</h2>
+        <p>Si vous dites juste : <em>"Donne moi une formule pour enlever le nom"</em>, l'IA va donner une formule générique qui ne marchera pas chez vous.</p>
+        
+        <div class="card orange">
+            <h3>Les 4 Piliers du Prompt Excel</h3>
+            <ol>
+                <li><strong>Contexte Logiciel :</strong> "Sur Excel en version Française..." <em>(Crucial ! Sinon l'IA donnera =IF au lieu de =SI, et ça fera une erreur !).</em></li>
+                <li><strong>Localisation :</strong> "Mes données sont dans la colonne A, à partir de A2."</li>
+                <li><strong>L'Exemple concret :</strong> "La case A2 ressemble exactement à ça : '12500 MAD'."</li>
+                <li><strong>L'Objectif final :</strong> "Je veux une formule pour extraire uniquement le chiffre '12500' pour pouvoir l'additionner."</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>DÉMO 3 : Les Espaces Fantômes</h1>
+        <h2>Le tueur silencieux de vos analyses.</h2>
+        
+        <div class="cols-2">
+            <div>
+                <h3>Le Cas Pratique</h3>
+                <p>Ouvrez la <strong>Démo 3</strong>. Vous avez une liste de villes saisies n'importe comment.</p>
+                <p>Certaines ont des espaces au début, d'autres à la fin.</p>
+            </div>
+            <div class="card">
+                <h3>Le Prompt IA</h3>
+                <p style="font-style: italic; font-size: 0.9em;">"Sur Excel FR, j'ai des noms de villes en colonne A. Certaines ont des espaces invisibles avant ou après. Donne-moi la formule pour nettoyer ces espaces."</p>
+                <p><strong>Réponse IA :</strong> <code>=SUPPRESPACE(A2)</code></p>
+            </div>
+        </div>
+        <p class="highlight" style="margin-top: 10px;"><strong>Action :</strong> Créez une colonne "Ville Propre", collez la formule, et laissez le tableau officiel étendre la formule.</p>
+    </section>
+
+    <section class="slide">
+        <h1>DÉMO 4 : Le Chaos de la Casse</h1>
+        <h2>Majuscules et Minuscules mélangées.</h2>
+        
+        <div class="cols-2">
+            <div>
+                <h3>Le Cas Pratique</h3>
+                <p>Ouvrez la <strong>Démo 4</strong>. Les noms de clients sont illisibles ("jean dupont", "KARIM").</p>
+                <p>En économie, on veut des rapports professionnels.</p>
+            </div>
+            <div class="card">
+                <h3>Le Prompt IA</h3>
+                <p style="font-style: italic; font-size: 0.9em;">"Sur Excel FR, j'ai des noms en colonne A. Donne-moi la formule pour que chaque mot commence par une majuscule et le reste en minuscule."</p>
+                <p><strong>Réponse IA :</strong> <code>=NOMPROPRE(A2)</code></p>
+                <p style="font-size: 0.8em; color: #666;">(Autres options : =MAJUSCULE(A2), =MINUSCULE(A2))</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>DÉMO 5 : Le Pire Cauchemar (Texte = Chiffre)</h1>
+        <h2>Quand l'argent n'est pas de l'argent.</h2>
+        <p>C'est l'erreur que vous ferez le plus. Importer un fichier comptable, et Excel refuse de faire la somme.</p>
+        
+        <div class="cols-2">
+            <div class="card red">
+                <h3>L'Identification</h3>
+                <p>Ouvrez la <strong>Démo 5</strong>. Les salaires sont écrits <code> 5400 MAD </code>.</p>
+                <p>Comment sait-on que c'est du texte ? <strong>C'est aligné à GAUCHE</strong> par défaut.</p>
+                <p>Essayez de faire une somme en bas, le résultat sera ZÉRO.</p>
+            </div>
+            <div class="card green">
+                <h3>La Solution (Ici l'IA brille)</h3>
+                <p>Le prompt doit être parfait.</p>
+                <p style="font-style: italic; font-size: 0.9em;">"Sur Excel FR. En A2 j'ai du texte : ' 5400 MAD '. Je veux une formule pour supprimer ' MAD', supprimer les espaces, et convertir le résultat en VRAI chiffre utilisable dans un calcul."</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Résultat de la Démo 5</h1>
+        <h2>Analyse de la réponse de l'IA.</h2>
+        <p>L'IA va vous donner une formule "imbriquée" (des formules dans des formules).</p>
+        
+        <div class="center-content">
+            <div style="font-family: monospace; font-size: 1.5em; background: #333; color: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid var(--excel-green);">
+                =CNUM(SUBSTITUE(SUPPRESPACE(A2); " MAD"; ""))
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: left;">
+            <p><strong>Vous n'avez pas besoin d'apprendre cette formule, mais vous devez la comprendre :</strong></p>
+            <ol>
+                <li><code>SUPPRESPACE</code> : Enlève les espaces autour.</li>
+                <li><code>SUBSTITUE</code> : Remplace le mot " MAD" par "Rien" ("").</li>
+                <li><code>CNUM</code> : Force Excel à considérer le résultat final comme un Nombre (Valeur numérique) pour faire des calculs.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>DÉMO 6 : Extraction Chirurgicale</h1>
+        <h2>Isoler une donnée dans une chaîne complexe.</h2>
+        <p>Les logiciels d'entreprise génèrent souvent des codes uniques très denses.</p>
+        
+        <div class="cols-2">
+            <div>
+                <h3>Le Cas Pratique (Démo 6)</h3>
+                <p>Vous avez : <code>2023-AUTO-CASA</code>.</p>
+                <p>Votre manager veut analyser uniquement les ventes du secteur (le mot du milieu). Vous devez extraire "AUTO".</p>
+                <p>Mais attention, le mot du milieu peut faire 4 lettres (AUTO) ou 10 lettres (TECHNOLOGIE).</p>
+            </div>
+            <div class="card orange">
+                <h3>Le Prompt Ultime</h3>
+                <p style="font-style: italic; font-size: 0.9em;">"Excel FR. En A2 j'ai le code '2023-AUTO-CASA'. Le texte est séparé par des tirets. Je veux une formule pour extraire uniquement le texte situé entre le premier tiret et le deuxième tiret. La longueur du mot varie."</p>
+                <p><strong>L'IA vous donnera une formule avec STXT et CHERCHE. Copiez, Collez. C'est fini.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>L'Étape de "Fossilisation" (Crucial)</h1>
+        <h2>Comment détruire les formules pour ne garder que le résultat propre.</h2>
+        <p>Vous avez maintenant une Colonne B propre (générée par formule) à côté de la Colonne A sale.</p>
+        
+        <div class="card red">
+            <h3>Le Danger</h3>
+            <p>Si vous supprimez la Colonne A sale (parce qu'elle est moche), la formule en Colonne B va afficher <code>#REF!</code> (Erreur), car elle avait besoin de A pour exister.</p>
+        </div>
+        
+        <div class="card green">
+            <h3>La Solution : Copier / Coller les Valeurs</h3>
+            <ol>
+                <li>Sélectionnez toute la Colonne B propre. Faites <strong>Copier (Ctrl+C)</strong>.</li>
+                <li>Ne bougez pas la sélection. Faites <strong>Clic Droit</strong> au même endroit.</li>
+                <li>Dans les options de collage, choisissez <strong>"Valeurs" (l'icône avec 123)</strong>.</li>
+            </ol>
+            <p>La formule a disparu ! Il ne reste que le texte pur. Vous pouvez maintenant supprimer la colonne A sale en toute sécurité.</p>
+        </div>
+    </section>
+
+    <section class="slide center-content" style="background: var(--mundi-orange); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">5. L'Analyse (Tableaux Croisés)</h1>
+        <p style="color: white;">L'outil qui sépare les amateurs des experts.</p>
+    </section>
+
+    <!-- ================= TCD (36-48) ================= -->
+
+    <section class="slide">
+        <h1>Pourquoi le TCD est-il indispensable ?</h1>
+        <h2>Les limites de =SOMME()</h2>
+        <p>Jusqu'à présent, vous savez faire la somme d'une colonne entière. C'est bien pour le Total Général.</p>
+        
+        <div class="cols-2">
+            <div>
+                <h3>Le Problème Économique</h3>
+                <p>Ouvrez la <strong>Démo 7</strong> (12 lignes de ventes). Imaginez qu'il y en ait 10 000.</p>
+                <p>Votre directeur vous pose 3 questions :</p>
+                <ul>
+                    <li>Quel est le CA du mois de Mars au Sud ?</li>
+                    <li>Quelle région vend le plus de Technologie ?</li>
+                    <li>Quelle est la part de marché de l'Agriculture ?</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>La Limite Classique</h3>
+                <p>Vous ne pouvez pas faire une somme de tout. Vous devriez filtrer, copier le résultat, filtrer autre chose, copier... C'est ingérable.</p>
+                <p>Le <strong>Tableau Croisé Dynamique (TCD)</strong> fait tout ça en 3 secondes.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Qu'est-ce qu'un TCD ? (Pivot Table)</h1>
+        <h2>Le Concept de l'Écrasement (Agrégation).</h2>
+        <p>Un TCD ne modifie pas vos données d'origine. Il prend votre grande base, la "pivote", l'écrase et vous crée un petit tableau résumé sur une nouvelle feuille.</p>
+        
+        <div class="center-content">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                <div style="background: #eee; padding: 20px; border: 1px solid #ccc;">
+                    10 000 lignes<br>(Détail Transaction)
+                </div>
+                <div style="font-size: 2em; color: var(--mundi-orange);">➔ TCD ➔</div>
+                <div style="background: var(--excel-green); color: white; padding: 20px; border-radius: 10px;">
+                    4 lignes<br>(Résumé par Région)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>DÉMO 7 : Création du 1er TCD</h1>
+        <h2>Suivez le guide.</h2>
+        
+        <div class="card">
+            <h3>Le Processus Pas-à-Pas</h3>
+            <ol>
+                <li>Allez sur la <strong>Démo 7</strong>.</li>
+                <li>Assurez-vous que vos données sont un <strong>Tableau Officiel (Ctrl+L)</strong>.</li>
+                <li>Cliquez n'importe où dans ce tableau.</li>
+                <li>Allez dans l'onglet <strong>[Insertion]</strong> tout en haut à gauche.</li>
+                <li>Cliquez sur le premier bouton <strong>"Tableau croisé dynamique"</strong>.</li>
+                <li>Une fenêtre s'ouvre. Laissez tout par défaut (Nouvelle feuille de calcul) et cliquez sur <strong>OK</strong>.</li>
+            </ol>
+        </div>
+        <p>Une nouvelle feuille apparaît. À gauche, un tableau vide. À droite, un panneau de contrôle. C'est là que la magie opère.</p>
+    </section>
+
+    <section class="slide">
+        <h1>L'Anatomie du TCD (Le Panneau de Contrôle)</h1>
+        <h2>Le cerveau du système.</h2>
+        <p>Regardez à droite. En haut, vous avez la liste de vos colonnes (Mois, Région, Secteur...). En bas, vous avez <strong>4 Quadrants (Boîtes)</strong>.</p>
+        
+        <div class="cols-2" style="align-items: center;">
+            <div class="tcd-grid">
+                <div class="tcd-box filters">1. Filtres</div>
+                <div class="tcd-box columns">2. Colonnes</div>
+                <div class="tcd-box rows">3. Lignes</div>
+                <div class="tcd-box values">4. Valeurs (Σ)</div>
+            </div>
+            
+            <div>
+                <p>Glissez un mot d'en haut vers une boîte en bas :</p>
+                <ul>
+                    <li><strong>Lignes :</strong> Ce qui fera le menu vertical.</li>
+                    <li><strong>Colonnes :</strong> L'en-tête horizontal.</li>
+                    <li><strong>Valeurs :</strong> Le CHIFFRE (CA, Quantité) à calculer au milieu.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>Exercice Guidé TCD</h1>
+        <h2>Répondre à la question du Boss.</h2>
+        <p><strong>Question :</strong> "Je veux voir le Chiffre d'Affaires par Région (en lignes) et par Secteur (en colonnes)."</p>
+        
+        <div class="card orange">
+            <h3>Manipulez :</h3>
+            <ol>
+                <li>Prenez le mot <strong>"Région"</strong> en haut, glissez-le dans la boîte <strong>Lignes</strong> en bas à gauche. <em>Regardez votre tableau : Nord et Sud apparaissent !</em></li>
+                <li>Prenez <strong>"Secteur"</strong>, glissez-le dans <strong>Colonnes</strong>.</li>
+                <li>Prenez <strong>"Ventes_MAD"</strong>, glissez-le dans <strong>Valeurs (Σ)</strong>.</li>
+            </ol>
+        </div>
+        <p style="text-align: center; font-size: 1.2em; font-weight: bold; color: var(--excel-green);">Boom ! Vous venez d'analyser 10 000 lignes en 5 secondes.</p>
+    </section>
+
+    <section class="slide">
+        <h1>⚠️ Le Piège Mortel du TCD</h1>
+        <h2>L'erreur fatale de la boîte "Valeurs".</h2>
+        <p>Quand vous glissez "Ventes_MAD" dans la boîte Valeurs, Excel essaie de deviner ce qu'il doit faire. Il y a deux grandes options mathématiques.</p>
+        
+        <div class="cols-2">
+            <div class="card green">
+                <h3>SOMME (Sum)</h3>
+                <p>Excel additionne les montants. (10 + 20 + 30 = 60).</p>
+                <p>C'est le <strong>Chiffre d'Affaires (CA)</strong>.</p>
+            </div>
+            <div class="card orange">
+                <h3>NOMBRE (Count)</h3>
+                <p>Excel compte les lignes (1 vente + 1 vente = 2 ventes), peu importe le prix.</p>
+                <p>C'est le <strong>Volume de transactions</strong>.</p>
+            </div>
+        </div>
+        <p class="highlight" style="margin-top: 10px;">Si Excel a choisi "Nombre" au lieu de "Somme" (ça arrive si la colonne contient des cellules vides), votre CA sera faux !</p>
+    </section>
+
+    <section class="slide">
+        <h1>Corriger la "Synthèse des Valeurs"</h1>
+        <h2>Comment changer le calcul.</h2>
+        <p>Si vous voulez passer de "Somme" à "Moyenne" ou "Nombre" :</p>
+        
+        <div class="card">
+            <h3>La manipulation :</h3>
+            <ol>
+                <li>Allez dans le tableau généré à gauche.</li>
+                <li>Faites un <strong>Clic Droit</strong> sur n'importe quel chiffre.</li>
+                <li>Survolez le menu <strong>"Synthétiser les valeurs par"</strong>.</li>
+                <li>Choisissez le calcul dont vous avez besoin en économie (Somme, Nombre, Moyenne, Max...).</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>TCD Avancé 1 : Penser en Pourcentage (%)</h1>
+        <h2>L'économie se lit en part de marché.</h2>
+        <p>Dire "Le Sud a fait 310 000 DH" donne peu d'information. Est-ce beaucoup ou peu ? Dire "Le Sud représente 45% de l'activité globale" est une information stratégique.</p>
+        
+        <div class="card orange">
+            <h3>Transformer les DH en % instantanément :</h3>
+            <ol>
+                <li>Faites un <strong>Clic Droit</strong> sur un des montants (en Dirhams) de votre TCD.</li>
+                <li>Survolez le menu juste en dessous : <strong>"Afficher les valeurs en"</strong>.</li>
+                <li>Choisissez <strong>"% du total général"</strong> (ou % du total de la colonne).</li>
+            </ol>
+        </div>
+        <p>Tous vos chiffres deviennent des pourcentages. Le total en bas à droite affiche 100%. Le format idéal pour un Camembert !</p>
+    </section>
+
+    <section class="slide">
+        <h1>TCD Avancé 2 : Dompter le Temps</h1>
+        <h2>Analyser la saisonnalité sans effort.</h2>
+        <p>Si vous glissez une vraie colonne "Date" (ex: 12/05/2023) dans la boîte "Lignes", Excel risque de créer 365 lignes dans votre tableau. C'est illisible.</p>
+        
+        <div class="card">
+            <h3>Le pouvoir de l'outil "Grouper"</h3>
+            <p>Il faut dire à Excel de "plier" le temps.</p>
+            <ol>
+                <li>Faites un <strong>Clic Droit</strong> sur l'une des dates dans la colonne gauche de votre TCD.</li>
+                <li>Cliquez sur <strong>"Grouper..."</strong>.</li>
+                <li>Une petite fenêtre s'ouvre. Par défaut, "Mois" est sélectionné en bleu.</li>
+                <li>Cliquez aussi sur "Années" (pour sélectionner les deux). Validez.</li>
+            </ol>
+            <p>Vos 365 lignes sont instantanément résumées en 12 mois et classées par année.</p>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h1>TCD Avancé 3 : Les Segments (Slicers)</h1>
+        <h2>Créer un Tableau de Bord Interactif.</h2>
+        <p>La boîte "Filtre" du TCD (en haut) est moche et cachée. Pour les présentations professionnelles, on utilise des "Segments" (des gros boutons cliquables).</p>
+        
+        <div class="cols-2">
+            <div>
+                <h3>Comment les insérer :</h3>
+                <ol>
+                    <li>Cliquez n'importe où dans votre TCD.</li>
+                    <li>Allez dans le ruban <strong>[Analyse du tableau croisé dynamique]</strong> (en haut).</li>
+                    <li>Cliquez sur <strong>"Insérer un segment"</strong>.</li>
+                    <li>Cochez la case "Région" et faites OK.</li>
+                </ol>
+            </div>
+            <div class="card green" style="text-align: center;">
+                <h3>L'interactivité</h3>
+                <p>Une petite télécommande apparaît. Si vous cliquez sur "Nord", tout votre TCD se met à jour en direct pour n'afficher que le Nord.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CONCLUSION & WORKFLOW (49-50) ================= -->
+    <section class="slide center-content" style="background: var(--mundi-blue); color: white;">
+        <h1 style="color: white; border-bottom-color: white;">6. Boucler la Boucle</h1>
+        <p style="color: #ddd;">TCD + IA = Le Rapport Parfait.</p>
+    </section>
+
+    <section class="slide">
+        <h1>Le Feedback Loop (TCD ➔ ChatGPT)</h1>
+        <h2>Faire analyser vos résultats par l'IA.</h2>
+        <p>L'IA est très mauvaise pour lire un fichier CSV brut de 10 000 lignes (elle hallucine les calculs). Par contre, elle est géniale pour lire un TCD de 10 lignes et en tirer une analyse littéraire (Word).</p>
+        
+        <div class="card">
+            <h3>Le Processus de l'Analyste Augmenté :</h3>
+            <ol>
+                <li>Vous créez votre TCD dans Excel (Vous avez la garantie mathématique que le chiffre est vrai).</li>
+                <li>Sélectionnez le TCD et copiez-le (Ctrl+C).</li>
+                <li>Ouvrez ChatGPT et tapez le prompt : <em>"Agis comme un Directeur Financier. Voici les résultats du TCD de ce trimestre. Rédige un paragraphe de synthèse d'expert (points forts, faiblesse, conseil)."</em></li>
+                <li>Collez le TCD (Ctrl+V) et envoyez.</li>
+            </ol>
+        </div>
+        <p style="font-weight: bold; text-align: center; color: var(--mundi-orange);">C'est la fusion parfaite entre la fiabilité d'Excel et l'intelligence de rédaction de l'IA.</p>
+    </section>
+
+    <section class="slide center-content">
+        <h1>Fin de la Théorie ! 🎓</h1>
+        <p class="big-text">Vous connaissez la vraie méthode d'ingénierie Data.</p>
+        
+        <div class="card green" style="text-align: left; width: 60%;">
+            <h3>Résumé de votre nouveau pouvoir :</h3>
+            <ol style="font-size: 1.2em; line-height: 2;">
+                <li>Sourcing : Importer un CSV avec "Convertir".</li>
+                <li>Structure : Ctrl+L pour le Tableau Dynamique.</li>
+                <li>Nettoyage : Reverse Prompting IA pour réparer la donnée.</li>
+                <li>Analyse : TCD (Lignes, Colonnes, Valeurs) pour résumer.</li>
+                <li>Présentation : Segments et % pour les décideurs.</li>
+            </ol>
+        </div>
+        <p style="margin-top: 20px; font-weight: bold; color: var(--mundi-blue);">Préparez-vous pour le TP Excel !</p>
+    </section>
+
+</div>
+
+<footer>
+    <button id="prevBtn">Précédent</button>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="slide-num" id="currentSlide">1</span> / <span class="slide-num" id="totalSlides">21</span>
+        <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+    <button id="nextBtn">Suivant</button>
+</footer>
+
+<script>
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideDisplay = document.getElementById('currentSlide');
+    const totalSlidesDisplay = document.getElementById('totalSlides');
+    const progressBar = document.getElementById('progressBar');
+
+    totalSlidesDisplay.textContent = totalSlides;
+    updateUI();
+
+    function showSlide(index) {
+        if (index < 0 || index >= totalSlides) return;
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'prev');
+            if (i === index) slide.classList.add('active');
+            else if (i < index) slide.classList.add('prev');
+        });
+        currentSlideIndex = index;
+        updateUI();
+    }
+
+    function updateUI() {
+        currentSlideDisplay.textContent = currentSlideIndex + 1;
+        const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+        prevBtn.disabled = (currentSlideIndex === 0);
+        nextBtn.disabled = (currentSlideIndex === totalSlides - 1);
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+    nextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlideIndex + 1);
+        if (e.key === 'ArrowLeft') showSlide(currentSlideIndex - 1);
+    });
+</script>
+
+</body>
+</html>
