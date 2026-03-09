@@ -75,8 +75,6 @@
             background: var(--white);
             border-radius: 12px;
             overflow: hidden;
-            text-decoration: none;
-            color: inherit;
             box-shadow: var(--shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
@@ -90,44 +88,6 @@
             box-shadow: 0 15px 30px rgba(0, 51, 102, 0.2);
             border-top-color: var(--mundi-orange);
         }
-
-        /* --- BOOTCAMP CARD SPECIAL STYLE --- */
-        .card.bootcamp-card {
-            grid-column: 1 / -1; /* Prend toute la largeur de la grille */
-            border-top-color: #27ae60; /* Vert pour distinguer */
-            background: #fff;
-        }
-        
-        .card.bootcamp-card .session-number {
-            background-color: #e8f5e9;
-            color: #27ae60;
-        }
-
-        .bootcamp-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: background 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-main { background-color: #27ae60; color: white; }
-        .btn-main:hover { background-color: #219150; }
-
-        .btn-sec { background-color: #f4f6f8; color: var(--mundi-blue); border: 1px solid #ddd; }
-        .btn-sec:hover { background-color: #e2e6ea; border-color: #ccc; }
-
 
         .card-header {
             padding: 25px 25px 10px 25px;
@@ -168,21 +128,43 @@
             padding: 15px 25px;
             background: #f9f9f9;
             border-top: 1px solid #eee;
-            color: var(--mundi-orange);
-            font-weight: 700;
-            font-size: 0.9em;
-            text-align: right;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
+
+        /* --- BUTTONS --- */
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background 0.2s, transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover { transform: scale(1.03); }
+
+        .btn-main { background-color: var(--mundi-blue); color: white; }
+        .btn-main:hover { background-color: #002244; }
+
+        .btn-sec { background-color: #eef2f5; color: var(--mundi-blue); border: 1px solid #ccc; }
+        .btn-sec:hover { background-color: #e2e6ea; }
+
+        .btn-green { background-color: #217346; color: white; }
+        .btn-green:hover { background-color: #175232; }
 
         /* --- SECTION TITLE --- */
         .section-header {
             display: flex;
             align-items: center;
             margin-bottom: 30px;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .section-header h2 {
             font-family: 'Montserrat', sans-serif;
@@ -208,6 +190,7 @@
 
     <header>
         <div class="logo">
+            <!-- Logo Mundiapolis -->
             <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis Logo">
         </div>
         <div class="course-info">
@@ -231,7 +214,7 @@
 
         <div class="grid">
             <!-- SESSION 1 -->
-            <a href="Session 1.html" class="card">
+            <div class="card">
                 <div class="card-header">
                     <span class="session-number">Séance 1</span>
                     <span class="card-icon">🤖</span>
@@ -241,12 +224,12 @@
                     <div class="card-desc">Comprendre l'IA générative, l'économie du digital et maîtriser la méthode CRTF.</div>
                 </div>
                 <div class="card-footer">
-                    <span>Ouvrir</span> <span>→</span>
+                    <a href="Session 1.html" class="action-btn btn-main">🎓 Ouvrir le Cours</a>
                 </div>
-            </a>
+            </div>
 
             <!-- SESSION 2 -->
-            <a href="Session 2.html" class="card">
+            <div class="card">
                 <div class="card-header">
                     <span class="session-number">Séance 2</span>
                     <span class="card-icon">📝</span>
@@ -256,159 +239,140 @@
                     <div class="card-desc">Word Expert + IA. Styles, structure automatique et rédaction de rapports professionnels.</div>
                 </div>
                 <div class="card-footer">
-                    <span>Ouvrir</span> <span>→</span>
-                </div>
-            </a>
-        </div>
-
-        <!-- BLOC BOOTCAMP (SPECIAL) -->
-        <div class="section-header">
-            <h2>Mise à Niveau Technique</h2>
-            <div class="line"></div>
-        </div>
-
-        <div class="grid">
-            <!-- CARTE BOOTCAMP UNIQUE AVEC 3 LIENS -->
-            <div class="card bootcamp-card">
-                <div class="card-header">
-                    <span class="session-number">Module Intensif</span>
-                    <span class="card-icon">🛠️</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Bootcamp Bureautique (Word & Excel)</div>
-                    <div class="card-desc">
-                        Module pratique pour maîtriser les bases indispensables avant d'intégrer l'IA. 
-                        Comprend le support de cours complet et deux ateliers pratiques (TP).
-                    </div>
-                </div>
-                <div class="card-footer" style="background: white; border-top: none;">
-                    <div class="bootcamp-actions">
-                        <a href="bootcamp.html" class="action-btn btn-main">🎓 Ouvrir le Cours (Bootcamp)</a>
-                        <a href="TP_word.html" class="action-btn btn-sec">📘 TP Word</a>
-                        <a href="TP_excel.html" class="action-btn btn-sec">📊 TP Excel</a>
-                    </div>
+                    <a href="Session 2.html" class="action-btn btn-main">🎓 Ouvrir le Cours</a>
                 </div>
             </div>
         </div>
 
-        <!-- BLOC 2 : ANALYSE DE DONNÉES -->
+        <!-- BLOC 2 : BOOTCAMP -->
         <div class="section-header">
-            <h2>Module 2 : Data & Analyse</h2>
+            <h2>Module 2 : Mise à Niveau Technique</h2>
             <div class="line"></div>
         </div>
 
         <div class="grid">
-            <!-- SESSION 3 -->
-            <a href="Session 3.html" class="card">
+            <!-- SESSION 3 (Bootcamp Word) -->
+            <div class="card" style="border-top-color: #27ae60;">
                 <div class="card-header">
-                    <span class="session-number">Séance 3</span>
+                    <span class="session-number" style="background: #e8f5e9; color: #27ae60;">Séance 3</span>
+                    <span class="card-icon">📘</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Bootcamp Word</div>
+                    <div class="card-desc">Maîtriser les bases de la mise en page, les caractères invisibles et la structure de document avant l'IA.</div>
+                </div>
+                <div class="card-footer">
+                    <a href="TP_word.html" class="action-btn btn-sec">📘 Aller au TP</a>
+                    <a href="Session 3.html" class="action-btn btn-green">🎓 Cours Word</a>
+                </div>
+            </div>
+
+            <!-- SESSION 4 (Bootcamp Excel) -->
+            <div class="card" style="border-top-color: #27ae60;">
+                <div class="card-header">
+                    <span class="session-number" style="background: #e8f5e9; color: #27ae60;">Séance 4</span>
+                    <span class="card-icon">📊</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Bootcamp Excel</div>
+                    <div class="card-desc">Comprendre la logique du tableur, les formules de base (+ - * /), les références et l'ancrage ($).</div>
+                </div>
+                <div class="card-footer">
+                    <a href="TP_excel.html" class="action-btn btn-sec">📊 Aller au TP</a>
+                    <a href="Session 4.html" class="action-btn btn-green">🎓 Cours Excel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOC 3 : ANALYSE DE DONNÉES -->
+        <div class="section-header">
+            <h2>Module 3 : Data & Analyse</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="grid">
+            <!-- SESSION 5 (Anciennement 3) -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="session-number">Séance 5</span>
                     <span class="card-icon">🧹</span>
                 </div>
                 <div class="card-body">
-                    <div class="card-title">Excel : Hygiène de Données</div>
-                    <div class="card-desc">Nettoyage de bases de données, formats et premières formules assistées par IA.</div>
+                    <div class="card-title">Data, Nettoyage & TCD</div>
+                    <div class="card-desc">L'Odyssée de la donnée : import CSV, nettoyage assisté par IA et création de Tableaux Croisés Dynamiques.</div>
                 </div>
                 <div class="card-footer">
-                    <span>Ouvrir</span> <span>→</span>
+                    <a href="Demos_Datasets.html" class="action-btn btn-sec">📁 Fichiers Démo</a>
+                    <a href="Session 5.html" class="action-btn btn-main">🎓 Ouvrir le Cours</a>
                 </div>
-            </a>
-
-            <!-- SESSION 4 -->
-            <a href="Session 4.html" class="card">
-                <div class="card-header">
-                    <span class="session-number">Séance 4</span>
-                    <span class="card-icon">📈</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Excel : Analyse Avancée</div>
-                    <div class="card-desc">Tableaux Croisés Dynamiques (TCD), RechercheV et analyse de tendances via IA.</div>
-                </div>
-                <div class="card-footer">
-                    <span>Ouvrir</span> <span>→</span>
-                </div>
-            </a>
+            </div>
         </div>
 
-        <!-- BLOC 3 : COMMUNICATION & RECHERCHE -->
+        <!-- BLOC 4 : COMMUNICATION & RECHERCHE -->
         <div class="section-header">
-            <h2>Module 3 : Communication & Synthèse</h2>
+            <h2>Module 4 : Communication & Recherche</h2>
             <div class="line"></div>
         </div>
 
         <div class="grid">
-            <!-- SESSION 5 -->
-            <a href="Session 5.html" class="card">
+            <!-- SESSION 6 -->
+            <div class="card">
                 <div class="card-header">
-                    <span class="session-number">Séance 5</span>
+                    <span class="session-number">Séance 6</span>
                     <span class="card-icon">🎤</span>
                 </div>
                 <div class="card-body">
                     <div class="card-title">Storytelling & PPT</div>
-                    <div class="card-desc">Créer des présentations percutantes. Génération de plans et de visuels par IA.</div>
+                    <div class="card-desc">Créer des présentations percutantes. Génération de plans et de visuels par l'Intelligence Artificielle.</div>
                 </div>
                 <div class="card-footer">
-                    <span>Ouvrir</span> <span>→</span>
+                    <a href="Session 6.html" class="action-btn btn-main">🎓 Ouvrir le Cours</a>
                 </div>
-            </a>
+            </div>
 
-            <!-- SESSION 6 -->
-            <a href="Session 6.html" class="card">
+            <!-- SESSION 7 (Fusion Recherche & Cloud pour rester à 8 séances) -->
+            <div class="card">
                 <div class="card-header">
-                    <span class="session-number">Séance 6</span>
+                    <span class="session-number">Séance 7</span>
                     <span class="card-icon">🔍</span>
                 </div>
                 <div class="card-body">
-                    <div class="card-title">Recherche & Fact-Checking</div>
-                    <div class="card-desc">Utiliser Perplexity et Bing Chat pour valider des sources économiques fiables.</div>
+                    <div class="card-title">Recherche & Collaboration</div>
+                    <div class="card-desc">Utiliser Perplexity pour valider des sources (Fact-Checking) et travailler en équipe sur le Cloud (Google Workspace).</div>
                 </div>
                 <div class="card-footer">
-                    <span>Ouvrir</span> <span>→</span>
+                    <a href="Session 7.html" class="action-btn btn-main">🎓 Ouvrir le Cours</a>
                 </div>
-            </a>
+            </div>
         </div>
 
-        <!-- BLOC 4 : PROJET & ÉTHIQUE -->
+        <!-- BLOC 5 : PROJET & ÉTHIQUE -->
         <div class="section-header">
-            <h2>Module 4 : Collaboration & Final</h2>
+            <h2>Module 5 : Finalisation</h2>
             <div class="line"></div>
         </div>
 
         <div class="grid">
-            <!-- SESSION 7 -->
-            <a href="Session 7.html" class="card">
-                <div class="card-header">
-                    <span class="session-number">Séance 7</span>
-                    <span class="card-icon">☁️</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Collaboration Cloud</div>
-                    <div class="card-desc">Travailler en équipe (Google Sheets/Docs) et gérer des projets avec l'IA.</div>
-                </div>
-                <div class="card-footer">
-                    <span>Ouvrir</span> <span>→</span>
-                </div>
-            </a>
-
             <!-- SESSION 8 -->
-            <a href="Session 8.html" class="card">
+            <div class="card">
                 <div class="card-header">
                     <span class="session-number">Séance 8</span>
                     <span class="card-icon">⚖️</span>
                 </div>
                 <div class="card-body">
                     <div class="card-title">Éthique & Projet Final</div>
-                    <div class="card-desc">Biais algorithmiques, confidentialité et présentation du projet final de semestre.</div>
+                    <div class="card-desc">Biais algorithmiques, confidentialité et soutenance du projet final de semestre (Simulation de crise économique).</div>
                 </div>
                 <div class="card-footer">
-                    <span>Ouvrir</span> <span>→</span>
+                    <a href="Session 8.html" class="action-btn btn-main">🎓 Ouvrir le Cours</a>
                 </div>
-            </a>
+            </div>
         </div>
 
     </div>
 
     <footer>
-        <p>Université Mundiapolis &copy; 2025-2026</p>
+        <p>Université Mundiapolis &copy; 2025-2026<br>École de Commerce et de Gestion</p>
     </footer>
 
 </body>
