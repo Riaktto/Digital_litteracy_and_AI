@@ -88,8 +88,36 @@
             user-select: all; cursor: copy;
         }
         
-        .copy-hint { font-size: 0.8em; color: var(--mundi-orange); font-weight: bold; text-align: right; margin-bottom: 5px; }
         .shortcut { display: inline-block; background: #eee; border: 1px solid #ccc; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #333; }
+
+        /* --- BOUTON DE TÉLÉCHARGEMENT --- */
+        .download-btn {
+            background-color: var(--excel-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9em;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(33, 115, 70, 0.2);
+            margin-bottom: 5px;
+        }
+
+        .download-btn:hover {
+            background-color: #165c36;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(33, 115, 70, 0.3);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
 
         /* --- CHECKLIST --- */
         .checklist { list-style: none; padding: 0; }
@@ -126,7 +154,7 @@
             <h2>La Data Brute (Le Chaos)</h2>
             <p>Vous recevez ce fichier d'export du logiciel de vente. Il est plein d'erreurs humaines et de problèmes de formatage.</p>
             
-            <div class="copy-hint">👇 Cliquez dans la boîte, faites Ctrl+A puis Ctrl+C 👇</div>
+            <button class="download-btn" onclick="downloadCSV(this, 'Base_Corrompue.csv')">📥 Télécharger le fichier CSV</button>
             <div class="raw-text-box">ID_Facture;Date_Achat;Client_Nom;Ville_Livraison;Secteur_Produit;Montant_Brut
 FAC-101;15/01/2023;khalid ALAMI;Casablanca ;Technologie; 125000 MAD
 FAC-102;22/01/2023;SARA bennis; Rabat;Agriculture; 85000 MAD 
@@ -151,7 +179,7 @@ FAC-120;14/03/2024;OMAR chraibi;Marrakech ;Tourisme; 102000 MAD
 FAC-121;10/04/2024;mehdi FILALI;Agadir;Agriculture; 82000 MAD
 FAC-122;22/04/2024;Zineb guessous; Rabat ;Technologie; 175000 MAD</div>
             
-            <p><strong>Action :</strong> Ouvrez un classeur Excel vierge, sélectionnez la cellule <strong>A1</strong> et faites <span class="shortcut">Ctrl+V</span>.</p>
+            <p style="margin-top: 15px;"><strong>Action :</strong> Ouvrez le fichier téléchargé dans Excel. (Si tout est bloqué dans la colonne A, passez à l'étape suivante !)</p>
         </div>
 
         <!-- ETAPE 1 : IMPORT & STRUCTURE -->
@@ -260,13 +288,38 @@ FAC-122;22/04/2024;Zineb guessous; Rabat ;Technologie; 175000 MAD</div>
         Université Mundiapolis &copy; 2024 - Cours de Culture Digitale
     </footer>
 
+    <!-- SCRIPTS -->
     <script>
-        // Script pour rendre les checklists interactives
+        // Rendre les checklists interactives
         document.querySelectorAll('.checklist li').forEach(item => {
             item.addEventListener('click', function() {
                 this.classList.toggle('checked');
             });
         });
+
+        // Fonction de téléchargement CSV
+        function downloadCSV(buttonElement, filename) {
+            // Trouver la boîte de texte brut correspondante (située juste après le bouton)
+            const rawTextBox = buttonElement.nextElementSibling;
+            let csvContent = rawTextBox.innerText || rawTextBox.textContent;
+
+            // Ajouter le BOM UTF-8 pour s'assurer qu'Excel lit bien les accents français
+            const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+            const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8;' });
+
+            // Créer un lien de téléchargement caché et le cliquer automatiquement
+            const link = document.createElement("a");
+            if (link.download !== undefined) { 
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url); // Libérer la mémoire
+            }
+        }
     </script>
 
 </body>
