@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluation : Étude de Marché - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;
+            --mundi-orange: #F37021;
+            --mundi-grey: #f4f6f8;
+            --white: #ffffff;
+            --text-main: #333333;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--white);
+            border-bottom: 5px solid var(--mundi-orange);
+            padding: 20px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--mundi-blue);
+            font-weight: 700; font-size: 1.2em; text-transform: uppercase;
+        }
+
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+        .hero-card {
+            background: linear-gradient(135deg, var(--mundi-blue) 0%, #001a33 100%);
+            color: white; padding: 40px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 51, 102, 0.2);
+            margin-bottom: 40px; text-align: center;
+        }
+
+        .hero-card h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.5em; color: var(--mundi-orange); }
+        .hero-card p { font-size: 1.2em; opacity: 0.9; margin-top: 10px; }
+
+        .task-card {
+            background: var(--white); border-radius: 10px; padding: 30px;
+            margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--mundi-blue);
+        }
+
+        .task-card.orange { border-left-color: var(--mundi-orange); }
+        .task-card.green { border-left-color: #217346; }
+
+        h2 { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        h3 { color: #555; margin-top: 25px; }
+
+        .download-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--mundi-orange); color: white;
+            padding: 15px 30px; border: none; border-radius: 50px;
+            font-family: 'Montserrat', sans-serif; font-size: 1.1em; font-weight: 700;
+            cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(243, 112, 33, 0.3);
+            margin-top: 20px;
+        }
+        .download-btn:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(243, 112, 33, 0.4); }
+
+        .checklist { list-style: none; padding: 0; }
+        .checklist li { margin-bottom: 12px; padding-left: 30px; position: relative; }
+        .checklist li::before { content: '🎯'; position: absolute; left: 0; top: 2px; }
+
+        .criteria-box {
+            background: #eef2f5; border: 1px solid #ccc;
+            padding: 20px; border-radius: 8px; margin-top: 20px;
+        }
+
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" height="45" alt="Mundiapolis">
+        </div>
+        <div class="header-title">Évaluation : Projet de Synthèse</div>
+    </header>
+
+    <div class="container">
+
+        <!-- INTRO -->
+        <div class="hero-card">
+            <h1>Mission : Lancement "Mundi-Café"</h1>
+            <p>De la donnée brute à la recommandation stratégique.</p>
+            <div style="margin-top: 20px; font-size: 0.9em; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 50px; display: inline-block;">
+                ⏳ Durée du Projet : 3 Heures
+            </div>
+        </div>
+
+        <!-- BRIEFING -->
+        <div class="task-card">
+            <h2>1. Le Briefing Stratégique</h2>
+            <p>Vous êtes Analyste Marketing Junior chez <em>Mundi-FMCG</em>. La direction générale envisage de lancer une nouvelle marque de café premium nommée <strong>"Mundi-Café"</strong> sur le marché marocain, dominé par de grands acteurs internationaux.</p>
+            <p>Le Directeur Marketing a besoin d'une <strong>Note de Synthèse Stratégique</strong> claire, chiffrée et professionnelle pour décider de la faisabilité de ce lancement.</p>
+        </div>
+
+        <!-- DATASET -->
+        <div class="task-card green" style="text-align: center;">
+            <h2 style="text-align: left;">2. Votre Matière Première (La Data)</h2>
+            <p style="text-align: left;">Le département IT a extrait l'historique des ventes de vos concurrents sur l'année écoulée (3000 transactions). Conformément à la réalité de l'entreprise, <strong>cette base de données contient des erreurs de saisie</strong>.</p>
+            
+            <button class="download-btn" id="downloadBtn" onclick="generateAndDownloadCSV()">
+                ⬇️ Télécharger la Base de Données (.csv)
+            </button>
+            <p style="font-size: 0.85em; color: #666; margin-top: 15px;">Le fichier pèse environ 150 Ko. Ouvrez-le avec Excel.</p>
+        </div>
+
+        <!-- CAHIER DES CHARGES -->
+        <div class="task-card orange">
+            <h2>3. Cahier des Charges (Les Tâches à accomplir)</h2>
+            <p>Voici la liste exacte des opérations que vous devez réaliser. N'hésitez pas à solliciter l'IA (ChatGPT/Copilot) si vous avez oublié une formule ou une technique.</p>
+            
+            <h3>Partie A : Ingénierie de la Donnée (Sur Excel)</h3>
+            <ul class="checklist">
+                <li>Importer le fichier CSV en séparant correctement les colonnes.</li>
+                <li><strong>Nettoyer la colonne "Ville_Livraison" :</strong> Supprimer les espaces fantômes avant ou après le nom de la ville.</li>
+                <li><strong>Nettoyer la colonne "Client_Nom" :</strong> Uniformiser la casse (Mettre une majuscule au début de chaque mot).</li>
+                <li><strong>Nettoyer la colonne "Prix_Unitaire_MAD" :</strong> Retirer le mot "MAD", supprimer les espaces, et forcer la conversion de ce texte en véritable nombre (pour permettre l'addition).</li>
+                <li>Transformer la base assainie en "Tableau Officiel".</li>
+                <li>Ajouter une nouvelle colonne <strong>"Chiffre d'Affaires"</strong> qui multiplie le prix unitaire propre par les unités vendues.</li>
+                <li>Créer un (ou plusieurs) <strong>Tableaux Croisés Dynamiques</strong> pour trouver :
+                    <ul>
+                        <li>La ville qui génère le plus de CA.</li>
+                        <li>La marque leader du marché.</li>
+                        <li>Le format de café le plus vendu en volume.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Partie B : Rédaction et Reporting (Sur Word + IA)</h3>
+            <ul class="checklist">
+                <li>Créer un document Word avec une <strong>Page de garde</strong> et une <strong>Table des matières automatique</strong>.</li>
+                <li>Structurer le document en utilisant les <strong>Styles</strong> (Titre 1, Titre 2).</li>
+                <li>Utiliser un prompt IA (Méthode CRTF) pour faire rédiger une <strong>Introduction</strong> professionnelle sur le marché du café au Maroc.</li>
+                <li>Utiliser l'IA pour générer une <strong>Analyse SWOT</strong> (Forces, Faiblesses, Opportunités, Menaces) du lancement de Mundi-Café.</li>
+                <li>Copier/Coller votre meilleur TCD depuis Excel dans le document Word.</li>
+                <li>Insérer une <strong>Légende dynamique</strong> sous le TCD et y faire référence dans le texte via un <strong>Renvoi</strong>.</li>
+                <li>Rédiger (vous-même) une <strong>Recommandation Stratégique</strong> : Faut-il lancer le produit ? Si oui, où et sous quel format ?</li>
+                <li>Créer une annexe finale et y coller votre "Golden Prompt" (le meilleur prompt utilisé pendant le projet).</li>
+            </ul>
+        </div>
+
+        <!-- EVALUATION -->
+        <div class="task-card">
+            <h2>4. Critères d'Évaluation</h2>
+            <div class="criteria-box">
+                <p><strong>1. L'Hygiène de la Donnée :</strong> Le TCD est-il mathématiquement exact (preuve que le nettoyage a fonctionné) ?</p>
+                <p><strong>2. L'Architecture Documentaire :</strong> La table des matières et les renvois croisés sont-ils fonctionnels et automatiques ?</p>
+                <p><strong>3. L'Ingénierie du Prompt :</strong> Le prompt soumis en annexe respecte-t-il la structure CRTF ? Est-il précis ?</p>
+                <p><strong>4. Le Sens Économique :</strong> La recommandation finale est-elle justifiée par les chiffres du TCD ?</p>
+            </div>
+            
+            <p style="text-align: center; margin-top: 30px; font-size: 1.2em; color: var(--mundi-orange); font-weight: bold;">
+                Livrable final : Exportez votre rapport en PDF. Bon courage !
+            </p>
+        </div>
+
+    </div>
+
+    <footer>
+        Université Mundiapolis &copy; 2026 - Évaluation d'Étape
+    </footer>
+
+    <!-- SCRIPT DE GÉNÉRATION DU CSV -->
+    <script>
+        function generateAndDownloadCSV() {
+            const btn = document.getElementById('downloadBtn');
+            btn.innerHTML = "⏳ Génération en cours...";
+            btn.disabled = true;
+
+            // Paramètres des données fictives
+            const rows = 3000;
+            const cities =["Casablanca", "Rabat", "Marrakech", "Tanger", "Agadir", "Fes", "Oujda", "Meknes"];
+            const formats =["Capsule", "Moulu 250g", "Soluble 100g", "Grains 500g"];
+            const brands =["Nespresso", "Lavazza", "Starbucks", "Nescafé", "Dubois", "Carrion"];
+            const firstNames =["karim", "Yassine", "fatima", "SARA", "Mohamed", "ZINEB", "hicham", "salma", "OMAR", "meriem"];
+            const lastNames =["ALAMI", "Bennis", "Tazi", "CHRAIBI", "Filali", "LAZRAK", "guessous", "Iraqi", "NACIRI", "bennani"];
+
+            let csvContent = "ID_Transaction;Date_Achat;Client_Nom;Ville_Livraison;Format_Produit;Marque;Prix_Unitaire_MAD;Ventes_Unitaires\n";
+
+            for (let i = 1; i <= rows; i++) {
+                let id = "TRX-" + String(i).padStart(4, '0');
+                
+                let start = new Date(2023, 0, 1);
+                let end = new Date(2023, 11, 31);
+                let date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+                let dateStr = date.toLocaleDateString('fr-FR');
+
+                let fName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                let lName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                let clientName = fName + " " + lName;
+                
+                let city = cities[Math.floor(Math.random() * cities.length)];
+                let format = formats[Math.floor(Math.random() * formats.length)];
+                let brand = brands[Math.floor(Math.random() * brands.length)];
+                
+                let price = Math.floor(Math.random() * 80) + 15; 
+                let quantity = Math.floor(Math.random() * 500) + 10; 
+
+                // INJECTION DES ERREURS
+                // 1. Espaces fantômes (20% de chances)
+                if (Math.random() < 0.20) {
+                    let spaces = " ".repeat(Math.floor(Math.random() * 3) + 1);
+                    city = (Math.random() < 0.5) ? (spaces + city) : (city + spaces);
+                }
+
+                // 2. Chiffres bloqués en texte (30% de chances)
+                let priceStr = price.toString();
+                if (Math.random() < 0.30) {
+                    priceStr = " " + priceStr + " MAD ";
+                }
+
+                let row = `${id};${dateStr};${clientName};${city};${format};${brand};${priceStr};${quantity}`;
+                csvContent += row + "\n";
+            }
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", "MundiCafe_Data_Brutes.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => {
+                btn.innerHTML = "✅ Fichier Téléchargé !";
+                btn.disabled = false;
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>
