@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP PowerPoint & IA - Mundiapolis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS & PPT --- */
+        :root {
+            --mundi-blue: #003366;
+            --mundi-orange: #F37021;
+            --mundi-grey: #f4f6f8;
+            --ppt-red: #d24726; /* Rouge PowerPoint */
+            --white: #ffffff;
+            --text-main: #333333;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--mundi-grey);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--white);
+            border-bottom: 5px solid var(--ppt-red);
+            padding: 20px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--mundi-blue);
+            font-weight: 700; font-size: 1.2em; text-transform: uppercase;
+        }
+
+        /* --- CONTAINER --- */
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+        /* --- HERO SECTION --- */
+        .hero-card {
+            background: linear-gradient(135deg, var(--mundi-blue) 0%, #001a33 100%);
+            color: white; padding: 40px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 51, 102, 0.2);
+            margin-bottom: 40px; text-align: center;
+        }
+
+        .hero-card h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.5em; }
+        .hero-card p { font-size: 1.2em; opacity: 0.9; margin-top: 10px; }
+
+        /* --- INSTRUCTION CARDS --- */
+        .task-card {
+            background: var(--white); border-radius: 10px; padding: 30px;
+            margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--mundi-blue); position: relative;
+        }
+
+        .task-card.orange { border-left-color: var(--mundi-orange); }
+        .task-card.red { border-left-color: var(--ppt-red); }
+
+        .step-number {
+            position: absolute; top: -15px; left: -15px;
+            background: var(--mundi-blue); color: white;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .task-card.orange .step-number { background: var(--mundi-orange); }
+        .task-card.red .step-number { background: var(--ppt-red); }
+
+        h2 { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        h3 { color: #555; font-size: 1.1em; margin-top: 20px; }
+
+        /* --- RAW TEXT BOX --- */
+        .raw-text-box {
+            background: #eef2f5; border: 2px dashed #ccc; padding: 15px;
+            font-family: 'Courier New', monospace; font-size: 0.85em;
+            color: #444; white-space: pre-wrap; overflow-x: auto; overflow-y: auto;
+            max-height: 250px; border-radius: 8px; margin: 10px 0;
+            user-select: all; cursor: copy;
+        }
+        
+        .copy-hint { font-size: 0.8em; color: var(--mundi-orange); font-weight: bold; text-align: right; margin-bottom: 5px; }
+        .shortcut { display: inline-block; background: #eee; border: 1px solid #ccc; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #333; }
+
+        /* --- CHECKLIST --- */
+        .checklist { list-style: none; padding: 0; }
+        .checklist li { margin-bottom: 10px; padding-left: 30px; position: relative; cursor: pointer; }
+        .checklist li::before { content: '⬜'; position: absolute; left: 0; top: 2px; }
+        .checklist li.checked::before { content: '✅'; }
+
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" height="45" alt="Mundiapolis">
+        </div>
+        <div class="header-title">Bootcamp PowerPoint • Travaux Pratiques</div>
+    </header>
+
+    <div class="container">
+
+        <!-- INTRO -->
+        <div class="hero-card">
+            <h1>Mission : Le Pitch Deck</h1>
+            <p>Transformez un rapport ennuyeux en une présentation de niveau Consultant.</p>
+            <div style="margin-top: 20px; font-size: 0.9em; background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 50px; display: inline-block;">
+                🎯 Objectif : Masque PPT, IA Scénariste, IA Génération d'Images
+            </div>
+        </div>
+
+        <!-- ETAPE 0 : LE MATÉRIAU -->
+        <div class="task-card">
+            <div class="step-number">0</div>
+            <h2>La Matière Première (Le Rapport)</h2>
+            <p>Voici le résumé exécutif de votre projet Mundi-Café. C'est ce texte que vous devez synthétiser pour votre présentation.</p>
+            
+            <div class="copy-hint">👇 Cliquez dans la boîte et copiez le texte (Ctrl+C) 👇</div>
+            <div class="raw-text-box">RAPPORT STRATÉGIQUE : LANCEMENT MUNDI-CAFÉ 2026
+
+1. Contexte du Marché
+Le marché marocain du café connaît une mutation profonde. La consommation à domicile de café premium est en hausse de 18% par an. Les consommateurs délaissent le café soluble au profit des formats capsules et grains torréfiés localement.
+
+2. Cible et Positionnement
+Notre analyse démontre que Casablanca et Rabat concentrent 75% du chiffre d'affaires du segment premium. La cible prioritaire est le cadre urbain de 25-45 ans, sensible au design et à l'origine du produit. Mundi-Café se positionnera comme une marque "Glocale" : une torréfaction 100% marocaine respectant les plus hauts standards internationaux.
+
+3. Résultats de l'Analyse des Ventes
+Nos simulations (TCD) montrent que le format "Capsule" est le plus rentable, générant 65% de la valeur sur le marché cible, suivi par le café en Grains (25%). Les marques concurrentes (Nespresso, Lavazza) s'accaparent actuellement cette valeur grâce à leur forte présence digitale.
+
+4. Recommandation Stratégique
+Nous recommandons un lancement exclusif sur l'axe Casablanca-Rabat pour l'année 1. Le produit phare sera la boîte de 10 capsules compatibles. La stratégie d'acquisition devra être 100% digitale (réseaux sociaux et influenceurs) pour contourner les coûts de distribution physique des géants du secteur. L'objectif est d'atteindre 10% de part de marché locale d'ici la fin de l'année.</div>
+        </div>
+
+        <!-- ETAPE 1 : L'ARCHITECTURE PPT -->
+        <div class="task-card red">
+            <div class="step-number">1</div>
+            <h2>L'Usine PowerPoint : Le Masque</h2>
+            <p>Ne touchez pas au design slide par slide ! Paramétrez votre "Moule".</p>
+            
+            <ul class="checklist">
+                <li>Ouvrez PowerPoint et créez une <strong>Nouvelle présentation</strong> vide.</li>
+                <li>Allez dans l'onglet <strong>Affichage</strong> > <strong>Masque des diapositives</strong>.</li>
+                <li><strong>CRUCIAL :</strong> Sur la gauche, remontez l'ascenseur tout en haut et cliquez sur la <strong>Grande Slide Mère (Numéro 1)</strong>.</li>
+                <li>Sur cette grande slide, cliquez sur le Titre principal. Changez la police pour du <strong>Arial Black</strong> ou <strong>Montserrat</strong>, et mettez-le en Bleu Foncé.</li>
+                <li>Allez dans <strong>Insertion > Formes</strong>. Dessinez un petit carré Orange en bas à droite de la slide. (Ceci simule un logo).</li>
+                <li>Allez dans l'onglet "Masque des diapositives" et cliquez sur la croix rouge <strong>Désactiver le mode Masque</strong>.</li>
+                <li>Créez 3 nouvelles slides (Accueil > Nouvelle diapositive). Constatez que le carré orange et les titres bleus sont là automatiquement !</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 2 : IA SCÉNARISTE -->
+        <div class="task-card orange">
+            <div class="step-number">2</div>
+            <h2>L'IA Scénariste (ChatGPT / Copilot)</h2>
+            <p>Laissez l'IA découper votre rapport en 5 slides percutantes.</p>
+            
+            <ul class="checklist">
+                <li>Ouvrez ChatGPT ou Copilot.</li>
+                <li>Rédigez un prompt "Architecte PPT". Vous devez exiger :
+                    <br>- Le Rôle : <em>"Agis comme un Consultant Stratégique."</em>
+                    <br>- La Tâche : <em>"Transforme le rapport en 5 slides."</em>
+                    <br>- Le Format (Très important) : <em>"Pour chaque slide, donne un <strong>Titre d'Action affirmatif</strong>, 3 tirets (bullet points) très courts (max 8 mots), et une idée d'image."</em>
+                </li>
+                <li>Collez le texte du Rapport (Étape 0) à la fin de votre prompt et validez.</li>
+                <li><strong>Action dans PPT :</strong> Copiez les titres générés par l'IA sur vos 5 slides. Copiez les tirets courts dans le corps de la slide.</li>
+                <li><strong>Le Secret du Pro :</strong> Prenez les longs paragraphes du texte original et collez-les dans la section <strong>"Notes"</strong> en bas de l'écran PowerPoint. C'est votre prompteur !</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 3 : IA DIRECTEUR ARTISTIQUE -->
+        <div class="task-card red">
+            <div class="step-number">3</div>
+            <h2>L'IA Directeur Artistique (Génération d'images)</h2>
+            <p>Fini les images pixelisées avec des filigranes Shutterstock.</p>
+            
+            <ul class="checklist">
+                <li>Allez sur <strong>Microsoft Designer</strong> (designer.microsoft.com/image-creator) ou utilisez <strong>Copilot</strong>.</li>
+                <li>Rédigez un prompt "Image" (Méthode S.E.S.L : Sujet, Environnement, Style, Lumière).</li>
+                <li><em>Exemple : "Photographie corporate 4K (Style). Une belle tasse de café avec une capsule orange (Sujet). Posée sur un bureau en verre dans un gratte-ciel à Casablanca (Environnement). Lumière lumineuse du matin (Lumière)."</em></li>
+                <li>Téléchargez l'image qui vous plaît le plus.</li>
+                <li>Dans PowerPoint, allez sur votre <strong>Slide 1 (Titre)</strong>. Insérez l'image et étirez-la pour qu'elle prenne <strong>toute la slide</strong>.</li>
+                <li>Faites un clic droit sur l'image > <strong>Arrière-plan</strong> (ou "Mettre à l'arrière-plan"). Changez la couleur de votre titre en blanc pour qu'il soit lisible.</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 4 : INTEGRATION EXCEL -->
+        <div class="task-card">
+            <div class="step-number">4</div>
+            <h2>Le Lien Excel Dynamique</h2>
+            <p>Intégrez de la donnée qui se met à jour toute seule.</p>
+            
+            <ul class="checklist">
+                <li>Ouvrez <strong>Excel</strong>. Dans une cellule vide (ex: A1), écrivez "Ventes Casablanca" et en B1 "150000". En A2 écrivez "Ventes Rabat" et en B2 "50000".</li>
+                <li>Sélectionnez ces 4 cases, allez dans <strong>Insertion</strong> et créez un graphique <strong>"Secteurs" (Camembert)</strong>.</li>
+                <li>Sélectionnez le graphique entier, et faites <span class="shortcut">Ctrl+C</span> (Copier).</li>
+                <li>Allez dans PowerPoint, sur votre Slide numéro 3.</li>
+                <li>Ne faites pas un simple Ctrl+V ! Faites <strong>Clic Droit</strong> > Dans "Options de collage", choisissez la 3ème icône : <strong>"Utiliser le thème de destination et Lier les données"</strong>.</li>
+                <li><strong>Le Crash Test :</strong> Retournez sur Excel. Changez "150000" par "500". Retournez sur PowerPoint. Le graphique a changé tout seul !</li>
+            </ul>
+        </div>
+
+        <!-- ETAPE 5 : EXPORT -->
+        <div class="task-card orange">
+            <div class="step-number">5</div>
+            <h2>Le Livrable Final</h2>
+            
+            <ul class="checklist">
+                <li>Relisez vos 5 slides. Règle d'or : <strong>Si une slide prend plus de 10 secondes à être lue, il y a trop de texte !</strong></li>
+                <li>Vérifiez que votre "logo" orange est bien présent sur toutes les pages de contenu (grâce au masque).</li>
+                <li>Sauvegardez en <strong>.pptx</strong> pour vous, et exportez en <strong>.PDF</strong> pour envoi professionnel.</li>
+            </ul>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <p style="font-size: 1.5em; font-weight: bold; color: var(--ppt-red);">Félicitations ! 🎓</p>
+                <p>Vous avez transformé un mur de texte ennuyeux en un Pitch Deck prêt pour un Comité de Direction.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        Université Mundiapolis &copy; 2026 - Cours de Culture Digitale
+    </footer>
+
+    <script>
+        // Script pour les cases à cocher interactives
+        document.querySelectorAll('.checklist li').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+    </script>
+
+</body>
+</html>
