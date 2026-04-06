@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen - Culture Digitale & IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;
+            --mundi-orange: #F37021;
+            --mundi-grey: #f4f6f8;
+            --white: #ffffff;
+            --text-main: #333333;
+        }
+
+        body { margin: 0; padding: 0; font-family: 'Open Sans', sans-serif; background-color: var(--mundi-grey); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        #sidebar { width: 300px; background: var(--mundi-blue); color: white; display: flex; flex-direction: column; box-shadow: 4px 0 15px rgba(0,0,0,0.1); z-index: 10; }
+        .sidebar-header { padding: 25px 20px; background: #001a33; text-align: center; }
+        .sidebar-header img { width: 150px; margin-bottom: 15px; }
+        .sidebar-header h2 { margin: 0; font-size: 1em; font-family: 'Montserrat', sans-serif; color: var(--mundi-orange); cursor: pointer; user-select: none; letter-spacing: 1px;}
+
+        .student-list { flex-grow: 1; overflow-y: auto; padding: 10px 0; list-style: none; margin: 0; }
+        .student-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; font-size: 0.85em; }
+        .student-item:hover { background: rgba(243, 112, 33, 0.2); }
+        .student-item.active { background: var(--mundi-orange); font-weight: bold; border-left: 5px solid white;}
+
+        /* --- MAIN CONTENT --- */
+        #main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; background: var(--mundi-grey); position: relative;}
+        header { background: var(--white); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 5; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; flex-grow: 1; width: 100%;}
+
+        .hero-card { color: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); margin-bottom: 40px; text-align: center; border: 1px solid #555; }
+        .hero-card h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.2em; color: var(--mundi-orange); }
+        .hero-card p { font-size: 1.1em; opacity: 0.9; margin-top: 10px; }
+
+        .task-card { background: var(--white); border-radius: 10px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--mundi-blue); position: relative; }
+        h2.card-title { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        
+        .download-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--mundi-orange); color: white; padding: 15px 30px; border: none; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-size: 1.1em; font-weight: 700; cursor: pointer; text-decoration: none; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(243, 112, 33, 0.3); margin-top: 20px; }
+        .download-btn:hover { transform: scale(1.05); }
+
+        .checklist { list-style: none; padding: 0; margin-top: 15px;}
+        .checklist li { margin-bottom: 12px; padding-left: 30px; position: relative; }
+        .checklist li::before { content: '👉'; position: absolute; left: 0; top: 0; font-size: 1.1em;}
+
+        .tag { display: inline-block; background: #eef2f5; color: var(--mundi-blue); padding: 3px 8px; border-radius: 5px; font-weight: bold; font-family: monospace; border: 1px solid #ccc; font-size: 0.9em;}
+
+        #welcome-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: #555;}
+        #welcome-screen h1 { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; }
+        #exam-screen, #prof-screen { display: none; }
+
+        /* --- PROFESSOR DASHBOARD --- */
+        .prof-table { width: 100%; border-collapse: collapse; font-size: 0.85em; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .prof-table th, .prof-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .prof-table th { background: var(--mundi-blue); color: white; position: sticky; top: 0;}
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis">
+            <h2 id="secret-trigger">ÉVALUATION</h2>
+            <div style="font-size: 0.8em; margin-top: 5px; color: #aaa;">Sélectionnez votre nom</div>
+        </div>
+        <ul class="student-list" id="studentList"></ul>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+        
+        <div id="welcome-screen">
+            <div style="font-size: 5em;">🎓</div>
+            <h1>Examen de Culture Digitale</h1>
+            <p>Cliquez sur votre nom dans le menu de gauche pour afficher votre sujet.</p>
+        </div>
+
+        <!-- MODE PROFESSEUR -->
+        <div id="prof-screen" class="container" style="max-width: 95%;">
+            <h1 style="color: var(--mundi-blue);">👨‍🏫 Dashboard Professeur (Correction)</h1>
+            <p>Voici les paramètres exacts générés pour chaque étudiant.</p>
+            <div style="overflow-x: auto; height: 75vh;">
+                <table class="prof-table" id="profTable">
+                    <thead>
+                        <tr>
+                            <th>Étudiant</th>
+                            <th>Thème / Archétype</th>
+                            <th>Col. Espaces (SUPPRESPACE)</th>
+                            <th>Col. Casse (NOMPROPRE)</th>
+                            <th>Col. Texte bloqué (CNUM)</th>
+                            <th>Calcul TCD Attendu</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ECRAN EXAMEN ETUDIANT -->
+        <div id="exam-screen">
+            <header>
+                <div style="font-family: 'Montserrat', sans-serif; font-weight: bold; color: var(--mundi-blue);">ÉTUDIANT(E) : <span id="header-student-name" style="color: var(--mundi-orange); text-transform: uppercase;">NOM</span></div>
+                <div style="font-size: 0.9em; color: #666; font-weight: bold;">Durée : 3 Heures</div>
+            </header>
+
+            <div class="container" id="dynamic-exam-content">
+                <!-- Le sujet HTML sera injecté ici selon l'étudiant -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. LISTE DES ÉTUDIANTS ---
+        const students =[
+            "ABOULADIL Hana Fatna", "ABOULADL Hana Fatna", "AGNAOU Afaf", "AHMED Safi", "ALAHIANE Anas",
+            "AMIL Akram", "AMOUDI Abdelkarim", "ANKAMA Gina-Leonie", "BOUJJADIA Nouha", "BRAIJA Rania",
+            "DANY Assya", "DRAIBIN Nassima", "EL MEKKAOUI Yassine", "EL MOTAOUAKKEL Aya", "FARIDI Ismail",
+            "FRIKEL Zakaria", "HAD Aya", "IDRISSI Ranya", "KELIET Flavy", "LAAGUEL Ilias", "LAAZRI Haitam",
+            "LEGNERIS Melanie", "MANAF Othmane", "MOUTAOUASSIT Rayane", "MUTWALE OMBA Emmanuel",
+            "NGOIE NYONGONYI Rita", "NKOMA Lucas", "SOUMAH Marie Helene","TAOUZZALE Marwa"
+        ].sort();
+
+        // --- 2. BANQUE DE DONNÉES (POUR LE GÉNÉRATEUR CSV) ---
+        const datasets =[
+            { t: "E-Commerce", c1:"ID_Cmd", c2:"Date", c3:"Gouvernorat", c4:"Categorie_Produit", c5:"Panier_Devise", c6:"Origine_Visite" },
+            { t: "Automobile Électrique", c1:"ID", c2:"Date", c3:"Region", c4:"Modele", c5:"Prix_MAD", c6:"Financement" },
+            { t: "Tourisme de Luxe", c1:"ID", c2:"Date", c3:"Destination", c4:"Type_Sejour", c5:"Montant_MAD", c6:"Canal" },
+            { t: "Fast-Food Premium", c1:"ID", c2:"Date", c3:"Quartier", c4:"Menu", c5:"Ticket_MAD", c6:"Paiement" },
+            { t: "Banque Digitale", c1:"ID", c2:"Date", c3:"Ville", c4:"Type_Compte", c5:"Solde_MAD", c6:"Utilisation" },
+            { t: "Énergies Renouvelables", c1:"ID", c2:"Date", c3:"Zone_Indus", c4:"Installation", c5:"Budget_MAD", c6:"Client" },
+            { t: "Immobilier Commercial", c1:"ID", c2:"Date", c3:"Ville", c4:"Type_Bien", c5:"Valeur_MAD", c6:"Statut" },
+            { t: "Cosmétique Bio", c1:"ID", c2:"Date", c3:"Region", c4:"Gamme", c5:"Ventes_MAD", c6:"Distributeur" },
+            { t: "Pharmaceutique", c1:"ID", c2:"Date", c3:"Ville", c4:"Classe_Thera", c5:"CA_MAD", c6:"Cible" },
+            { t: "Logistique & Fret", c1:"ID", c2:"Date", c3:"Port", c4:"Type_Fret", c5:"Cout_MAD", c6:"Transporteur" },
+            { t: "Agroalimentaire", c1:"ID", c2:"Date", c3:"Region", c4:"Produit", c5:"CA_MAD", c6:"Supermarche" },
+            { t: "EdTech (Éducation)", c1:"ID", c2:"Date", c3:"Ville", c4:"Formation", c5:"Frais_MAD", c6:"Support" },
+            { t: "Aéronautique", c1:"ID", c2:"Date", c3:"Aeroport", c4:"Piece", c5:"Cout_MAD", c6:"Fournisseur" },
+            { t: "Grande Distribution", c1:"ID", c2:"Date", c3:"Ville", c4:"Rayon", c5:"Ticket_MAD", c6:"Fidelite" },
+            { t: "Assurances", c1:"ID", c2:"Date", c3:"Region", c4:"Contrat", c5:"Prime_MAD", c6:"Risque" },
+            { t: "Jeux Vidéo", c1:"ID", c2:"Date", c3:"Ville", c4:"Console", c5:"Ventes_MAD", c6:"Genre" },
+            { t: "Textile & Cuir", c1:"ID", c2:"Date", c3:"Zone_Indus", c4:"Tissu", c5:"CA_MAD", c6:"Export" },
+            { t: "Smart City", c1:"ID", c2:"Date", c3:"Quartier", c4:"Capteur", c5:"Cout_MAD", c6:"Etat" },
+            { t: "Agriculture Tech", c1:"ID", c2:"Date", c3:"Region", c4:"Culture", c5:"Invest_MAD", c6:"Technologie" },
+            { t: "Streaming Vidéo", c1:"ID", c2:"Date", c3:"Ville", c4:"Abonnement", c5:"CA_MAD", c6:"Appareil" },
+            { t: "Recyclage Déchets", c1:"ID", c2:"Date", c3:"Ville", c4:"Materiau", c5:"Valeur_MAD", c6:"Partenaire" },
+            { t: "Équipement Sportif", c1:"ID", c2:"Date", c3:"Region", c4:"Sport", c5:"Ventes_MAD", c6:"Canal" },
+            { t: "Télécommunications", c1:"ID", c2:"Date", c3:"Ville", c4:"Forfait", c5:"ARPU_MAD", c6:"Engagement" },
+            { t: "Santé Privée", c1:"ID", c2:"Date", c3:"Region", c4:"Specialite", c5:"Facture_MAD", c6:"Assurance" },
+            { t: "Services Cloud", c1:"ID", c2:"Date", c3:"Ville", c4:"Serveur", c5:"Abo_MAD", c6:"Formule" },
+            { t: "Cybersécurité", c1:"ID", c2:"Date", c3:"Region", c4:"Menace", c5:"Cout_MAD", c6:"Secteur_Client" },
+            { t: "Industrie Navale", c1:"ID", c2:"Date", c3:"Port", c4:"Navire", c5:"Facture_MAD", c6:"Maintenance" },
+            { t: "Livraison Express", c1:"ID", c2:"Date", c3:"Quartier", c4:"Vehicule", c5:"Tarif_MAD", c6:"Type_Colis" },
+            { t: "Gestion de l'Eau", c1:"ID", c2:"Date", c3:"Bassin_Versant", c4:"Type_Usage", c5:"Cout_Traitement_MAD", c6:"Operateur" }
+        ];
+
+        // Mots aléatoires pour remplir le CSV
+        const fakeWords1 = ["Nord", "Sud", "Est", "Ouest", "Centre"];
+        const fakeWords2 =["Alpha", "Beta", "Gamma", "Delta"];
+        const fakeWords3 =["Validé", "Rejeté", "En_Attente"];
+
+        // --- 3. LES 5 ARCHÉTYPES SIMPLIFIÉS (Français très simple et direct) ---
+        const archetypes =[
+            
+            // ARCHÉTYPE 0 : Urgence
+            {
+                bg: "linear-gradient(135deg, #c0392b 0%, #8e44ad 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Réparer les Données</h1>
+                    <p>Secteur de l'entreprise : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:#c0392b;">
+                    <h2 style="color:#c0392b;">Étape 1 : Le fichier Excel</h2>
+                    <p>Un problème informatique a abîmé votre fichier de travail. Vous devez le nettoyer avant de faire vos calculs.</p>
+                    <button class="download-btn" style="background:#c0392b;" onclick="generateStudentCSV()">📥 Télécharger le fichier CSV</button>
+                    <ul class="checklist">
+                        <li>La colonne <span class="tag">{{C3}}</span> contient des espaces cachés en trop. Enlevez-les.</li>
+                        <li>La colonne <span class="tag">{{C4}}</span> est mal écrite (majuscules/minuscules mélangées). Mettez la première lettre de chaque mot en majuscule.</li>
+                        <li>La colonne <span class="tag">{{C5}}</span> est bloquée au format "texte" et on ne peut pas faire de calcul avec. Transformez-la en vrai nombre.</li>
+                        <li><strong>L'Analyse :</strong> Créez un Tableau Croisé Dynamique pour calculer la <strong style="color:#c0392b;">{{CALC}}</strong> de [{{C5}}]. Placez [{{C3}}] dans les Lignes, et [{{C4}}] dans les Colonnes.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#2c3e50;">
+                    <h2 style="color:#2c3e50;">Étape 2 : Le Rapport sur Word</h2>
+                    <p>Votre directeur a besoin d'un rapport bien présenté.</p>
+                    <ul class="checklist">
+                        <li>Le document doit utiliser les <strong>Styles</strong> (Titre 1, Titre 2) et avoir une <strong>Table des matières</strong> automatique.</li>
+                        <li>Utilisez l'Intelligence Artificielle pour écrire une belle introduction sur votre secteur d'activité ({{SECTEUR}}).</li>
+                        <li><strong>Le défi :</strong> Insérez une page au format <strong>PAYSAGE</strong> (couchée) au milieu de votre document Word pour y coller votre Tableau Croisé Dynamique.</li>
+                        <li>Mettez une <strong>Légende</strong> sous le tableau, et ajoutez un <strong>Renvoi</strong> cliquable dans votre texte d'introduction.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#f39c12;">
+                    <h2 style="color:#f39c12;">Étape 3 : La Présentation PowerPoint</h2>
+                    <p>Vous devez présenter ce rapport en réunion.</p>
+                    <ul class="checklist">
+                        <li>Utilisez le <strong>Masque des diapositives</strong> pour mettre une décoration qui se répète sur toutes les pages.</li>
+                        <li>Faites 3 slides maximum. Les titres doivent être des phrases affirmatives (pas de titres vagues).</li>
+                        <li>Générez une belle image avec l'IA (DALL-E, Designer...) qui représente le secteur {{SECTEUR}} pour illustrer votre première slide.</li>
+                    </ul>
+                </div>`
+            },
+
+            // ARCHÉTYPE 1 : Startup/Investisseur
+            {
+                bg: "linear-gradient(135deg, #16a085 0%, #27ae60 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Convaincre les Investisseurs</h1>
+                    <p>Secteur de la startup : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:#16a085;">
+                    <h2 style="color:#16a085;">Partie 1 : Préparer les chiffres (Excel)</h2>
+                    <p>Les investisseurs veulent des chiffres exacts. Mais votre fichier de ventes est rempli d'erreurs de saisie. Il faut le nettoyer.</p>
+                    <button class="download-btn" style="background:#16a085;" onclick="generateStudentCSV()">📊 Télécharger les Ventes</button>
+                    <ul class="checklist">
+                        <li>Supprimez les espaces inutiles dans la colonne <span class="tag">{{C3}}</span>.</li>
+                        <li>Uniformisez le texte de la colonne <span class="tag">{{C4}}</span> pour que ce soit propre (majuscule au début).</li>
+                        <li>La colonne <span class="tag">{{C5}}</span> contient du texte. Vous devez la transformer en nombre pour pouvoir l'additionner.</li>
+                        <li><strong>Le Résumé :</strong> Créez un Tableau Croisé Dynamique pour trouver la <strong style="color:#16a085;">{{CALC}}</strong> de[{{C5}}]. Mettez [{{C3}}] en Lignes et [{{C4}}] en Colonnes.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#2980b9;">
+                    <h2 style="color:#2980b9;">Partie 2 : Le Dossier (Word)</h2>
+                    <p>Ce dossier sera envoyé aux banques.</p>
+                    <ul class="checklist">
+                        <li>Faites un document propre en utilisant les <strong>Styles Word</strong> et insérez une <strong>Table des matières</strong> au début.</li>
+                        <li>Demandez à l'IA d'écrire un argumentaire de deux paragraphes pour montrer que le secteur {{SECTEUR}} a beaucoup d'avenir.</li>
+                        <li>Isolez une page spéciale au format <strong>PAYSAGE</strong> pour y coller votre Tableau Excel, sans déformer le reste du document (Sauts de section).</li>
+                        <li>Liez votre texte à votre tableau en utilisant les fonctions <strong>Légende</strong> et <strong>Renvoi</strong>.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#8e44ad;">
+                    <h2 style="color:#8e44ad;">Partie 3 : Le "Pitch" (PowerPoint)</h2>
+                    <p>Vous avez 3 minutes pour présenter votre idée.</p>
+                    <ul class="checklist">
+                        <li>Ouvrez le <strong>Masque des diapositives</strong> pour choisir vos couleurs et formes qui s'appliqueront partout.</li>
+                        <li>Créez 3 slides maximum. Ne mettez presque pas de texte (le texte long va dans les notes).</li>
+                        <li>Les titres de vos slides doivent donner la conclusion directement.</li>
+                        <li>Générez une image futuriste avec l'IA illustrant votre secteur {{SECTEUR}} pour votre page de garde.</li>
+                    </ul>
+                </div>`
+            },
+
+            // ARCHÉTYPE 2 : Évaluation Publique
+            {
+                bg: "linear-gradient(135deg, #2980b9 0%, #2c3e50 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Évaluation pour l'État</h1>
+                    <p>Secteur d'analyse : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:#2980b9;">
+                    <h2 style="color:#2980b9;">Phase A : Nettoyage des données (Excel)</h2>
+                    <p>Le Ministère vous a envoyé des données brutes. Elles sont mal écrites. Vous devez les corriger avant de faire des statistiques.</p>
+                    <button class="download-btn" style="background:#2980b9;" onclick="generateStudentCSV()">📥 Télécharger les Statistiques</button>
+                    <ul class="checklist">
+                        <li>Enlevez les espaces en trop cachés dans la colonne <span class="tag">{{C3}}</span>.</li>
+                        <li>Corrigez les majuscules et minuscules mélangées dans la colonne <span class="tag">{{C4}}</span>.</li>
+                        <li>La colonne <span class="tag">{{C5}}</span> ne peut pas être additionnée car c'est du texte. Convertissez-la en chiffre pur.</li>
+                        <li><strong>Le Calcul :</strong> Faites un Tableau Croisé Dynamique pour calculer la <strong style="color:#2980b9;">{{CALC}}</strong> de [{{C5}}]. Placez [{{C3}}] dans la zone Lignes et [{{C4}}] dans la zone Colonnes.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#e67e22;">
+                    <h2 style="color:#e67e22;">Phase B : Le Rapport Officiel (Word)</h2>
+                    <p>Rédigez la note de synthèse pour le Ministre.</p>
+                    <ul class="checklist">
+                        <li>Votre document doit être structuré avec les <strong>Styles</strong> et comporter une <strong>Table des matières</strong> automatique.</li>
+                        <li>Demandez à l'IA d'écrire les avantages et les inconvénients du développement du secteur {{SECTEUR}}.</li>
+                        <li>Faites une manipulation (Saut de section) pour avoir une page couchée en <strong>PAYSAGE</strong> au milieu de votre document, et collez votre tableau dessus.</li>
+                        <li>Ajoutez une <strong>Légende</strong> sous le tableau et faites un <strong>Renvoi</strong> pour que le lien soit cliquable depuis le texte.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#c0392b;">
+                    <h2 style="color:#c0392b;">Phase C : La Présentation (PowerPoint)</h2>
+                    <p>Préparez les supports pour la conférence.</p>
+                    <ul class="checklist">
+                        <li>Utilisez le <strong>Masque des diapositives</strong> pour créer un design de base (avec un logo ou une forme) qui apparaîtra sur toutes les slides.</li>
+                        <li>Rédigez 3 slides maximum. Écrivez des "Titres d'action" (des phrases claires, pas juste un mot).</li>
+                        <li>Générez une image de très bonne qualité avec l'Intelligence Artificielle pour représenter l'avenir du secteur {{SECTEUR}}.</li>
+                    </ul>
+                </div>`
+            },
+
+            // ARCHÉTYPE 3 : Bilan Commercial
+            {
+                bg: "linear-gradient(135deg, #e67e22 0%, #d35400 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Bilan de Fin d'Année</h1>
+                    <p>Département Commercial - Secteur : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:#e67e22;">
+                    <h2 style="color:#e67e22;">I. Gérer les Ventes (Excel)</h2>
+                    <p>C'est l'heure du bilan. Mais l'export du logiciel de caisse contient des fautes de frappe. Nettoyez le fichier pour trouver les bons résultats.</p>
+                    <button class="download-btn" style="background:#e67e22;" onclick="generateStudentCSV()">🛒 Exporter les Ventes</button>
+                    <ul class="checklist">
+                        <li>Nettoyez la colonne <span class="tag">{{C3}}</span> en supprimant les espaces invisibles.</li>
+                        <li>Mettez la colonne <span class="tag">{{C4}}</span> au format "Nom Propre" (première lettre en majuscule).</li>
+                        <li>La colonne <span class="tag">{{C5}}</span> contient des lettres ou symboles. Isolez le chiffre pour pouvoir faire des calculs mathématiques avec.</li>
+                        <li><strong>Le Résumé :</strong> Insérez un Tableau Croisé Dynamique pour trouver la <strong style="color:#e67e22;">{{CALC}}</strong> de [{{C5}}]. Glissez [{{C3}}] dans les Lignes et[{{C4}}] dans les Colonnes.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#8e44ad;">
+                    <h2 style="color:#8e44ad;">II. Le Bilan Écrit (Word)</h2>
+                    <p>Rédigez le compte-rendu pour la direction.</p>
+                    <ul class="checklist">
+                        <li>Faites un document Word professionnel en utilisant les <strong>Styles</strong> et insérez une <strong>Table des matières</strong>.</li>
+                        <li>Utilisez l'Intelligence Artificielle pour rédiger une analyse générale sur les tendances de vente dans le secteur {{SECTEUR}}.</li>
+                        <li>Collez votre tableau Excel sur une page spéciale au format <strong>PAYSAGE</strong> (utilisez les sauts de section pour ne pas déformer tout le document).</li>
+                        <li>Insérez une <strong>Légende</strong> sous ce tableau et ajoutez un <strong>Renvoi</strong> automatique dans l'analyse de l'IA.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#27ae60;">
+                    <h2 style="color:#27ae60;">III. La Réunion Bilan (PowerPoint)</h2>
+                    <p>Préparez vos slides pour présenter vos chiffres.</p>
+                    <ul class="checklist">
+                        <li>Passez par le <strong>Masque des diapositives</strong> pour choisir un style ou ajouter une couleur en fond qui s'appliquera automatiquement.</li>
+                        <li>Limitez-vous à 3 slides. Vos titres doivent exprimer clairement le résultat (ex: "Les ventes ont augmenté").</li>
+                        <li>Servez-vous d'un générateur d'images IA pour créer une belle illustration de votre secteur {{SECTEUR}} pour la première slide.</li>
+                    </ul>
+                </div>`
+            },
+
+            // ARCHÉTYPE 4 : L'Étude de Marché
+            {
+                bg: "linear-gradient(135deg, #8e44ad 0%, #2c3e50 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Étude de Faisabilité</h1>
+                    <p>Pôle Stratégie & Développement - Secteur : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:#8e44ad;">
+                    <h2 style="color:#8e44ad;">Action 1 : Préparation de la Base (Excel)</h2>
+                    <p>Lancer un nouveau projet nécessite des données fiables. Le fichier récolté contient des défauts de présentation à corriger absolument.</p>
+                    <button class="download-btn" style="background:#8e44ad;" onclick="generateStudentCSV()">🔬 Obtenir la Base de Données</button>
+                    <ul class="checklist">
+                        <li>Il y a des espaces parasites dans la colonne <span class="tag">{{C3}}</span>. Utilisez une formule pour les retirer.</li>
+                        <li>Le texte de la colonne <span class="tag">{{C4}}</span> n'est pas uniforme. Mettez tout proprement avec une majuscule au début de chaque mot.</li>
+                        <li>Les valeurs de la colonne <span class="tag">{{C5}}</span> sont considérées comme du texte. Convertissez-les en vrais nombres.</li>
+                        <li><strong>Analyse des données :</strong> Créez un Tableau Croisé Dynamique affichant la <strong style="color:#8e44ad;">{{CALC}}</strong> de [{{C5}}]. Placez [{{C3}}] en Lignes et [{{C4}}] en Colonnes.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#e74c3c;">
+                    <h2 style="color:#e74c3c;">Action 2 : Le Dossier de Projet (Word)</h2>
+                    <p>Vous devez rédiger un dossier complet et structuré.</p>
+                    <ul class="checklist">
+                        <li>Utilisez les outils <strong>Styles</strong> de Word pour hiérarchiser votre texte et générer la <strong>Table des matières</strong>.</li>
+                        <li>Faites générer par l'IA une introduction expliquant pourquoi investir dans le secteur {{SECTEUR}} est une bonne idée au Maroc.</li>
+                        <li>Le tableau issu d'Excel doit être inséré sur une page orientée en <strong>PAYSAGE</strong> (au moyen d'un saut de section).</li>
+                        <li>Ajoutez une <strong>Légende</strong> numérotée sous ce tableau et insérez un <strong>Renvoi</strong> vers celui-ci dans votre paragraphe d'introduction.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:#f39c12;">
+                    <h2 style="color:#f39c12;">Action 3 : La Soutenance (PowerPoint)</h2>
+                    <p>Préparez votre présentation de vente du projet.</p>
+                    <ul class="checklist">
+                        <li>Ouvrez le <strong>Masque des diapositives</strong> et ajoutez-y une décoration ou ligne de couleur commune à toute la présentation.</li>
+                        <li>Concevez 3 slides très épurées. Utilisez des titres de type "Action" (qui donnent l'information principale).</li>
+                        <li>Le texte explicatif long doit se trouver dans la partie "Notes".</li>
+                        <li>Utilisez l'IA générative pour créer une image professionnelle et attirante représentant le secteur {{SECTEUR}}.</li>
+                    </ul>
+                </div>`
+            }
+        ];
+
+        let activeStudentIndex = null;
+
+        function init() {
+            const listObj = document.getElementById('studentList');
+            students.forEach((student, index) => {
+                const li = document.createElement('li');
+                li.className = 'student-item';
+                li.textContent = student;
+                li.onclick = () => selectStudent(index, li);
+                listObj.appendChild(li);
+            });
+            
+            document.getElementById('secret-trigger').addEventListener('dblclick', unlockProfessorMode);
+        }
+
+        function selectStudent(index, element) {
+            document.querySelectorAll('.student-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            
+            activeStudentIndex = index;
+            
+            const ds = datasets[index % datasets.length];
+            const archIndex = index % 5;
+            const archetype = archetypes[archIndex];
+
+            // Calcul du type de TCD (Somme ou Moyenne) pour l'étudiant
+            let calcType = (archIndex % 2 === 0) ? "SOMME" : "MOYENNE";
+
+            // Remplacement dynamique du texte
+            let htmlContent = archetype.html
+                .replace(/{{SECTEUR}}/g, ds.t)
+                .replace(/{{BG}}/g, archetype.bg)
+                .replace(/{{C3}}/g, ds.c3)
+                .replace(/{{C4}}/g, ds.c4)
+                .replace(/{{C5}}/g, ds.c5)
+                .replace(/{{CALC}}/g, calcType);
+
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('prof-screen').style.display = 'none';
+            document.getElementById('exam-screen').style.display = 'block';
+            
+            document.getElementById('header-student-name').textContent = students[index];
+            document.getElementById('dynamic-exam-content').innerHTML = htmlContent;
+        }
+
+        function generateStudentCSV() {
+            if (activeStudentIndex === null) return;
+            
+            const btn = document.querySelector('.download-btn');
+            btn.innerHTML = "⏳ Génération (3000 lignes)...";
+            btn.disabled = true;
+
+            const ds = datasets[activeStudentIndex % datasets.length];
+            let csvContent =[ds.c1, ds.c2, ds.c3, ds.c4, ds.c5, ds.c6].join(";") + "\n";
+
+            for (let i = 1; i <= 3000; i++) {
+                let id = "ID-" + String(i).padStart(4, '0');
+                
+                let d = new Date(2024, 0, 1);
+                d.setDate(d.getDate() + Math.floor(Math.random() * 365));
+                let dateStr = d.toLocaleDateString('fr-FR');
+
+                let v1 = fakeWords1[Math.floor(Math.random() * fakeWords1.length)];
+                let v2 = fakeWords2[Math.floor(Math.random() * fakeWords2.length)];
+                let v3 = fakeWords3[Math.floor(Math.random() * fakeWords3.length)];
+                let amount = Math.floor(Math.random() * 50000) + 100;
+
+                // Erreurs 
+                if (Math.random() < 0.25) { let sp = " ".repeat(Math.floor(Math.random()*3)+1); v1 = (Math.random()<0.5) ? sp+v1 : v1+sp; }
+                if (Math.random() < 0.30) { v2 = (Math.random()<0.5) ? v2.toUpperCase() : v2.toLowerCase(); }
+                let amountStr = amount.toString();
+                if (Math.random() < 0.35) { amountStr = " " + amountStr + " MAD "; }
+
+                csvContent += `${id};${dateStr};${v1};${v2};${amountStr};${v3}\n`;
+            }
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            let cleanName = students[activeStudentIndex].replace(/\s+/g, '_');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Data_${cleanName}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => { btn.innerHTML = "✅ Fichier Téléchargé"; btn.disabled = false; }, 1000);
+        }
+
+        // Mode Professeur 
+        function unlockProfessorMode() {
+            let pwd = prompt("Authentification requise (Mot de passe) :");
+            if (pwd === "PROF2026") {
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.getElementById('exam-screen').style.display = 'none';
+                document.getElementById('prof-screen').style.display = 'block';
+                document.querySelectorAll('.student-item').forEach(el => el.classList.remove('active'));
+
+                const tbody = document.querySelector('#profTable tbody');
+                tbody.innerHTML = '';
+
+                students.forEach((student, index) => {
+                    const ds = datasets[index % datasets.length];
+                    const archIndex = index % 5;
+                    const archTypes =["0 - Urgence/Audit", "1 - Pitch/Startup", "2 - Public/Gov", "3 - Retail/Perf", "4 - R&D/Faisabilité"];
+                    let calcType = (archIndex % 2 === 0) ? "SOMME" : "MOYENNE";
+                    
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${student}</strong></td>
+                        <td style="color:var(--mundi-orange);">${archTypes[archIndex]}</td>
+                        <td><strong>${ds.t}</strong></td>
+                        <td>${ds.c3}</td>
+                        <td>${ds.c4}</td>
+                        <td>${ds.c5}</td>
+                        <td style="background:#e8f5e9;"><strong>${calcType}</strong> de [${ds.c5}] <br>Lignes: [${ds.c3}] <br>Col:[${ds.c4}]</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        window.onload = init;
+    </script>
+
+</body>
+</html>
