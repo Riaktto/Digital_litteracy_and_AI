@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Avancé - Culture Digitale & IA (Groupe 3)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CHARTE MUNDIAPOLIS --- */
+        :root {
+            --mundi-blue: #003366;
+            --mundi-orange: #F37021;
+            --mundi-grey: #f4f6f8;
+            --white: #ffffff;
+            --excel-green: #217346;
+            --word-blue: #2b579a;
+            --text-main: #333333;
+        }
+
+        body { margin: 0; padding: 0; font-family: 'Open Sans', sans-serif; background-color: var(--mundi-grey); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        #sidebar { width: 300px; background: var(--mundi-blue); color: white; display: flex; flex-direction: column; box-shadow: 4px 0 15px rgba(0,0,0,0.1); z-index: 10; }
+        .sidebar-header { padding: 25px 20px; background: #001a33; text-align: center; }
+        .sidebar-header img { width: 150px; margin-bottom: 15px; }
+        .sidebar-header h2 { margin: 0; font-size: 1em; font-family: 'Montserrat', sans-serif; color: var(--mundi-orange); cursor: pointer; user-select: none; letter-spacing: 1px;}
+
+        .student-list { flex-grow: 1; overflow-y: auto; padding: 10px 0; list-style: none; margin: 0; }
+        .student-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; font-size: 0.85em; }
+        .student-item:hover { background: rgba(243, 112, 33, 0.2); }
+        .student-item.active { background: var(--mundi-orange); font-weight: bold; border-left: 5px solid white;}
+
+        /* --- MAIN CONTENT --- */
+        #main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; background: var(--mundi-grey); position: relative;}
+        header { background: var(--white); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 5; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; flex-grow: 1; width: 100%;}
+
+        .hero-card { color: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); margin-bottom: 40px; text-align: center; border: 1px solid #555; }
+        .hero-card h1 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2.2em; color: var(--mundi-orange); }
+        .hero-card p { font-size: 1.1em; opacity: 0.9; margin-top: 10px; }
+
+        .task-card { background: var(--white); border-radius: 10px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--mundi-blue); position: relative; }
+        h2.card-title { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        
+        .download-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--mundi-orange); color: white; padding: 15px 30px; border: none; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-size: 1.1em; font-weight: 700; cursor: pointer; text-decoration: none; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(243, 112, 33, 0.3); margin-top: 20px; }
+        .download-btn:hover { transform: scale(1.05); }
+
+        .checklist { list-style: none; padding: 0; margin-top: 15px;}
+        .checklist li { margin-bottom: 15px; padding-left: 30px; position: relative; line-height: 1.6;}
+        .checklist li::before { content: '👉'; position: absolute; left: 0; top: 0; font-size: 1.1em;}
+
+        .tag { display: inline-block; background: #eef2f5; color: var(--mundi-blue); padding: 3px 8px; border-radius: 5px; font-weight: bold; font-family: monospace; border: 1px solid #ccc; font-size: 0.9em;}
+
+        #welcome-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: #555;}
+        #welcome-screen h1 { color: var(--mundi-blue); font-family: 'Montserrat', sans-serif; }
+        #exam-screen, #prof-screen { display: none; }
+
+        /* --- PROFESSOR DASHBOARD --- */
+        .prof-table { width: 100%; border-collapse: collapse; font-size: 0.85em; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .prof-table th, .prof-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .prof-table th { background: var(--mundi-blue); color: white; position: sticky; top: 0;}
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <img src="https://www.mundiapolis.ma/sites/default/files/images/header/logo-25-coleur.png" alt="Mundiapolis">
+            <h2 id="secret-trigger">ÉVALUATION (GR 3)</h2>
+            <div style="font-size: 0.8em; margin-top: 5px; color: #aaa;">Sélectionnez votre nom</div>
+        </div>
+        <ul class="student-list" id="studentList"></ul>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+        
+        <div id="welcome-screen">
+            <div style="font-size: 5em;">🎓</div>
+            <h1>Examen Data & Reporting</h1>
+            <p>Cliquez sur votre nom dans le menu de gauche pour afficher votre mission.</p>
+        </div>
+
+        <!-- MODE PROFESSEUR -->
+        <div id="prof-screen" class="container" style="max-width: 95%;">
+            <h1 style="color: var(--mundi-blue);">👨‍🏫 Dashboard Professeur (Groupe 3)</h1>
+            <p>Paramètres de vérification pour la partie Excel.</p>
+            <div style="overflow-x: auto; height: 75vh;">
+                <table class="prof-table" id="profTable">
+                    <thead>
+                        <tr>
+                            <th>Étudiant</th>
+                            <th>Secteur</th>
+                            <th>Col. Espaces (SUPPRESPACE)</th>
+                            <th>Col. Casse (NOMPROPRE)</th>
+                            <th>Col. Bloquée (CNUM)</th>
+                            <th>TCD 1 (Croisement)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ECRAN EXAMEN ETUDIANT -->
+        <div id="exam-screen">
+            <header>
+                <div style="font-family: 'Montserrat', sans-serif; font-weight: bold; color: var(--mundi-blue);">ÉTUDIANT(E) : <span id="header-student-name" style="color: var(--mundi-orange); text-transform: uppercase;">NOM</span></div>
+                <div style="font-size: 0.9em; color: #666; font-weight: bold;">Durée : 3 Heures</div>
+            </header>
+
+            <div class="container" id="dynamic-exam-content">
+                <!-- Le sujet HTML sera injecté ici selon l'étudiant -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. LISTE DES 29 ÉTUDIANTS (Nettoyée et triée) ---
+        const students =[
+            "ABBOUCHI Amnay", "ABELLA Hind", "ADRAOUI Yahia", "AGHALI ABDOULKADER Kamil", 
+            "Aya KHARRAZ", "BELAZIZ Amira", "BENON Brandon Bahy Baldwin", "EDDARBAKI Marouane", 
+            "EL BAGHDADI Islam", "EL KHASSIL Louay", "EL KHATIB Sami", "HABICHY Wiam", 
+            "HACHIM Abbas Moustapha", "Hiba EL-AZZAOUY", "KEITA Thierno Mamadou Oury", 
+            "Kenza BENSLIMANE QUASBAOUI", "LAFFIKHIR Rayane", "MBAYI Emmanuelle Deborah", 
+            "MELLOUK Mohamed Ali", "MOHAMED MIGANEH Fouad", "Meryem ALHASSANI", 
+            "Mohamed ENEIZAT", "Mohamed Rayan HAMSA", "NAIT DAOUD Malak", 
+            "NDONGO MATSONO Pierre Victoire", "Othmane LAADAILI", "TEMENON YOUDET Ange Privat", 
+            "WEDADY Lemer", "YBIA Okana Jean Nicolas"
+        ].sort();
+
+        // --- 2. BANQUE DE DONNÉES (29 scénarios uniques) ---
+        const datasets =[
+            { t: "E-Commerce", c1:"ID_Cmd", c2:"Date", c3:"Gouvernorat", c4:"Categorie_Produit", c5:"Panier_Devise", c6:"Origine_Visite" },
+            { t: "Automobile Électrique", c1:"ID", c2:"Date", c3:"Region", c4:"Modele", c5:"Prix_MAD", c6:"Financement" },
+            { t: "Tourisme de Luxe", c1:"ID", c2:"Date", c3:"Destination", c4:"Type_Sejour", c5:"Montant_MAD", c6:"Canal" },
+            { t: "Fast-Food Premium", c1:"ID", c2:"Date", c3:"Quartier", c4:"Menu", c5:"Ticket_MAD", c6:"Paiement" },
+            { t: "Banque Digitale", c1:"ID", c2:"Date", c3:"Ville", c4:"Type_Compte", c5:"Solde_MAD", c6:"Utilisation" },
+            { t: "Énergies Renouvelables", c1:"ID", c2:"Date", c3:"Zone_Indus", c4:"Installation", c5:"Budget_MAD", c6:"Client" },
+            { t: "Immobilier Commercial", c1:"ID", c2:"Date", c3:"Ville", c4:"Type_Bien", c5:"Valeur_MAD", c6:"Statut" },
+            { t: "Cosmétique Bio", c1:"ID", c2:"Date", c3:"Region", c4:"Gamme", c5:"Ventes_MAD", c6:"Distributeur" },
+            { t: "Pharmaceutique", c1:"ID", c2:"Date", c3:"Ville", c4:"Classe_Thera", c5:"CA_MAD", c6:"Cible" },
+            { t: "Logistique & Fret", c1:"ID", c2:"Date", c3:"Port", c4:"Type_Fret", c5:"Cout_MAD", c6:"Transporteur" },
+            { t: "Agroalimentaire", c1:"ID", c2:"Date", c3:"Region", c4:"Produit", c5:"CA_MAD", c6:"Supermarche" },
+            { t: "EdTech (Éducation)", c1:"ID", c2:"Date", c3:"Ville", c4:"Formation", c5:"Frais_MAD", c6:"Support" },
+            { t: "Aéronautique", c1:"ID", c2:"Date", c3:"Aeroport", c4:"Piece", c5:"Cout_MAD", c6:"Fournisseur" },
+            { t: "Grande Distribution", c1:"ID", c2:"Date", c3:"Ville", c4:"Rayon", c5:"Ticket_MAD", c6:"Fidelite" },
+            { t: "Assurances", c1:"ID", c2:"Date", c3:"Region", c4:"Contrat", c5:"Prime_MAD", c6:"Risque" },
+            { t: "Jeux Vidéo", c1:"ID", c2:"Date", c3:"Ville", c4:"Console", c5:"Ventes_MAD", c6:"Genre" },
+            { t: "Textile & Cuir", c1:"ID", c2:"Date", c3:"Zone_Indus", c4:"Tissu", c5:"CA_MAD", c6:"Export" },
+            { t: "Smart City", c1:"ID", c2:"Date", c3:"Quartier", c4:"Capteur", c5:"Cout_MAD", c6:"Etat" },
+            { t: "Agriculture Tech", c1:"ID", c2:"Date", c3:"Region", c4:"Culture", c5:"Invest_MAD", c6:"Technologie" },
+            { t: "Streaming Vidéo", c1:"ID", c2:"Date", c3:"Ville", c4:"Abonnement", c5:"CA_MAD", c6:"Appareil" },
+            { t: "Recyclage Déchets", c1:"ID", c2:"Date", c3:"Ville", c4:"Materiau", c5:"Valeur_MAD", c6:"Partenaire" },
+            { t: "Équipement Sportif", c1:"ID", c2:"Date", c3:"Region", c4:"Sport", c5:"Ventes_MAD", c6:"Canal" },
+            { t: "Télécommunications", c1:"ID", c2:"Date", c3:"Ville", c4:"Forfait", c5:"ARPU_MAD", c6:"Engagement" },
+            { t: "Santé Privée", c1:"ID", c2:"Date", c3:"Region", c4:"Specialite", c5:"Facture_MAD", c6:"Assurance" },
+            { t: "Services Cloud", c1:"ID", c2:"Date", c3:"Ville", c4:"Serveur", c5:"Abo_MAD", c6:"Formule" },
+            { t: "Cybersécurité", c1:"ID", c2:"Date", c3:"Region", c4:"Menace", c5:"Cout_MAD", c6:"Secteur_Client" },
+            { t: "Industrie Navale", c1:"ID", c2:"Date", c3:"Port", c4:"Navire", c5:"Facture_MAD", c6:"Maintenance" },
+            { t: "Livraison Express", c1:"ID", c2:"Date", c3:"Quartier", c4:"Vehicule", c5:"Tarif_MAD", c6:"Type_Colis" },
+            { t: "Gestion de l'Eau", c1:"ID", c2:"Date", c3:"Bassin_Versant", c4:"Type_Usage", c5:"Cout_Traitement_MAD", c6:"Operateur" }
+        ];
+
+        const fakeWords1 =["Nord", "Sud", "Est", "Ouest", "Centre"];
+        const fakeWords2 =["Alpha", "Beta", "Gamma", "Delta"];
+        const fakeWords3 =["Validé", "Rejeté", "En_Attente"];
+
+        // --- 3. LES 5 ARCHÉTYPES (Améliorés : Excel + Word uniquement) ---
+        const archetypes =[
+            // ARCHÉTYPE 0 
+            {
+                bg: "linear-gradient(135deg, #c0392b 0%, #8e44ad 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Ingénierie Data & Reporting</h1>
+                    <p>Secteur de l'entreprise : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:var(--excel-green);">
+                    <h2 style="color:var(--excel-green);">Phase 1 : Nettoyage et Modélisation (Excel)</h2>
+                    <p>Vous avez reçu une base de 3000 lignes très endommagée. Préparez-la pour l'analyse stratégique.</p>
+                    <button class="download-btn" style="background:var(--excel-green);" onclick="generateStudentCSV()">📥 Télécharger la base de données</button>
+                    <ul class="checklist">
+                        <li><strong>Dépollution :</strong> Utilisez l'IA pour supprimer les espaces invisibles dans <span class="tag">{{C3}}</span>, et uniformisez les majuscules dans <span class="tag">{{C4}}</span>.</li>
+                        <li><strong>Récupération Numérique :</strong> La colonne <span class="tag">{{C5}}</span> est bloquée en texte. Convertissez-la en chiffre pur (CNUM/SUBSTITUE).</li>
+                        <li><strong>Calcul Supplémentaire :</strong> Ajoutez une nouvelle colonne "Marge Estimée" qui calcule mathématiquement <strong>20%</strong> de la valeur propre de [{{C5}}].</li>
+                        <li><strong>TCD 1 (Matrice) :</strong> Croisez les données en créant un Tableau Croisé Dynamique de la <strong style="color:var(--mundi-orange);">{{CALC}}</strong> de [{{C5}}]. Mettez [{{C3}}] en Lignes, et [{{C4}}] en Colonnes. Affichez les valeurs en <strong>% du total</strong>.</li>
+                        <li><strong>TCD 2 (Saisonnalité) :</strong> Créez un 2ème TCD pour voir l'évolution de la <strong style="color:var(--mundi-orange);">{{CALC}}</strong> de[{{C5}}] dans le temps. Groupez les dates par <strong>Trimestres</strong>.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:var(--word-blue);">
+                    <h2 style="color:var(--word-blue);">Phase 2 : Rapport Décisionnel (Word)</h2>
+                    <p>Produisez un document de niveau "Cabinet de Conseil" prêt à être imprimé.</p>
+                    <ul class="checklist">
+                        <li><strong>Architecture :</strong> Créez une Page de Garde. Utilisez les <strong>Styles Word</strong> pour hiérarchiser votre texte. Générez une <strong>Table des matières</strong> automatique.</li>
+                        <li><strong>Pagination :</strong> Insérez un Numéro de page dans le pied de page sous la forme "Page X sur Y" (ex: Page 2 sur 4).</li>
+                        <li><strong>Génération IA :</strong> Demandez à ChatGPT d'écrire une analyse détaillée de 2 pages sur les enjeux mondiaux du secteur {{SECTEUR}}.</li>
+                        <li><strong>Rewriting IA (Executive Summary) :</strong> Utilisez un second prompt pour forcer l'IA à résumer cette longue analyse en un "Executive Summary" de <strong>3 tirets (bullet points)</strong>. Placez-le tout en haut du document.</li>
+                        <li><strong>Mise en page complexe :</strong> Insérez un <strong>Saut de Section</strong> pour isoler une page orientée en <strong>PAYSAGE</strong> (couchée). Collez votre TCD Matrice dessus.</li>
+                        <li><strong>Rigueur Académique :</strong> Mettez une <strong>Légende</strong> numérotée sous ce TCD, ajoutez un <strong>Renvoi</strong> dynamique dans votre texte, et générez une <strong>Bibliographie automatique</strong> à la fin du document en y ajoutant une source fictive.</li>
+                    </ul>
+                </div>`
+            },
+
+            // ARCHÉTYPE 1 
+            {
+                bg: "linear-gradient(135deg, #16a085 0%, #27ae60 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Audit Financier et Synthèse</h1>
+                    <p>Secteur d'étude : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:var(--excel-green);">
+                    <h2 style="color:var(--excel-green);">Partie A : Data Management (Excel)</h2>
+                    <p>Le fichier des historiques (3000 lignes) a été corrompu lors de l'export. Nettoyez-le avant qu'il ne fausse vos bilans.</p>
+                    <button class="download-btn" style="background:var(--excel-green);" onclick="generateStudentCSV()">📊 Obtenir les Archives</button>
+                    <ul class="checklist">
+                        <li><strong>Nettoyage :</strong> La colonne <span class="tag">{{C3}}</span> a des marges cachées (espaces). La colonne <span class="tag">{{C4}}</span> a une casse irrégulière. Réparez-les.</li>
+                        <li><strong>Forçage Numérique :</strong> Transformez le texte de la colonne <span class="tag">{{C5}}</span> en véritables nombres pour pouvoir les additionner.</li>
+                        <li><strong>Logique Conditionnelle :</strong> Créez une nouvelle colonne "Statut". Utilisez la fonction <code>=SI()</code> pour afficher le mot "Alerte" si le montant propre de [{{C5}}] est supérieur à 10 000, et "Normal" sinon.</li>
+                        <li><strong>TCD 1 (Analyse) :</strong> Créez un TCD analysant la <strong style="color:var(--mundi-orange);">{{CALC}}</strong> de [{{C5}}], en plaçant [{{C3}}] en Lignes et [{{C4}}] en Colonnes.</li>
+                        <li><strong>TCD 2 (Tendance) :</strong> Créez un autre TCD qui groupe la colonne [Date] par <strong>Mois</strong>, pour observer la fluctuation temporelle de la <strong style="color:var(--mundi-orange);">{{CALC}}</strong> de [{{C5}}].</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:var(--word-blue);">
+                    <h2 style="color:var(--word-blue);">Partie B : Mémorandum Stratégique (Word)</h2>
+                    <p>Le document doit rassurer le comité de direction avec un formatage intraitable.</p>
+                    <ul class="checklist">
+                        <li><strong>Structure :</strong> Utilisez les <strong>Styles</strong> (Titre 1, Titre 2) de manière rigoureuse. Insérez un Sommaire automatique.</li>
+                        <li><strong>Contenu IA :</strong> Demandez à une IA de rédiger une analyse concurrentielle complète (2 pages) sur le marché {{SECTEUR}} au Maroc.</li>
+                        <li><strong>Synthèse IA :</strong> Utilisez un nouveau prompt pour ordonner à l'IA de créer un <em>"Résumé Managérial"</em> (Executive Summary) de 4 lignes maximum, à placer en introduction.</li>
+                        <li><strong>Manipulation de Sections :</strong> Isolez une page au milieu de votre Word avec des Sauts de section pour la basculer en format <strong>PAYSAGE</strong> et y coller votre TCD d'Analyse.</li>
+                        <li><strong>Traçabilité :</strong> Ajoutez une <strong>Légende</strong> formelle sous ce tableau, un <strong>Renvoi</strong> cliquable dans un de vos paragraphes, et paramétrez un Pied de page contenant la numérotation (Page X / Y).</li>
+                        <li><strong>Sources :</strong> Insérez une source dans l'outil <strong>Gérer les sources</strong> et générez la Bibliographie automatique en dernière page.</li>
+                    </ul>
+                </div>`
+            },
+
+            // ARCHÉTYPE 2 
+            {
+                bg: "linear-gradient(135deg, #2980b9 0%, #2c3e50 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Note de Conseil Gouvernementale</h1>
+                    <p>Département Stratégique : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:var(--excel-green);">
+                    <h2 style="color:var(--excel-green);">Phase I : Fiabilisation Statistique (Excel)</h2>
+                    <p>Les 3000 données remontées par le terrain sont brutes et contiennent des fautes de saisie humaine. Corrigez-les.</p>
+                    <button class="download-btn" style="background:var(--excel-green);" onclick="generateStudentCSV()">📥 Télécharger les Données Locales</button>
+                    <ul class="checklist">
+                        <li><strong>Traitement de texte :</strong> Éliminez les espaces parasites dans <span class="tag">{{C3}}</span> et mettez une majuscule correcte à chaque mot dans <span class="tag">{{C4}}</span>.</li>
+                        <li><strong>Traitement monétaire :</strong> Le vecteur <span class="tag">{{C5}}</span> est identifié comme du texte par Excel. Rendez-lui son aspect mathématique pur.</li>
+                        <li><strong>Calcul de TVA :</strong> Insérez une nouvelle colonne qui calcule la TVA (20%) sur la base de la colonne [{{C5}}] nettoyée.</li>
+                        <li><strong>TCD 1 (Synthèse) :</strong> Concevez un TCD affichant la <strong style="color:var(--mundi-orange);">{{CALC}}</strong> de [{{C5}}], croisé avec [{{C3}}] en Lignes et [{{C4}}] en Colonnes.</li>
+                        <li><strong>TCD 2 (Calendrier) :</strong> Générez un TCD temporel en utilisant la fonction "Grouper" sur la colonne Date pour n'afficher que les <strong>Trimestres</strong>, afin d'observer la saisonnalité.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:var(--word-blue);">
+                    <h2 style="color:var(--word-blue);">Phase II : Rédaction Ministérielle (Word)</h2>
+                    <p>Transformez l'analyse en document officiel inviolable.</p>
+                    <ul class="checklist">
+                        <li><strong>Fondations :</strong> Intégrez une Page de garde. Paramétrez les <strong>Styles</strong> pour automatiser la Table des matières. Ajoutez la numérotation des pages.</li>
+                        <li><strong>Rédaction Augmentée :</strong> Produisez via IA un diagnostic approfondi (environ 800 mots) des enjeux du secteur {{SECTEUR}}.</li>
+                        <li><strong>Reformulation (Rewriting) :</strong> L'IA doit ensuite "traduire" cette longue analyse en une Note de Synthèse de <strong>3 points clés</strong> à destination d'un ministre pressé.</li>
+                        <li><strong>Mise en page Dynamique :</strong> Insérez des Sauts de Section pour créer une unique page <strong>PAYSAGE</strong> et y déposer élégamment votre TCD de synthèse.</li>
+                        <li><strong>Indexation :</strong> Liez votre texte explicatif au TCD grâce à l'outil <strong>Renvoi</strong> pointant vers une <strong>Légende</strong>. Complétez avec une Bibliographie automatique (même fictive).</li>
+                    </ul>
+                </div>`
+            },
+
+            // ARCHÉTYPE 3
+            {
+                bg: "linear-gradient(135deg, #e67e22 0%, #d35400 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Bilan de Performance Annuel</h1>
+                    <p>Division Opérations - Secteur : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:var(--excel-green);">
+                    <h2 style="color:var(--excel-green);">Étape Alpha : Data Scrubbing (Excel)</h2>
+                    <p>Le logiciel a exporté 3000 lignes polluées. Le nettoyage est obligatoire avant la réunion de clôture.</p>
+                    <button class="download-btn" style="background:var(--excel-green);" onclick="generateStudentCSV()">🛒 Extraire la Base de Ventes</button>
+                    <ul class="checklist">
+                        <li><strong>Assainissement :</strong> Les valeurs sous <span class="tag">{{C3}}</span> contiennent des espaces de trop. Celles de <span class="tag">{{C4}}</span> ont une casse irrégulière. Réparez tout.</li>
+                        <li><strong>Conversion :</strong> Isolez le montant chiffré bloqué dans la colonne <span class="tag">{{C5}}</span> pour pouvoir l'exploiter dans des calculs.</li>
+                        <li><strong>Indicateur de Performance :</strong> Créez une nouvelle colonne "Objectif Atteint". Utilisez la formule <code>=SI()</code> pour afficher "OUI" si [{{C5}}] dépasse 5000, sinon "NON".</li>
+                        <li><strong>TCD 1 (Matrice) :</strong> Établissez un TCD croisant [{{C3}}] en Lignes et [{{C4}}] en Colonnes, pour analyser la <strong style="color:var(--mundi-orange);">{{CALC}}</strong> de [{{C5}}]. Affichez les valeurs en <strong>% du total</strong>.</li>
+                        <li><strong>TCD 2 (Évolution) :</strong> Réalisez un TCD regroupant les dates par <strong>Mois et Années</strong> pour cartographier l'évolution de la <strong style="color:var(--mundi-orange);">{{CALC}}</strong> globale.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:var(--word-blue);">
+                    <h2 style="color:var(--word-blue);">Étape Beta : Le Rapport d'Activité (Word)</h2>
+                    <p>Le rendu final exige la maîtrise des outils de publication professionnels.</p>
+                    <ul class="checklist">
+                        <li><strong>Standardisation :</strong> Implémentez les <strong>Styles (Titres)</strong>, une Table des Matières automatique, et des Pieds de page (Page X sur Y).</li>
+                        <li><strong>Production de Contenu :</strong> Sollicitez l'IA pour générer une analyse SWOT complète de votre entreprise fictive dans le domaine {{SECTEUR}}.</li>
+                        <li><strong>Executive Summary :</strong> Demandez à l'IA de réécrire (Rewriting) l'analyse SWOT entière pour n'en garder qu'un résumé ultra-concis de 4 lignes.</li>
+                        <li><strong>Contrôle du format :</strong> Basculez spécifiquement une page en format <strong>PAYSAGE</strong> (grâce aux Sauts de section) pour y intégrer parfaitement votre Matrice TCD.</li>
+                        <li><strong>Rigueur :</strong> Accompagnez votre TCD d'une <strong>Légende</strong>, référencez-la dans le texte via un <strong>Renvoi</strong>, et créez un bloc Bibliographie automatique.</li>
+                    </ul>
+                </div>`
+            },
+
+            // ARCHÉTYPE 4
+            {
+                bg: "linear-gradient(135deg, #8e44ad 0%, #2c3e50 100%)",
+                html: `
+                <div class="hero-card" style="background: {{BG}};">
+                    <h1>Mission : Étude d'Opportunité Stratégique</h1>
+                    <p>Cabinet d'Analystes - Secteur : {{SECTEUR}}</p>
+                </div>
+                <div class="task-card" style="border-left-color:var(--excel-green);">
+                    <h2 style="color:var(--excel-green);">A. Hygiène et Modélisation (Excel)</h2>
+                    <p>Votre étude porte sur 3000 transactions. Corrigez les anomalies de saisie avant toute agrégation.</p>
+                    <button class="download-btn" style="background:var(--excel-green);" onclick="generateStudentCSV()">🔬 Générer le Dataset Brut</button>
+                    <ul class="checklist">
+                        <li><strong>Nettoyage syntaxique :</strong> Supprimez les espaces superflus de <span class="tag">{{C3}}</span>. Appliquez une typographie "Nom Propre" sur <span class="tag">{{C4}}</span>.</li>
+                        <li><strong>Extraction Financière :</strong> Le montant <span class="tag">{{C5}}</span> est inutilisable (présence de lettres/espaces). Convertissez-le en nombre arithmétique.</li>
+                        <li><strong>Nouvelle Variable :</strong> Ajoutez une colonne "Coût Opérationnel" équivalente à <strong>30%</strong> de la valeur propre de [{{C5}}].</li>
+                        <li><strong>TCD 1 (Cartographie) :</strong> Créez un Tableau Croisé Dynamique affichant la <strong style="color:var(--mundi-orange);">{{CALC}}</strong> de [{{C5}}]. Mettez [{{C3}}] en Lignes et[{{C4}}] en Colonnes.</li>
+                        <li><strong>TCD 2 (Chronologie) :</strong> Élaborez un TCD temporel : Groupez les Dates par <strong>Trimestres</strong> pour visualiser le rythme de la <strong style="color:var(--mundi-orange);">{{CALC}}</strong>.</li>
+                    </ul>
+                </div>
+                <div class="task-card" style="border-left-color:var(--word-blue);">
+                    <h2 style="color:var(--word-blue);">B. Rédaction et Édition (Word)</h2>
+                    <p>Transformez vos résultats Excel en un document de qualité "Livre Blanc".</p>
+                    <ul class="checklist">
+                        <li><strong>Formatage :</strong> Structurez votre document via les <strong>Styles</strong>. Générez une Table des matières et insérez une numérotation des pages (X / Y).</li>
+                        <li><strong>Génération IA :</strong> Produisez un rapport dense (environ 2 pages) sur les perspectives économiques de l'univers {{SECTEUR}}.</li>
+                        <li><strong>La Synthèse (Rewriting) :</strong> À l'aide d'un nouveau prompt, exigez de l'IA qu'elle condense ces 2 pages en une "Note de synthèse" percutante de 3 bullet points.</li>
+                        <li><strong>Gestion des Sections :</strong> Isolez un espace au milieu du texte pour insérer une page en format <strong>PAYSAGE</strong>, sur laquelle vous collerez votre TCD (Cartographie).</li>
+                        <li><strong>Mécanismes de référence :</strong> Ajoutez une <strong>Légende</strong> sous ce TCD, créez un <strong>Renvoi</strong> actif dans votre texte introductif, et paramétrez une Bibliographie automatique.</li>
+                    </ul>
+                </div>`
+            }
+        ];
+
+        let activeStudentIndex = null;
+
+        function init() {
+            const listObj = document.getElementById('studentList');
+            students.forEach((student, index) => {
+                const li = document.createElement('li');
+                li.className = 'student-item';
+                li.textContent = student;
+                li.onclick = () => selectStudent(index, li);
+                listObj.appendChild(li);
+            });
+            
+            document.getElementById('secret-trigger').addEventListener('dblclick', unlockProfessorMode);
+        }
+
+        function selectStudent(index, element) {
+            document.querySelectorAll('.student-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            
+            activeStudentIndex = index;
+            
+            const ds = datasets[index % datasets.length];
+            const archIndex = index % 5;
+            const archetype = archetypes[archIndex];
+
+            let calcType = (archIndex % 2 === 0) ? "SOMME" : "MOYENNE";
+
+            let htmlContent = archetype.html
+                .replace(/{{SECTEUR}}/g, ds.t)
+                .replace(/{{BG}}/g, archetype.bg)
+                .replace(/{{C3}}/g, ds.c3)
+                .replace(/{{C4}}/g, ds.c4)
+                .replace(/{{C5}}/g, ds.c5)
+                .replace(/{{CALC}}/g, calcType);
+
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('prof-screen').style.display = 'none';
+            document.getElementById('exam-screen').style.display = 'block';
+            
+            document.getElementById('header-student-name').textContent = students[index];
+            document.getElementById('dynamic-exam-content').innerHTML = htmlContent;
+        }
+
+        function generateStudentCSV() {
+            if (activeStudentIndex === null) return;
+            
+            const btn = document.querySelector('.download-btn');
+            btn.innerHTML = "⏳ Génération (3000 lignes)...";
+            btn.disabled = true;
+
+            const ds = datasets[activeStudentIndex % datasets.length];
+            let csvContent =[ds.c1, ds.c2, ds.c3, ds.c4, ds.c5, ds.c6].join(";") + "\n";
+
+            for (let i = 1; i <= 3000; i++) {
+                let id = "ID-" + String(i).padStart(4, '0');
+                
+                let d = new Date(2024, 0, 1);
+                d.setDate(d.getDate() + Math.floor(Math.random() * 365));
+                let dateStr = d.toLocaleDateString('fr-FR');
+
+                let v1 = fakeWords1[Math.floor(Math.random() * fakeWords1.length)];
+                let v2 = fakeWords2[Math.floor(Math.random() * fakeWords2.length)];
+                let v3 = fakeWords3[Math.floor(Math.random() * fakeWords3.length)];
+                let amount = Math.floor(Math.random() * 50000) + 100;
+
+                if (Math.random() < 0.25) { let sp = " ".repeat(Math.floor(Math.random()*3)+1); v1 = (Math.random()<0.5) ? sp+v1 : v1+sp; }
+                if (Math.random() < 0.30) { v2 = (Math.random()<0.5) ? v2.toUpperCase() : v2.toLowerCase(); }
+                let amountStr = amount.toString();
+                if (Math.random() < 0.35) { amountStr = " " + amountStr + " MAD "; }
+
+                csvContent += `${id};${dateStr};${v1};${v2};${amountStr};${v3}\n`;
+            }
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            let cleanName = students[activeStudentIndex].replace(/\s+/g, '_');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Data_${cleanName}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => { btn.innerHTML = "✅ Fichier Téléchargé"; btn.disabled = false; }, 1000);
+        }
+
+        function unlockProfessorMode() {
+            let pwd = prompt("Authentification requise (Mot de passe) :");
+            if (pwd === "PROF2026") {
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.getElementById('exam-screen').style.display = 'none';
+                document.getElementById('prof-screen').style.display = 'block';
+                document.querySelectorAll('.student-item').forEach(el => el.classList.remove('active'));
+
+                const tbody = document.querySelector('#profTable tbody');
+                tbody.innerHTML = '';
+
+                students.forEach((student, index) => {
+                    const ds = datasets[index % datasets.length];
+                    const archIndex = index % 5;
+                    const archTypes =["0 - Urgence", "1 - Investisseur", "2 - Public", "3 - Bilan", "4 - Faisabilité"];
+                    let calcType = (archIndex % 2 === 0) ? "SOMME" : "MOYENNE";
+                    
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${student}</strong></td>
+                        <td style="color:var(--mundi-orange);">${archTypes[archIndex]}</td>
+                        <td><strong>${ds.t}</strong></td>
+                        <td>${ds.c3}</td>
+                        <td>${ds.c4}</td>
+                        <td>${ds.c5}</td>
+                        <td style="background:#e8f5e9;"><strong>${calcType}</strong> de [${ds.c5}] <br>Lignes:[${ds.c3}] <br>Col:[${ds.c4}]</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        window.onload = init;
+    </script>
+
+</body>
+</html>
